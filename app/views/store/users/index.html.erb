@@ -1,0 +1,22 @@
+<h1><%= pluralize @users.count, "user" %></h1>
+
+<%= link_to "New User", new_store_user_path %>
+
+<div id="users">
+<table border="1">
+<tr>
+    <th> Name </th>
+    <th> email </th>
+    <th> Mobile </th>
+    <th> Admin? </th>
+</tr>
+<% @users.each do |user| %>
+  <tr>
+      <td> <%= link_to user.full_name, store_user_path(user) %></td>
+        <td><%= user.email_address %></td>
+        <td><%= user.mobile %></td>
+        <td><%= user.admin %></td>
+    </tr>
+  <% end %>
+  </table>
+</div>

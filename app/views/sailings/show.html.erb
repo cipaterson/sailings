@@ -1,0 +1,9 @@
+<h1><%= @sailing.name %></h1>
+
+<%= @sailing.comments %>
+<%= @sailing.start_date %>
+<%= @sailing.return_date %>
+<p>
+<%= link_to "Back", sailings_path %>
+<%= link_to "Edit", edit_sailing_path(@sailing) %>
+<%= button_to "Delete", @sailing, method: :delete, data: { turbo_confirm: "Are you sure?" } %>

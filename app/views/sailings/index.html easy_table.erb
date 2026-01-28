@@ -1,0 +1,10 @@
+<h1>Sailings</h1>
+
+<%= link_to "New Sailing", new_sailing_path %>
+<p>
+<div id="sailings">
+    <%= table_for(@sailings, border: 1) do |t| %>
+    <% t.column :name, header_rowspan: 2 %>
+    <% t.column :comments %>
+    <% end %>
+</div>

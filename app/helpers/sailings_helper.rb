@@ -1,0 +1,2 @@
+module SailingsHelper
+end

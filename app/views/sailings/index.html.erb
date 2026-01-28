@@ -1,0 +1,22 @@
+<h1>Sailings</h1>
+
+<%= link_to "New Sailing", new_sailing_path if authenticated? %>
+<p>
+<div id="sailings">
+<table border=1>
+<tr>
+    <th> Purpose </th>
+    <th> Comments </th>
+    <th> Date </th>
+    <th> Return Date </th>
+</tr>
+  <% @sailings.each do |sailing| %>
+    <tr>
+        <td><%= link_to sailing.name, sailing_path(sailing.id) %></td>
+        <td><%= sailing.comments %></td>
+        <td><%= sailing.start_date %></td>
+        <td><%= sailing.return_date %></td>
+    </tr>
+  <% end %>
+  </table>
+</div>
