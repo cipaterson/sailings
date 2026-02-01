@@ -1,0 +1,26 @@
+<h1>Assignments</h1>
+
+<%= link_to "New Assign", new_assignment_path %>
+<p>
+<div id="assignments">
+<table border=1>
+<tr>
+    <th> ID </th>
+    <th> UserID </th>
+    <th> SailingID </th>
+    <th> Rating </th>
+    <th> Edit    </th>
+</tr>
+  <% @assignments.each do |assignment| %>
+    <tr>
+        <td><%= assignment.id %></td>
+        <td><%= assignment.user_id %></td>
+        <td><%= assignment.sailing_id %></td>
+        <td><%= assignment.rating %></td>
+        <td>
+            <%= button_to "Edit", edit_assignment_path(assignment) %>
+        </td>
+    </tr>
+  <% end %>
+  </table>
+</div>

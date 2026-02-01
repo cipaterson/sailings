@@ -2,6 +2,7 @@ class SailingsController < ApplicationController
   before_action :set_sailing, only: %i[ show edit update destroy ]
   def index
     @sailings = Sailing.all
+
   end
   def show
   end

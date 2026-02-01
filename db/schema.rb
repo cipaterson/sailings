@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_08_080845) do
-  create_table "assignments", force: :cascade do |t|
+ActiveRecord::Schema[8.1].define(version: 2026_01_31_103027) do
+  create_table "assignments", primary_key: ["sailing_id", "user_id"], force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "rating", default: 0
     t.integer "sailing_id", null: false
     t.datetime "updated_at", null: false
-    t.integer "users_id", null: false
+    t.integer "user_id", null: false
     t.index ["sailing_id"], name: "index_assignments_on_sailing_id"
-    t.index ["users_id"], name: "index_assignments_on_users_id"
+    t.index ["user_id"], name: "index_assignments_on_user_id"
   end
 
   create_table "sailings", force: :cascade do |t|
@@ -55,6 +55,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_08_080845) do
   end
 
   add_foreign_key "assignments", "sailings"
-  add_foreign_key "assignments", "users", column: "users_id"
+  add_foreign_key "assignments", "users"
   add_foreign_key "sessions", "users"
 end

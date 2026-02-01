@@ -9,6 +9,7 @@
     <th> Comments </th>
     <th> Date </th>
     <th> Return Date </th>
+    <th> Register </th>
 </tr>
   <% @sailings.each do |sailing| %>
     <tr>
@@ -16,6 +17,13 @@
         <td><%= sailing.comments %></td>
         <td><%= sailing.start_date %></td>
         <td><%= sailing.return_date %></td>
+        <td>
+            <% if Current.user.sailings.where("sailing_id = #{sailing.id}").exists? %>
+              <%= button_to "Edit", edit_assignment_path("#{sailing.id}_#{Current.user.id}"),  :params => {sailing_id: sailing }, method: :get %>
+            <% else %>
+                <%= button_to "Register", new_assignment_path, :params => {sailing_id: sailing }, method: :get %>
+            <% end %>
+        </td>
     </tr>
   <% end %>
   </table>

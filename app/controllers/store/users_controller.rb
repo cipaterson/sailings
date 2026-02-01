@@ -18,7 +18,7 @@ class Store::UsersController < Store::BaseController
     if @user.save
       redirect_to store_user_path(@user), status: :see_other, notice: "User has been CREATED"
     else
-      render :new, status: :unprocessable_entity, notice: "ththnthnthnth"
+      render :new, status: :unprocessable_entity, notice: "Can't save user, invalid"
     end
   end
 

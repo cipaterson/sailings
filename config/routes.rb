@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   resource :session
   resources :passwords, param: :token
-  resource :sign_up
+  # resource :sign_up
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -28,7 +28,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "sailings#index"
-  resources :sailings do
-    resource :assignments
-  end
+  resources :sailings
+  # Assignment - not sure what routes I need TODO
+  resources :assignments
 end

@@ -1,0 +1,24 @@
+<%= form_with model: assignment do |form| %>
+  <% if form.object.errors.any? %>
+    <p class="error"><%= form.object.errors.full_messages.first %></p>
+  <% end %>
+
+  <div>Role</div>
+  <% if false %>
+  <div>
+      <%= form.radio_button :rating, "crew", checked: false %>
+      <%= form.label :rating_crew, "Crew" %>
+      <%= form.radio_button :rating, "trainee" %>
+      <%= form.label :rating_trainee, "Trainee" %>
+  </div>
+  <% end %>
+  <div>
+    <%= form.collection_radio_buttons :rating, Assignment.ratings, :first, :first %>
+    <%= form.hidden_field :rating, value: 'nil' %>
+  </div>
+  <%= form.hidden_field :sailing_id, value: @sailing.id %>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
