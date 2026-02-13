@@ -12,7 +12,7 @@ class AssignmentsController < ApplicationController
   end
 
   def create
-    @assignment = Assignment.new(user_id: Current.user.id, sailing_id: params[:assignment][:sailing_id], rating: params[:assignment][:rating])
+    @assignment = Assignment.new(user_id: Current.user.id, sailing_id: params[:assignment][:sailing_id], rating: params[:assignment][:rating], registration: "EoI")
     if @assignment.save
       redirect_to root_path, notice: "Assignment was successfully created."
     else

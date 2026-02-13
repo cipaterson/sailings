@@ -9,6 +9,7 @@
     <th> UserID </th>
     <th> SailingID </th>
     <th> Rating </th>
+    <th> Registration </th>
     <th> Edit    </th>
 </tr>
   <% @assignments.each do |assignment| %>
@@ -17,6 +18,7 @@
         <td><%= assignment.user_id %></td>
         <td><%= assignment.sailing_id %></td>
         <td><%= assignment.rating %></td>
+        <td><%= assignment.registration %></td>
         <td>
             <%= button_to "Edit", edit_assignment_path(assignment) %>
         </td>
