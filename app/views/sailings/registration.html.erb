@@ -1,0 +1,25 @@
+<h1>Registrations</h1>
+
+<%= p "sailing name and dates" %>
+
+<div id="assignments">
+<table border="1">
+<tr>
+    <th> Name </th>
+    <th> email </th>
+    <th> Mobile </th>
+    <th> Registration </th>
+</tr>
+<% @users_with_assignments.each do |uwa| %>
+  <tr>
+      <td><%= uwa.full_name %></td>
+      <td><%= uwa.email_address %></td>
+      <td><%= uwa.mobile %></td>
+      <td><%= select_tag :registration,
+        options_for_select(Assignment.registrations.map {|k, v| [k.humanize.capitalize, v]}, uwa.registration) %></td>
+      <!--<td><%= select_tag :registration, options_for_select(Assignment.registrations) %></td>-->
+
+    </tr>
+  <% end %>
+  </table>
+</div>

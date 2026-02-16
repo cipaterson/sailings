@@ -2,7 +2,7 @@ class Assignment < ApplicationRecord
   belongs_to :sailing
   belongs_to :user
   enum :rating, [ :crew, :trainee ]
-  enum :registration, [ :EoI, :Accepted, :NotRequired ], default: :EoI
+  enum :registration, [ :eoi, :accepted, :not_required ], default: :eoi
 
   validates :rating, presence: true
   validates :registration, presence: true

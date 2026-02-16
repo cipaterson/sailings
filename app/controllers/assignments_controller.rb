@@ -12,7 +12,8 @@ class AssignmentsController < ApplicationController
   end
 
   def create
-    @assignment = Assignment.new(user_id: Current.user.id, sailing_id: params[:assignment][:sailing_id], rating: params[:assignment][:rating], registration: "EoI")
+    @assignment = Assignment.new(user_id: Current.user.id,
+      sailing_id: params[:assignment][:sailing_id], rating: params[:assignment][:rating], registration: :eoi)
     if @assignment.save
       redirect_to root_path, notice: "Assignment was successfully created."
     else
@@ -24,7 +25,8 @@ class AssignmentsController < ApplicationController
   end
 
   def update
-    if @assignment.update(user_id: Current.user.id, sailing_id: params[:assignment][:sailing_id], rating: params[:assignment][:rating])
+    if @assignment.update(user_id: Current.user.id,
+      sailing_id: params[:assignment][:sailing_id], rating: params[:assignment][:rating])
       redirect_to root_path, notice: "Assignment was successfully updated."
     else
       render :new, status: :unprocessable_entity

@@ -1,6 +1,6 @@
 <h1>Sailings</h1>
 
-<%= link_to "New Sailing", new_sailing_path if authenticated? %>
+<%= link_to "New Sailing", new_sailing_path %>
 <p>
 <div id="sailings">
 <table border=1>
@@ -10,6 +10,7 @@
     <th> Date </th>
     <th> Return Date </th>
     <th> Register </th>
+    <th>  </th>
 </tr>
   <% @sailings.each do |sailing| %>
     <tr>
@@ -19,10 +20,15 @@
         <td><%= sailing.return_date %></td>
         <td>
             <% if Current.user.sailings.where("sailing_id = #{sailing.id}").exists? %>
-              <%= button_to "Edit", edit_assignment_path("#{sailing.id}_#{Current.user.id}"),  :params => {sailing_id: sailing }, method: :get %>
+              <%= button_to "Edit", edit_assignment_path("#{sailing.id}_#{Current.user.id}"),
+                :params => {sailing_id: sailing }, method: :get %>
             <% else %>
-                <%= button_to "Register", new_assignment_path, :params => {sailing_id: sailing }, method: :get %>
+                <%= button_to "Register", new_assignment_path,
+                  :params => {sailing_id: sailing }, method: :get %>
             <% end %>
+        </td>
+        <td>
+            <%= button_to "View Registerations", registrations_path(sailing.id), method: :get %>
         </td>
     </tr>
   <% end %>

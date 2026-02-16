@@ -1,0 +1,25 @@
+<h3>Registrations for <%= Current.user.full_name %> </h3>
+<div id="assignments">
+<table border="1">
+<tr>
+    <th> SailingID </th>
+    <th> Voyage </th>
+    <th> Voyage Dates </th>
+    <th> Created </th>
+    <th> Registration </th>
+</tr>
+  <% @sailings_with_assignments.each do |swa| %>
+    <tr>
+        <td><%= swa.id %></td>
+        <td><%= swa.name %></td>
+        <td><%= swa.start_date %></td>
+        <td><%= swa.updated_at %></td>
+        <td><%= Assignment.registrations.invert[swa.registration].humanize %></td>
+        <td>
+            <%= button_to "Edit", edit_assignment_path("#{swa.id}_#{Current.user.id}"),
+              :params => {sailing_id: swa.id }, method: :get %>
+        </td>
+    </tr>
+  <% end %>
+  </table>
+</div>

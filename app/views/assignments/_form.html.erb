@@ -15,7 +15,7 @@
   <% end %>
   <div>
     <%= form.collection_radio_buttons :rating, Assignment.ratings, :first, :first %>
-    <%= form.hidden_field :rating, value: 'nil' if false # TODO %>
+    <%= form.hidden_field :rating, value: 'nil' if false %>
   </div>
   <%= form.hidden_field :sailing_id, value: @sailing.id %>
 

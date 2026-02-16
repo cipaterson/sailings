@@ -1,11 +1,18 @@
 Rails.application.routes.draw do
+  ##get "my_registrations/", to: "my_registrations#index"
+  resources :my_registrations, only: [ :index ]
 
   namespace :settings do
+    resource :email, only: [ :show, :update ]
     resource :password, only: [ :show, :update ]
     resource :profile, only: [ :show, :update ]
     resource :user, only: [ :show, :destroy ]
 
     root to: redirect("/settings/profile")
+  end
+
+  namespace :email do
+    resources :confirmations, param: :token, only: [ :show ]
   end
 
   # Admins Only
@@ -28,7 +35,11 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "sailings#index"
+
   resources :sailings
+  # Add a new, non-REST, route to SailingsController
+  get "sailings/:id/registrations", to: "sailings#registration", as: "registrations"
+
   # Assignment - not sure what routes I need TODO
   resources :assignments
 end

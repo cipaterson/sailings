@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_02_103610) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_15_031654) do
   create_table "assignments", primary_key: ["sailing_id", "user_id"], force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "rating", default: 0
@@ -51,6 +51,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_02_103610) do
     t.string "mobile"
     t.string "password_digest", null: false
     t.string "rating"
+    t.string "unconfirmed_email"
     t.datetime "updated_at", null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end

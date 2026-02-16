@@ -25,12 +25,14 @@
   </head>
 
   <body>
+      <%= image_tag "ln-logo.png", alt: "Logo", class: "header-logo" %>
       <div class="notice"><%= flash[:notice] %></div>
       <div class="alert"><%= flash[:alert] %></div>
 
       <nav class="navbar">
         <% if authenticated? %>
             <%= link_to "Home", root_path %>
+            <%= link_to "My Registrations", my_registrations_url %>
           <%= link_to "Settings", settings_root_path %>
           <%= button_to "Log out", session_path, method: :delete %>
         <% end %>
