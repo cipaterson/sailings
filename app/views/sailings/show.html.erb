@@ -1,0 +1,27 @@
+<h1>Sailing</h1>
+
+<dl>
+  <dt>Purpose</dt>
+  <dd><%= @sailing.purpose %></dd>
+
+  <dt>Status</dt>
+  <dd><%= @sailing.status %></dd>
+
+  <dt>Departs At</dt>
+  <dd><%= @sailing.departs_at %></dd>
+
+  <dt>Returns At</dt>
+  <dd><%= @sailing.returns_at %></dd>
+
+  <dt>LN Contact</dt>
+  <dd><%= @sailing.ln_contact %></dd>
+
+  <dt>Master</dt>
+  <dd><%= @sailing.master %></dd>
+
+  <dt>Comments</dt>
+  <dd><%= @sailing.comments %></dd>
+</dl>
+
+<%= link_to "Edit", edit_sailing_path(@sailing) %> |
+<%= link_to "Back", sailings_path %>

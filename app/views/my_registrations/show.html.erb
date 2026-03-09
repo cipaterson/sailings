@@ -1,0 +1,32 @@
+<h1>My Registrations</h1>
+
+<% if @sailing_participants.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Purpose</th>
+        <th>Departs At</th>
+        <th>Returns At</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sailing_participants.each do |participant| %>
+        <tr>
+          <td><%= participant.sailing.purpose %></td>
+          <td><%= participant.sailing.departs_at %></td>
+          <td><%= participant.sailing.returns_at %></td>
+          <td><%= participant.status %></td>
+          <td>
+            <%= button_to "Cancel", sailing_participant_path(participant),
+                method: :delete,
+                data: { turbo_confirm: "Are you sure you want to cancel this registration?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>You have no registrations.</p>
+<% end %>

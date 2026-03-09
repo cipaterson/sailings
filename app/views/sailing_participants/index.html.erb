@@ -1,0 +1,58 @@
+<h1>Participants for <%= @sailing.purpose %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @sailing_participants.each do |participant| %>
+      <tr>
+        <td><%= participant.user.email_address %></td>
+        <td>
+          <%= form_with model: [@sailing, participant] do |f| %>
+            <%= f.select :status, SailingParticipant::STATUSES %>
+            <%= f.hidden_field :user_id %>
+            <%= f.submit "Save" %>
+            <%= link_to "Cancel", sailing_sailing_participants_path(@sailing) %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h2>Add Participant</h2>
+
+<% available_users = User.where.not(id: @sailing.sailing_participants.select(:user_id)) %>
+<% if available_users.any? %>
+  <%= form_with model: [@sailing, @sailing_participant] do |f| %>
+    <% if @sailing_participant.errors.any? %>
+      <ul>
+        <% @sailing_participant.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <div>
+      <%= f.label :user_id, "User" %>
+      <%= f.select :user_id, available_users.map { |u| [u.email_address, u.id] }, { include_blank: "Select user" } %>
+    </div>
+
+    <div>
+      <%= f.label :status %>
+      <%= f.select :status, SailingParticipant::STATUSES, { include_blank: "Select status" } %>
+    </div>
+
+    <div>
+      <%= f.submit "Add Participant" %>
+    </div>
+  <% end %>
+<% else %>
+  <p>All users are already participating in this sailing.</p>
+<% end %>
+
+<%= link_to "Back to Sailings", sailings_path %>

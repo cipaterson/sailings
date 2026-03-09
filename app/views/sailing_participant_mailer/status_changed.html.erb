@@ -1,0 +1,12 @@
+<p>Hi <%= @user.full_name %>,</p>
+
+<p>Your registration status for the following sailing has been updated:</p>
+
+<table>
+  <tr><th>Sailing</th><td><%= @sailing.purpose %></td></tr>
+  <tr><th>Departs</th><td><%= @sailing.departs_at %></td></tr>
+  <tr><th>Previous Status</th><td><%= @old_status %></td></tr>
+  <tr><th>New Status</th><td><%= @new_status %></td></tr>
+</table>
+
+<p>If you have any questions, please contact us.</p>

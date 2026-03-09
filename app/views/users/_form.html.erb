@@ -1,0 +1,134 @@
+<style>
+  .tab-radio { display: none; }
+  .tab-labels { display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 2px solid #ccc; }
+  .tab-labels label { padding: 0.5rem 1rem; cursor: pointer; border: 1px solid transparent; border-bottom: none; margin-bottom: -2px; }
+  .tab-panel { display: none; }
+
+  #tab-personal:checked ~ .tab-labels label[for="tab-personal"],
+  #tab-membership:checked ~ .tab-labels label[for="tab-membership"],
+  #tab-kin:checked ~ .tab-labels label[for="tab-kin"],
+  #tab-training:checked ~ .tab-labels label[for="tab-training"],
+  #tab-qualifications:checked ~ .tab-labels label[for="tab-qualifications"] {
+    border-color: #ccc; border-bottom-color: white; background: white; font-weight: bold;
+  }
+
+  #tab-personal:checked ~ .tab-panels #panel-personal,
+  #tab-membership:checked ~ .tab-panels #panel-membership,
+  #tab-kin:checked ~ .tab-panels #panel-kin,
+  #tab-training:checked ~ .tab-panels #panel-training,
+  #tab-qualifications:checked ~ .tab-panels #panel-qualifications {
+    display: block;
+  }
+</style>
+
+<%= form_with model: user do |f| %>
+  <% if user.errors.any? %>
+    <div>
+      <ul>
+        <% user.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if false #show_password %>
+    <div>
+      <%= f.label :password %>
+      <%= f.password_field :password %>
+    </div>
+    <div>
+      <%= f.label :password_confirmation %>
+      <%= f.password_field :password_confirmation %>
+    </div>
+  <% end %>
+
+  <input type="radio" name="tab" id="tab-personal" class="tab-radio" checked>
+  <input type="radio" name="tab" id="tab-membership" class="tab-radio">
+  <input type="radio" name="tab" id="tab-kin" class="tab-radio">
+  <input type="radio" name="tab" id="tab-training" class="tab-radio">
+  <input type="radio" name="tab" id="tab-qualifications" class="tab-radio">
+
+  <div class="tab-labels">
+    <label for="tab-personal">Personal</label>
+    <label for="tab-membership">Membership</label>
+    <label for="tab-kin">Next of Kin</label>
+    <label for="tab-training">Training</label>
+    <label for="tab-qualifications">Qualifications</label>
+  </div>
+
+  <div class="tab-panels">
+    <div id="panel-personal" class="tab-panel">
+        <% if show_password %>
+          <div>
+            <%= f.label :password %>
+            <%= f.password_field :password %>
+          </div>
+          <div>
+            <%= f.label :password_confirmation %>
+            <%= f.password_field :password_confirmation %>
+          </div>
+        <% end %>
+
+      <div>
+        <%= f.label :email_address %>
+        <%= f.email_field :email_address %>
+      </div>
+      <div>
+        <%= f.label :first_name %>
+        <%= f.text_field :first_name %>
+      </div>
+      <div>
+        <%= f.label :last_name %>
+        <%= f.text_field :last_name %>
+      </div>
+      <div>
+        <%= f.label :mobile_phone %>
+        <%= f.telephone_field :mobile_phone %>
+      </div>
+      <div>
+        <%= f.label :home_phone %>
+        <%= f.telephone_field :home_phone %>
+      </div>
+      <div>
+        <%= f.label :birth_date %>
+        <%= f.date_field :birth_date %>
+      </div>
+      <div>
+        <%= f.label :occupation %>
+        <%= f.text_field :occupation %>
+      </div>
+    </div>
+
+    <div id="panel-membership" class="tab-panel">
+      <div>
+        <%= f.label :membership_type %>
+        <%= f.select :membership_type, User::MEMBERSHIP_TYPES, { include_blank: "Select type" } %>
+      </div>
+      <div>
+        <%= f.label :sailing_class, "Class" %>
+        <%= f.text_field :sailing_class %>
+      </div>
+      <div>
+        <%= f.label :sit_date, "SIT Date" %>
+        <%= f.date_field :sit_date %>
+      </div>
+    </div>
+
+    <div id="panel-kin" class="tab-panel">
+      <p>Coming soon.</p>
+    </div>
+
+    <div id="panel-training" class="tab-panel">
+      <p>Coming soon.</p>
+    </div>
+
+    <div id="panel-qualifications" class="tab-panel">
+      <p>Coming soon.</p>
+    </div>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>

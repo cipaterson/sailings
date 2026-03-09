@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Claude Sailings" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Claude Sailings">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag "https://cdn.simplecss.org/simple.css" %>
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <header id="header" style="background-color: var(--bg);" >
+        <div style="position: relative;">
+            <%= image_tag "header-bg.jpg", alt: "Logo", style: "position: relative; top: 0; left: 0;" %>
+            <%= image_tag "ln-logo.png", alt: "Logo", style: "position: absolute; top: 0; left: 0;" %>
+        </div>
+    </header>
+    <% if authenticated? %>
+    <nav>
+      <%= link_to "Home", root_path, class: "button" %>
+      <%= link_to "My Registrations", my_registrations_path, class: "button" %>
+      <%= link_to "Users", users_path, class: "button" %>
+      <%= link_to "Member Resources", "https://sites.google.com/ladynelson.org.au/members", class: "button" %>
+      <%= link_to "Logout", session_path, data: { turbo_method: :delete }, class: "button", style: "float: right;" %>
+      <%= link_to "My Profile", user_path(Current.user), class: "button", style: "float: right;" %>
+    </nav>
+    <% end %>
+    <%= yield %>
+    <footer style="text-align: left;">
+        <p>
+        GPO Box 785<br>
+        Hobart Tasmania 7001<br>
+        p. 03 6234 3348<br>
+        f. 03 6234 1744<br>
+        e. enquiries@ladynelson.org.au
+        </p>
+    </footer>
+  </body>
+</html>

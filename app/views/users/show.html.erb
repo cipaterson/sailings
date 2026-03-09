@@ -1,0 +1,36 @@
+<h1><%= @user.full_name %></h1>
+
+<dl>
+  <dt>Email</dt>
+  <dd><%= @user.email_address %></dd>
+
+  <dt>First Name</dt>
+  <dd><%= @user.first_name %></dd>
+
+  <dt>Last Name</dt>
+  <dd><%= @user.last_name %></dd>
+
+  <dt>Mobile Phone</dt>
+  <dd><%= @user.mobile_phone %></dd>
+
+  <dt>Home Phone</dt>
+  <dd><%= @user.home_phone %></dd>
+
+  <dt>Birth Date</dt>
+  <dd><%= @user.birth_date %></dd>
+
+  <dt>Occupation</dt>
+  <dd><%= @user.occupation %></dd>
+
+  <dt>Membership Type</dt>
+  <dd><%= @user.membership_type %></dd>
+
+  <dt>Class</dt>
+  <dd><%= @user.sailing_class %></dd>
+
+  <dt>SIT Date</dt>
+  <dd><%= @user.sit_date %></dd>
+</dl>
+
+<%= link_to "Edit", edit_user_path(@user) %>
+<%= link_to "Back", users_path %>

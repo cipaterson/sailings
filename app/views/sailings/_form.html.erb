@@ -1,0 +1,50 @@
+<%= form_with model: sailing do |f| %>
+  <% if sailing.errors.any? %>
+    <div>
+      <ul>
+        <% sailing.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :purpose %>
+    <%= f.text_field :purpose %>
+  </div>
+
+  <div>
+    <%= f.label :status %>
+    <%= f.select :status, Sailing::STATUSES, { include_blank: "Select status" } %>
+  </div>
+
+  <div>
+    <%= f.label :departs_at %>
+    <%= f.datetime_local_field :departs_at %>
+  </div>
+
+  <div>
+    <%= f.label :returns_at %>
+    <%= f.datetime_local_field :returns_at %>
+  </div>
+
+  <div>
+    <%= f.label :ln_contact %>
+    <%= f.text_field :ln_contact %>
+  </div>
+
+  <div>
+    <%= f.label :master %>
+    <%= f.text_field :master %>
+  </div>
+
+  <div>
+    <%= f.label :comments %>
+    <%= f.text_area :comments %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>
