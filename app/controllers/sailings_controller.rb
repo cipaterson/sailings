@@ -3,6 +3,9 @@ class SailingsController < ApplicationController
 
   def index
     @sailings = Sailing.left_joins(:sailing_participants).select("sailings.*, COUNT(sailing_participants.id) AS participants_count").group("sailings.id")
+    @my_participants = Current.user.sailing_participants
+                             .where(sailing_id: @sailings.map(&:id))
+                             .index_by(&:sailing_id)
   end
 
   def show
@@ -44,6 +47,6 @@ class SailingsController < ApplicationController
   end
 
   def sailing_params
-    params.require(:sailing).permit(:purpose, :status, :departs_at, :returns_at, :ln_contact, :master, :comments)
+    params.require(:sailing).permit(:purpose, :status, :departs_date, :departs_time, :returns_date, :returns_time, :ln_contact, :master, :comments, :charterer, :passenger_count, :additional_details, :engineer, :charter_full_name, :charter_email_address, :charter_work_phone, :charter_mobile, :charter_address1, :charter_address2, :charter_city, :charter_state, :charter_postcode)
   end
 end

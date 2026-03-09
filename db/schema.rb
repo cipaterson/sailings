@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_08_063535) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_09_053641) do
   create_table "sailing_participants", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "sailing_id", null: false
@@ -23,11 +23,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_08_063535) do
   end
 
   create_table "sailings", force: :cascade do |t|
+    t.text "additional_details"
+    t.string "charter_address1"
+    t.string "charter_address2"
+    t.string "charter_city"
+    t.string "charter_email_address"
+    t.string "charter_full_name"
+    t.string "charter_mobile"
+    t.string "charter_postcode"
+    t.string "charter_state"
+    t.string "charter_work_phone"
+    t.string "charterer"
     t.text "comments"
     t.datetime "created_at", null: false
     t.datetime "departs_at"
+    t.string "engineer"
     t.string "ln_contact"
     t.string "master"
+    t.integer "passenger_count"
     t.string "purpose"
     t.datetime "returns_at"
     t.string "status"

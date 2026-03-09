@@ -8,10 +8,10 @@
   <dd><%= @sailing.status %></dd>
 
   <dt>Departs At</dt>
-  <dd><%= @sailing.departs_at %></dd>
+  <dd><%= @sailing.departs_date %> <%= @sailing.departs_time %></dd>
 
   <dt>Returns At</dt>
-  <dd><%= @sailing.returns_at %></dd>
+  <dd><%= @sailing.returns_date %> <%= @sailing.returns_time %></dd>
 
   <dt>LN Contact</dt>
   <dd><%= @sailing.ln_contact %></dd>
@@ -21,6 +21,48 @@
 
   <dt>Comments</dt>
   <dd><%= @sailing.comments %></dd>
+
+  <dt>Charterer</dt>
+  <dd><%= @sailing.charterer %></dd>
+
+  <dt>Passenger Count</dt>
+  <dd><%= @sailing.passenger_count %></dd>
+
+  <dt>Engineer</dt>
+  <dd><%= @sailing.engineer %></dd>
+
+  <dt>Additional Details</dt>
+  <dd><%= @sailing.additional_details %></dd>
+
+  <dt>Charter Contact</dt>
+  <dd></dd>
+
+  <dt>Full Name</dt>
+  <dd><%= @sailing.charter_full_name %></dd>
+
+  <dt>Email</dt>
+  <dd><%= @sailing.charter_email_address %></dd>
+
+  <dt>Work Phone</dt>
+  <dd><%= @sailing.charter_work_phone %></dd>
+
+  <dt>Mobile</dt>
+  <dd><%= @sailing.charter_mobile %></dd>
+
+  <dt>Address</dt>
+  <dd><%= @sailing.charter_address1 %></dd>
+
+  <dt>Address 2</dt>
+  <dd><%= @sailing.charter_address2 %></dd>
+
+  <dt>City</dt>
+  <dd><%= @sailing.charter_city %></dd>
+
+  <dt>State</dt>
+  <dd><%= @sailing.charter_state %></dd>
+
+  <dt>Postcode</dt>
+  <dd><%= @sailing.charter_postcode %></dd>
 </dl>
 
 <%= link_to "Edit", edit_sailing_path(@sailing) %> |

@@ -4,7 +4,7 @@
 
 <table>
   <tr><th>Sailing</th><td><%= @sailing.purpose %></td></tr>
-  <tr><th>Departs</th><td><%= @sailing.departs_at %></td></tr>
+  <tr><th>Departs</th><td><%= @sailing.departs_date %> <%= @sailing.departs_time %></td></tr>
   <tr><th>Previous Status</th><td><%= @old_status %></td></tr>
   <tr><th>New Status</th><td><%= @new_status %></td></tr>
 </table>

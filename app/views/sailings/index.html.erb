@@ -15,6 +15,7 @@
       <th>Master</th>
       <th>Participants</th>
       <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -30,6 +31,15 @@
         <td><%= sailing.master %></td>
         <td><%= sailing.participants_count %></td>
         <td><%= link_to "Manage Participants", sailing_sailing_participants_path(sailing) %></td>
+        <td>
+          <% my_participant = @my_participants[sailing.id] %>
+          <% if my_participant %>
+            <%= "Registered!" %>
+          <% else %>
+            <%= button_to "Register", sailing_sailing_participants_path(sailing),
+                params: { sailing_participant: { status: "EOI" } } %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>

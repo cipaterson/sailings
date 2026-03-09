@@ -1,3 +1,20 @@
+<style>
+  .tab-radio { display: none; }
+  .tab-labels { display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 2px solid #ccc; }
+  .tab-labels label { padding: 0.5rem 1rem; cursor: pointer; border: 1px solid transparent; border-bottom: none; margin-bottom: -2px; }
+  .tab-panel { display: none; }
+
+  #sailing-tab-info:checked ~ .tab-labels label[for="sailing-tab-info"],
+  #sailing-tab-charter:checked ~ .tab-labels label[for="sailing-tab-charter"] {
+    border-color: #ccc; border-bottom-color: white; background: white; font-weight: bold;
+  }
+
+  #sailing-tab-info:checked ~ .tab-panels #panel-info,
+  #sailing-tab-charter:checked ~ .tab-panels #panel-charter {
+    display: block;
+  }
+</style>
+
 <%= form_with model: sailing do |f| %>
   <% if sailing.errors.any? %>
     <div>
@@ -9,39 +26,122 @@
     </div>
   <% end %>
 
-  <div>
-    <%= f.label :purpose %>
-    <%= f.text_field :purpose %>
+  <input type="radio" name="sailing_tab" id="sailing-tab-info" class="tab-radio" checked>
+  <input type="radio" name="sailing_tab" id="sailing-tab-charter" class="tab-radio">
+
+  <div class="tab-labels">
+    <label for="sailing-tab-info">Sailing Information</label>
+    <label for="sailing-tab-charter">Charter Contact</label>
   </div>
 
-  <div>
-    <%= f.label :status %>
-    <%= f.select :status, Sailing::STATUSES, { include_blank: "Select status" } %>
-  </div>
+  <div class="tab-panels">
+    <div id="panel-info" class="tab-panel">
+      <div>
+        <%= f.label :purpose %>
+        <%= f.text_field :purpose %>
+      </div>
 
-  <div>
-    <%= f.label :departs_at %>
-    <%= f.datetime_local_field :departs_at %>
-  </div>
+      <div>
+        <%= f.label :status %>
+        <%= f.select :status, Sailing::STATUSES, { include_blank: "Select status" } %>
+      </div>
 
-  <div>
-    <%= f.label :returns_at %>
-    <%= f.datetime_local_field :returns_at %>
-  </div>
+      <div>
+        <%= f.label :departs_date, "Departs Date" %>
+        <%= f.date_field :departs_date %>
+        <%= f.label :departs_time, "Departs Time" %>
+        <%= f.time_field :departs_time %>
+      </div>
 
-  <div>
-    <%= f.label :ln_contact %>
-    <%= f.text_field :ln_contact %>
-  </div>
+      <div>
+        <%= f.label :returns_date, "Returns Date" %>
+        <%= f.date_field :returns_date %>
+        <%= f.label :returns_time, "Returns Time" %>
+        <%= f.time_field :returns_time %>
+      </div>
 
-  <div>
-    <%= f.label :master %>
-    <%= f.text_field :master %>
-  </div>
+      <div>
+        <%= f.label :ln_contact %>
+        <%= f.text_field :ln_contact %>
+      </div>
 
-  <div>
-    <%= f.label :comments %>
-    <%= f.text_area :comments %>
+      <div>
+        <%= f.label :master %>
+        <%= f.text_field :master %>
+      </div>
+
+      <div>
+        <%= f.label :comments %>
+        <%= f.text_area :comments %>
+      </div>
+
+      <div>
+        <%= f.label :charterer %>
+        <%= f.text_field :charterer %>
+      </div>
+
+      <div>
+        <%= f.label :passenger_count %>
+        <%= f.number_field :passenger_count %>
+      </div>
+
+      <div>
+        <%= f.label :engineer %>
+        <%= f.text_field :engineer %>
+      </div>
+
+      <div>
+        <%= f.label :additional_details %>
+        <%= f.text_area :additional_details %>
+      </div>
+    </div>
+
+    <div id="panel-charter" class="tab-panel">
+      <div>
+        <%= f.label :charter_full_name, "Full Name" %>
+        <%= f.text_field :charter_full_name %>
+      </div>
+
+      <div>
+        <%= f.label :charter_email_address, "Email Address" %>
+        <%= f.email_field :charter_email_address %>
+      </div>
+
+      <div>
+        <%= f.label :charter_work_phone, "Work Phone" %>
+        <%= f.telephone_field :charter_work_phone %>
+      </div>
+
+      <div>
+        <%= f.label :charter_mobile, "Mobile" %>
+        <%= f.telephone_field :charter_mobile %>
+      </div>
+
+      <div>
+        <%= f.label :charter_address1, "Address" %>
+        <%= f.text_field :charter_address1 %>
+      </div>
+
+      <div>
+        <%= f.label :charter_address2, "Address 2" %>
+        <%= f.text_field :charter_address2 %>
+      </div>
+
+      <div>
+        <%= f.label :charter_city, "City" %>
+        <%= f.text_field :charter_city %>
+      </div>
+
+      <div>
+        <%= f.label :charter_state, "State" %>
+        <%= f.select :charter_state, Sailing::AUSTRALIAN_STATES, { include_blank: "Select state" } %>
+      </div>
+
+      <div>
+        <%= f.label :charter_postcode, "Postcode" %>
+        <%= f.text_field :charter_postcode %>
+      </div>
+    </div>
   </div>
 
   <div>

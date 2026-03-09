@@ -7,9 +7,9 @@ class SailingParticipantsController < ApplicationController
   end
 
   def create
-    @sailing_participant = @sailing.sailing_participants.build(sailing_participant_params)
+    @sailing_participant = @sailing.sailing_participants.build(sailing_participant_params.merge(user_id: Current.user.id))
     if @sailing_participant.save
-      redirect_to sailing_sailing_participants_path(@sailing), notice: "Participant was successfully added."
+      redirect_to sailings_path, notice: "You have been registered for this sailing."
     else
       @sailing_participants = @sailing.sailing_participants.includes(:user)
       render :index, status: :unprocessable_entity
