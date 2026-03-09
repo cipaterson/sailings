@@ -1,5 +1,5 @@
 class SailingParticipantsController < ApplicationController
-  before_action :set_sailing, only: [:index, :create, :update]
+  before_action :set_sailing, only: [:index, :create, :bulk_update]
 
   def index
     @sailing_participants = @sailing.sailing_participants.includes(:user)
@@ -16,19 +16,18 @@ class SailingParticipantsController < ApplicationController
     end
   end
 
-  def update
-    @sailing_participant = @sailing.sailing_participants.find(params[:id])
-    old_status = @sailing_participant.status
-    if @sailing_participant.update(sailing_participant_params)
-      if old_status != @sailing_participant.status
-        SailingParticipantMailer.status_changed(@sailing_participant, old_status).deliver_later
+  def bulk_update
+    statuses = params[:statuses] || {}
+    statuses.each do |id, status|
+      participant = @sailing.sailing_participants.find(id)
+      old_status = participant.status
+      if participant.update(status: status)
+        if old_status != participant.status
+          SailingParticipantMailer.status_changed(participant, old_status).deliver_later
+        end
       end
-      redirect_to sailing_sailing_participants_path(@sailing), notice: "Status was successfully updated."
-    else
-      @sailing_participants = @sailing.sailing_participants.includes(:user)
-      @sailing_participant = SailingParticipant.new
-      render :index, status: :unprocessable_entity
     end
+    redirect_to sailing_sailing_participants_path(@sailing), notice: "Participants were successfully updated."
   end
 
   def destroy

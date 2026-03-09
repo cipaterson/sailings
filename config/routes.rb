@@ -2,7 +2,11 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resources :sailings do
-    resources :sailing_participants, only: [:index, :create, :update]
+    resources :sailing_participants, only: [:index, :create] do
+      collection do
+        patch :bulk_update
+      end
+    end
   end
   resources :sailing_participants, only: [:destroy]
   resource :my_registrations, only: [:show]

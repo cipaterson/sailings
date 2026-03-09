@@ -1,28 +1,31 @@
 <h1>Participants for <%= @sailing.purpose %></h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Email</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @sailing_participants.each do |participant| %>
+<%= form_with url: bulk_update_sailing_sailing_participants_path(@sailing), method: :patch do |f| %>
+  <table>
+    <thead>
       <tr>
-        <td><%= participant.user.email_address %></td>
-        <td>
-          <%= form_with model: [@sailing, participant] do |f| %>
-            <%= f.select :status, SailingParticipant::STATUSES %>
-            <%= f.hidden_field :user_id %>
-            <%= f.submit "Save" %>
-            <%= link_to "Cancel", sailing_sailing_participants_path(@sailing) %>
-          <% end %>
-        </td>
+        <th>Email</th>
+        <th>Status</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @sailing_participants.each do |participant| %>
+        <tr>
+          <td><%= participant.user.email_address %></td>
+          <td>
+            <%= select_tag "statuses[#{participant.id}]",
+                options_for_select(SailingParticipant::STATUSES, participant.status) %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div>
+    <%= f.submit "Save All" %>
+    <%= link_to "Cancel", sailing_sailing_participants_path(@sailing) %>
+  </div>
+<% end %>
 
 <h2>Add Participant</h2>
 
