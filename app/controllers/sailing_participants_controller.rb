@@ -7,6 +7,8 @@ class SailingParticipantsController < ApplicationController
   end
 
   def create
+    # BUG - this action is used by both the user and the admin to register for a sailing, no need
+    # for to merge the user_id if it's the admin.
     @sailing_participant = @sailing.sailing_participants.build(sailing_participant_params.merge(user_id: Current.user.id))
     if @sailing_participant.save
       redirect_to sailings_path, notice: "You have been registered for this sailing."

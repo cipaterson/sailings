@@ -1,13 +1,15 @@
 <h1>Users</h1>
 
-<%= link_to "New User", new_user_path %>
+<%= link_to "New User", new_user_path if can?("office_staff") %>
 
 <table>
   <thead>
     <tr>
       <th>Name</th>
       <th>Email</th>
+      <th>Mobile Phone</th>
       <th>Membership Type</th>
+      <th>Roles</th>
     </tr>
   </thead>
   <tbody>
@@ -15,7 +17,9 @@
       <tr>
         <td><%= link_to user.full_name, user %></td>
         <td><%= user.email_address %></td>
+        <td><%= user.mobile_phone %></td>
         <td><%= user.membership_type %></td>
+        <td><%= user.roles.join(", ") %></td>
       </tr>
     <% end %>
   </tbody>

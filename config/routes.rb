@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resources :sailings do
+    member do
+      get :manifest
+    end
     resources :sailing_participants, only: [:index, :create] do
       collection do
         patch :bulk_update

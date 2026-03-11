@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_09_053641) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_11_061731) do
   create_table "sailing_participants", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "sailing_id", null: false
@@ -60,16 +60,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_053641) do
     t.date "birth_date"
     t.datetime "created_at", null: false
     t.string "email_address", null: false
+    t.date "ess_expires_on"
+    t.date "ess_issued_on"
+    t.string "ess_qualification"
     t.string "first_name"
     t.string "home_phone"
+    t.date "knots_on"
     t.string "last_name"
+    t.date "marine_safety_refresher_on"
+    t.date "med_expires_on"
+    t.date "med_issued_on"
+    t.string "med_qualification"
     t.string "membership_type"
     t.string "mobile_phone"
     t.string "occupation"
     t.string "password_digest", null: false
+    t.integer "roles_mask", default: 0, null: false
     t.string "sailing_class"
     t.date "sit_date"
     t.datetime "updated_at", null: false
+    t.date "wwvp_expires_on"
+    t.date "wwvp_issued_on"
+    t.string "wwvp_qualification"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 

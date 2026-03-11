@@ -48,6 +48,11 @@ class UsersController < ApplicationController
   def user_params
     params.require(:user).permit(:email_address, :password, :password_confirmation,
                                  :first_name, :last_name, :mobile_phone, :home_phone,
-                                 :birth_date, :occupation, :membership_type, :sailing_class, :sit_date)
+                                 :birth_date, :occupation, :membership_type, :sailing_class, :sit_date,
+                                 :knots_on, :marine_safety_refresher_on,
+                                 :ess_qualification, :ess_issued_on, :ess_expires_on,
+                                 :med_qualification, :med_issued_on, :med_expires_on,
+                                 :wwvp_qualification, :wwvp_issued_on, :wwvp_expires_on,
+                                 roles: [])
   end
 end

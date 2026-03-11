@@ -8,7 +8,8 @@
   #tab-membership:checked ~ .tab-labels label[for="tab-membership"],
   #tab-kin:checked ~ .tab-labels label[for="tab-kin"],
   #tab-training:checked ~ .tab-labels label[for="tab-training"],
-  #tab-qualifications:checked ~ .tab-labels label[for="tab-qualifications"] {
+  #tab-qualifications:checked ~ .tab-labels label[for="tab-qualifications"],
+  #tab-roles:checked ~ .tab-labels label[for="tab-roles"] {
     border-color: #ccc; border-bottom-color: white; background: white; font-weight: bold;
   }
 
@@ -16,7 +17,8 @@
   #tab-membership:checked ~ .tab-panels #panel-membership,
   #tab-kin:checked ~ .tab-panels #panel-kin,
   #tab-training:checked ~ .tab-panels #panel-training,
-  #tab-qualifications:checked ~ .tab-panels #panel-qualifications {
+  #tab-qualifications:checked ~ .tab-panels #panel-qualifications,
+  #tab-roles:checked ~ .tab-panels #panel-roles {
     display: block;
   }
 </style>
@@ -44,17 +46,23 @@
   <% end %>
 
   <input type="radio" name="tab" id="tab-personal" class="tab-radio" checked>
-  <input type="radio" name="tab" id="tab-membership" class="tab-radio">
-  <input type="radio" name="tab" id="tab-kin" class="tab-radio">
-  <input type="radio" name="tab" id="tab-training" class="tab-radio">
-  <input type="radio" name="tab" id="tab-qualifications" class="tab-radio">
+  <% if can?("office_staff") %>
+    <input type="radio" name="tab" id="tab-membership" class="tab-radio">
+    <input type="radio" name="tab" id="tab-kin" class="tab-radio">
+    <input type="radio" name="tab" id="tab-training" class="tab-radio">
+    <input type="radio" name="tab" id="tab-qualifications" class="tab-radio">
+    <input type="radio" name="tab" id="tab-roles" class="tab-radio">
+  <% end %>
 
   <div class="tab-labels">
     <label for="tab-personal">Personal</label>
-    <label for="tab-membership">Membership</label>
-    <label for="tab-kin">Next of Kin</label>
-    <label for="tab-training">Training</label>
-    <label for="tab-qualifications">Qualifications</label>
+    <% if can?("office_staff") %>
+      <label for="tab-membership">Membership</label>
+      <label for="tab-kin">Next of Kin</label>
+      <label for="tab-training">Training</label>
+      <label for="tab-qualifications">Qualifications</label>
+      <label for="tab-roles">Roles</label>
+    <% end %>
   </div>
 
   <div class="tab-panels">
@@ -100,32 +108,103 @@
       </div>
     </div>
 
-    <div id="panel-membership" class="tab-panel">
-      <div>
-        <%= f.label :membership_type %>
-        <%= f.select :membership_type, User::MEMBERSHIP_TYPES, { include_blank: "Select type" } %>
+    <% if can?("office_staff") %>
+      <div id="panel-membership" class="tab-panel">
+        <div>
+          <%= f.label :membership_type %>
+          <%= f.select :membership_type, User::MEMBERSHIP_TYPES, { include_blank: "Select type" } %>
+        </div>
+        <div>
+          <%= f.label :sailing_class, "Class" %>
+          <%= f.text_field :sailing_class %>
+        </div>
+        <div>
+          <%= f.label :sit_date, "SIT Date" %>
+          <%= f.date_field :sit_date %>
+        </div>
       </div>
-      <div>
-        <%= f.label :sailing_class, "Class" %>
-        <%= f.text_field :sailing_class %>
+
+      <div id="panel-kin" class="tab-panel">
+        <p>Coming soon.</p>
       </div>
-      <div>
-        <%= f.label :sit_date, "SIT Date" %>
-        <%= f.date_field :sit_date %>
+
+      <div id="panel-training" class="tab-panel">
+        <div>
+          <%= f.label :knots_on, "Knots" %>
+          <%= f.date_field :knots_on %>
+        </div>
+        <div>
+          <%= f.label :marine_safety_refresher_on, "Marine Safety Refresher" %>
+          <%= f.date_field :marine_safety_refresher_on %>
+        </div>
       </div>
-    </div>
 
-    <div id="panel-kin" class="tab-panel">
-      <p>Coming soon.</p>
-    </div>
+      <div id="panel-qualifications" class="tab-panel">
+        <fieldset>
+          <legend>ESS</legend>
+          <div>
+            <%= f.label :ess_qualification, "Qualification" %>
+            <%= f.text_field :ess_qualification %>
+          </div>
+          <div>
+            <%= f.label :ess_issued_on, "Date Issued" %>
+            <%= f.date_field :ess_issued_on %>
+          </div>
+          <div>
+            <%= f.label :ess_expires_on, "Date Expired" %>
+            <%= f.date_field :ess_expires_on %>
+          </div>
+        </fieldset>
 
-    <div id="panel-training" class="tab-panel">
-      <p>Coming soon.</p>
-    </div>
+        <fieldset>
+          <legend>MED</legend>
+          <div>
+            <%= f.label :med_qualification, "Qualification" %>
+            <%= f.text_field :med_qualification %>
+          </div>
+          <div>
+            <%= f.label :med_issued_on, "Date Issued" %>
+            <%= f.date_field :med_issued_on %>
+          </div>
+          <div>
+            <%= f.label :med_expires_on, "Date Expired" %>
+            <%= f.date_field :med_expires_on %>
+          </div>
+        </fieldset>
 
-    <div id="panel-qualifications" class="tab-panel">
-      <p>Coming soon.</p>
-    </div>
+        <fieldset>
+          <legend>WWVP</legend>
+          <div>
+            <%= f.label :wwvp_qualification, "Qualification" %>
+            <%= f.text_field :wwvp_qualification %>
+          </div>
+          <div>
+            <%= f.label :wwvp_issued_on, "Date Issued" %>
+            <%= f.date_field :wwvp_issued_on %>
+          </div>
+          <div>
+            <%= f.label :wwvp_expires_on, "Date Expired" %>
+            <%= f.date_field :wwvp_expires_on %>
+          </div>
+        </fieldset>
+      </div>
+
+      <div id="panel-roles" class="tab-panel">
+        <fieldset>
+          <legend>Roles</legend>
+          <% User::ROLES.each do |role| %>
+            <div>
+              <label>
+                <%= check_box_tag "user[roles][]", role, user.has_role?(role), id: "user_roles_#{role}" %>
+                <%= role.humanize %>
+              </label>
+            </div>
+          <% end %>
+          <%# Hidden field ensures an empty array is submitted when no roles are checked %>
+          <%= hidden_field_tag "user[roles][]", "" %>
+        </fieldset>
+      </div>
+    <% end %>
   </div>
 
   <div>

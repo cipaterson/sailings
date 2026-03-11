@@ -2,13 +2,25 @@
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 #
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-["cipaterson@proton.me", "zzyplza@gmail.com", "cipaterson@gmail.com"].each do |email_address|
-  User.find_or_create_by!(email_address: email_address) do |u|
-    u.password = "qqq"
+if ! User.find_by(email_address: "admin@example.com")
+  User.create!(email_address: "admin@example.com", password: "qqq", roles: [:office_staff])
+end
+if ! User.find_by(email_address: "crewing@ladynelson.org.au")
+  User.create!(email_address: "crewing@ladynelson.org.au", password: "qqq", roles: [:crewing_operator])
+end
+if ! User.find_by(email_address: "pleb@example.com")
+  User.create!(email_address: "pleb@example.com", password: "qqq", roles: [:member])
+end
+
+# require 'csv'
+if Sailing.count < 10
+  csv_text = File.read(Rails.root.join('lib', 'csvs', 'voyages.csv'))
+  csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+  csv.each do |row|
+    Sailing.create!(purpose: row['Purpose'].presence || "blank", departs_date: row['Date'], departs_time: row['Time'],
+      returns_date: row['Date Return'], returns_time: row['Time Return'], charterer: row['Charterer'],
+      ln_contact: row['LN Contact'], master: row['Master'], passenger_count: row['No. of Passengers'],
+      comments: row['Comments'],
+      status: "draft")
   end
 end

@@ -1,5 +1,5 @@
 class SailingsController < ApplicationController
-  before_action :set_sailing, only: %i[show edit update destroy]
+  before_action :set_sailing, only: %i[show edit update destroy manifest]
 
   def index
     @sailings = Sailing.left_joins(:sailing_participants).select("sailings.*, COUNT(sailing_participants.id) AS participants_count").group("sailings.id")
@@ -25,6 +25,15 @@ class SailingsController < ApplicationController
   end
 
   def edit
+  end
+
+  def manifest
+    participants = @sailing.sailing_participants.includes(:user).order("users.last_name, users.first_name")
+    pdf = SailingManifestPdf.new(@sailing, participants)
+    send_data pdf.render,
+              filename: "manifest-#{@sailing.id}.pdf",
+              type: "application/pdf",
+              disposition: "inline"
   end
 
   def update

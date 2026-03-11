@@ -1,12 +1,11 @@
 <h1>Sailings</h1>
 
-<%= link_to "New Sailing", new_sailing_path %>
+<%= link_to "New Sailing", new_sailing_path  if can?("office_staff") %>
 
 <table>
   <thead>
     <tr>
       <th>Purpose</th>
-      <th>Status</th>
       <th>Departs Date</th>
       <th>Departs Time</th>
       <th>Returns Date</th>
@@ -14,15 +13,20 @@
       <th>LN Contact</th>
       <th>Master</th>
       <th>Participants</th>
+      <% if can?("crewing_operator") %>
       <th></th>
+      <% end %>
       <th></th>
     </tr>
   </thead>
   <tbody>
     <% @sailings.each do |sailing| %>
       <tr>
-        <td><%= link_to sailing.purpose, sailing %></td>
-        <td><%= sailing.status %></td>
+          <% if can?("office_staff") %>
+          <td><%= link_to sailing.purpose, sailing_path(sailing) %></td>
+          <% else %>
+          <td><%= sailing.purpose %></td>
+          <% end %>
         <td><%= sailing.departs_at&.to_date %></td>
         <td><%= sailing.departs_at&.strftime("%H:%M") %></td>
         <td><%= sailing.returns_at&.to_date unless sailing.returns_at&.to_date == sailing.departs_at&.to_date %></td>
@@ -30,7 +34,9 @@
         <td><%= sailing.ln_contact %></td>
         <td><%= sailing.master %></td>
         <td><%= sailing.participants_count %></td>
-        <td><%= link_to "Manage Participants", sailing_sailing_participants_path(sailing) %></td>
+        <% if can?("crewing_operator") %>
+            <td><%= link_to "Manage Participants", sailing_sailing_participants_path(sailing) %></td>
+        <% end %>
         <td>
           <% my_participant = @my_participants[sailing.id] %>
           <% if my_participant %>
