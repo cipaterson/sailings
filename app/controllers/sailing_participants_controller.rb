@@ -7,11 +7,15 @@ class SailingParticipantsController < ApplicationController
   end
 
   def create
-    # BUG - this action is used by both the user and the admin to register for a sailing, no need
-    # for to merge the user_id if it's the admin.
-    @sailing_participant = @sailing.sailing_participants.build(sailing_participant_params.merge(user_id: Current.user.id))
+    resolved_params = sailing_participant_params
+    resolved_params = resolved_params.merge(user_id: Current.user.id) if resolved_params[:user_id].blank?
+    @sailing_participant = @sailing.sailing_participants.build(resolved_params)
     if @sailing_participant.save
-      redirect_to sailings_path, notice: "You have been registered for this sailing."
+      if resolved_params[:user_id] == Current.user.id
+        redirect_to sailings_path, notice: "You have been registered for this sailing."
+      else
+        redirect_to sailing_sailing_participants_path(@sailing), notice: "Crew member was successfully added."
+      end
     else
       @sailing_participants = @sailing.sailing_participants.includes(:user)
       render :index, status: :unprocessable_entity

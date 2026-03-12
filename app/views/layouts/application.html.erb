@@ -42,6 +42,9 @@
       <%= link_to "My Profile", user_path(Current.user), class: "button", style: "float: right;" %>
     </nav>
     <% end %>
+    <%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
+    <%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
+
     <%= yield %>
     <footer style="text-align: left;">
         <p>
