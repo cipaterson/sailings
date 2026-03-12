@@ -1,6 +1,6 @@
-<h1>Sailings</h1>
+<h1>Voyages</h1>
 
-<%= link_to "New Sailing", new_sailing_path  if can?("office_staff") %>
+<%= link_to "New Voyage", new_sailing_path  if can?("office_staff") %>
 
 <table>
   <thead>
@@ -12,7 +12,7 @@
       <th>Returns Time</th>
       <th>LN Contact</th>
       <th>Master</th>
-      <th>Participants</th>
+      <th>Crew</th>
       <% if can?("crewing_operator") %>
       <th></th>
       <% end %>
@@ -35,7 +35,7 @@
         <td><%= sailing.master %></td>
         <td><%= sailing.participants_count %></td>
         <% if can?("crewing_operator") %>
-            <td><%= link_to "Manage Participants", sailing_sailing_participants_path(sailing) %></td>
+            <td><%= link_to "Manage Crew", sailing_sailing_participants_path(sailing) %></td>
         <% end %>
         <td>
           <% my_participant = @my_participants[sailing.id] %>

@@ -1,4 +1,4 @@
-<h1>Participants for <%= @sailing.purpose %></h1>
+<h1>Crew for <%= @sailing.purpose %></h1>
 
 <%= link_to "Download Manifest (PDF)", manifest_sailing_path(@sailing), target: "_blank" %>
 
@@ -41,7 +41,7 @@
   </div>
 <% end %>
 
-<h2>Add Participant</h2>
+<h2>Add Crew</h2>
 
 <% available_users = User.where.not(id: @sailing.sailing_participants.select(:user_id)) %>
 <% if available_users.any? %>
@@ -55,8 +55,8 @@
     <% end %>
 
     <div>
-      <%= f.label :user_id, "User" %>
-      <%= f.select :user_id, available_users.map { |u| [u.email_address, u.id] }, { include_blank: "Select user" } %>
+      <%= f.label :user_id, "Member" %>
+      <%= f.select :user_id, available_users.map { |u| [u.email_address, u.id] }, { include_blank: "Select crew member" } %>
     </div>
 
     <div>
@@ -65,11 +65,11 @@
     </div>
 
     <div>
-      <%= f.submit "Add Participant" %>
+      <%= f.submit "Add Crew Member" %>
     </div>
   <% end %>
 <% else %>
   <p>All users are already participating in this sailing.</p>
 <% end %>
 
-<%= link_to "Back to Sailings", sailings_path %>
+<%= link_to "Back to Voyages", sailings_path %>
