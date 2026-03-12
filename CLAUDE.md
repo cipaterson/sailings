@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-`claude_sailings` is a Rails 8.1 application using SQLite, Hotwire (Turbo + Stimulus), importmap, Propshaft, Solid Queue, Solid Cache, and Solid Cable. Ruby version: 3.4.2.
+`sailings` is a Rails 8.1 application using SQLite, Hotwire (Turbo + Stimulus), importmap, Propshaft, Solid Queue, Solid Cache, and Solid Cable. Ruby version: 3.4.2.
 
 ## Common Commands
 
