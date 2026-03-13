@@ -3,6 +3,11 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
+  # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
+  # This seems cause fly deploy to fail because the deploy uses a fake master key?
+  config.require_master_key = false
+
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
@@ -53,23 +58,21 @@ Rails.application.configure do
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }
 
+  # Set host to be used by links generated in mailer templates.
+  config.action_mailer.default_url_options = { host: "sailings.zzyplza.com" }
+
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
-
-  # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "sailings.fly.dev" }
-
-  # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
+  # Specify outgoing SMTP server.
   config.action_mailer.smtp_settings = {
     user_name: Rails.application.credentials.dig(:smtp, :user_name),
-    password: Rails.application.credentials.dig(:smtp, :password),
+    password:  Rails.application.credentials.dig(:smtp, :password),
     address: "smtp-relay.brevo.com",
     port: 587,
     authentication: :plain
-    ##enable_starttls_auto: true
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

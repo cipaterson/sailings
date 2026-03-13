@@ -1,3 +1,5 @@
+# This is kamal's deploy.yml configuration file.
+#
 # Name of your application. Used to uniquely configure containers.
 service: sailings
 

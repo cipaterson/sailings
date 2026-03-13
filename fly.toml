@@ -12,6 +12,7 @@ console_command = '/rails/bin/rails console'
 [env]
   DATABASE_URL = 'sqlite3:///data/production.sqlite3'
   PORT = '8080'
+  SOLID_QUEUE_IN_PUMA = 'true'
 
 [processes]
   app = "./bin/rails server"
@@ -23,6 +24,7 @@ console_command = '/rails/bin/rails console'
   auto_extend_size_increment = '1GB'
   auto_extend_size_limit = '10GB'
 
+  # Minimum number of machines to keep running at all times.
 [http_service]
   internal_port = 8080
   force_https = true
