@@ -1,69 +1,38 @@
 <h1>Voyage</h1>
 
-<dl>
-  <dt>Purpose</dt>
-  <dd><%= @sailing.purpose %></dd>
+<table>
+  <tbody>
+    <tr><th>Purpose</th><td><%= @sailing.purpose %></td></tr>
+    <tr><th>Status</th><td><%= @sailing.status %></td></tr>
+    <tr><th>Departs At</th><td><%= @sailing.departs_date %> <%= @sailing.departs_time %></td></tr>
+    <tr><th>Returns At</th><td><%= @sailing.returns_date %> <%= @sailing.returns_time %></td></tr>
+    <tr><th>LN Contact</th><td><%= @sailing.ln_contact %></td></tr>
+    <tr><th>Master</th><td><%= @sailing.master %></td></tr>
+    <tr><th>Engineer</th><td><%= @sailing.engineer %></td></tr>
+    <tr><th>Passenger Count</th><td><%= @sailing.passenger_count %></td></tr>
+    <tr><th>Charterer</th><td><%= @sailing.charterer %></td></tr>
+    <tr><th>Comments</th><td><%= @sailing.comments %></td></tr>
+    <tr><th>Additional Details</th><td><%= @sailing.additional_details %></td></tr>
+  </tbody>
+</table>
 
-  <dt>Status</dt>
-  <dd><%= @sailing.status %></dd>
+<% if @sailing.charter_email_address.present? %>
+<h2>Charter Contact</h2>
 
-  <dt>Departs At</dt>
-  <dd><%= @sailing.departs_date %> <%= @sailing.departs_time %></dd>
-
-  <dt>Returns At</dt>
-  <dd><%= @sailing.returns_date %> <%= @sailing.returns_time %></dd>
-
-  <dt>LN Contact</dt>
-  <dd><%= @sailing.ln_contact %></dd>
-
-  <dt>Master</dt>
-  <dd><%= @sailing.master %></dd>
-
-  <dt>Comments</dt>
-  <dd><%= @sailing.comments %></dd>
-
-  <dt>Charterer</dt>
-  <dd><%= @sailing.charterer %></dd>
-
-  <dt>Passenger Count</dt>
-  <dd><%= @sailing.passenger_count %></dd>
-
-  <dt>Engineer</dt>
-  <dd><%= @sailing.engineer %></dd>
-
-  <dt>Additional Details</dt>
-  <dd><%= @sailing.additional_details %></dd>
-
-  <dt>Charter Contact</dt>
-  <dd></dd>
-
-  <dt>Full Name</dt>
-  <dd><%= @sailing.charter_full_name %></dd>
-
-  <dt>Email</dt>
-  <dd><%= @sailing.charter_email_address %></dd>
-
-  <dt>Work Phone</dt>
-  <dd><%= @sailing.charter_work_phone %></dd>
-
-  <dt>Mobile</dt>
-  <dd><%= @sailing.charter_mobile %></dd>
-
-  <dt>Address</dt>
-  <dd><%= @sailing.charter_address1 %></dd>
-
-  <dt>Address 2</dt>
-  <dd><%= @sailing.charter_address2 %></dd>
-
-  <dt>City</dt>
-  <dd><%= @sailing.charter_city %></dd>
-
-  <dt>State</dt>
-  <dd><%= @sailing.charter_state %></dd>
-
-  <dt>Postcode</dt>
-  <dd><%= @sailing.charter_postcode %></dd>
-</dl>
+<table>
+  <tbody>
+    <tr><th>Full Name</th><td><%= @sailing.charter_full_name %></td></tr>
+    <tr><th>Email</th><td><%= @sailing.charter_email_address %></td></tr>
+    <tr><th>Work Phone</th><td><%= @sailing.charter_work_phone %></td></tr>
+    <tr><th>Mobile</th><td><%= @sailing.charter_mobile %></td></tr>
+    <tr><th>Address</th><td><%= @sailing.charter_address1 %></td></tr>
+    <tr><th>Address 2</th><td><%= @sailing.charter_address2 %></td></tr>
+    <tr><th>City</th><td><%= @sailing.charter_city %></td></tr>
+    <tr><th>State</th><td><%= @sailing.charter_state %></td></tr>
+    <tr><th>Postcode</th><td><%= @sailing.charter_postcode %></td></tr>
+  </tbody>
+</table>
+<% end %>
 
 <%= link_to "Edit", edit_sailing_path(@sailing) %> |
 <%= link_to "Back", sailings_path %>

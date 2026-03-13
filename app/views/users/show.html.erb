@@ -1,36 +1,31 @@
 <h1><%= @user.full_name %></h1>
 
-<dl>
-  <dt>Email</dt>
-  <dd><%= @user.email_address %></dd>
-
-  <dt>First Name</dt>
-  <dd><%= @user.first_name %></dd>
-
-  <dt>Last Name</dt>
-  <dd><%= @user.last_name %></dd>
-
-  <dt>Mobile Phone</dt>
-  <dd><%= @user.mobile_phone %></dd>
-
-  <dt>Home Phone</dt>
-  <dd><%= @user.home_phone %></dd>
-
-  <dt>Birth Date</dt>
-  <dd><%= @user.birth_date %></dd>
-
-  <dt>Occupation</dt>
-  <dd><%= @user.occupation %></dd>
-
-  <dt>Membership Type</dt>
-  <dd><%= @user.membership_type %></dd>
-
-  <dt>Class</dt>
-  <dd><%= @user.sailing_class %></dd>
-
-  <dt>SIT Date</dt>
-  <dd><%= @user.sit_date %></dd>
-</dl>
+<table>
+  <tbody>
+    <tr><th>Email</th><td><%= @user.email_address %></td></tr>
+    <tr><th>First Name</th><td><%= @user.first_name %></td></tr>
+    <tr><th>Last Name</th><td><%= @user.last_name %></td></tr>
+    <tr><th>Mobile Phone</th><td><%= @user.mobile_phone %></td></tr>
+    <tr><th>Home Phone</th><td><%= @user.home_phone %></td></tr>
+    <tr><th>Birth Date</th><td><%= @user.birth_date %></td></tr>
+    <tr><th>Occupation</th><td><%= @user.occupation %></td></tr>
+    <tr><th>Membership Type</th><td><%= @user.membership_type %></td></tr>
+    <tr><th>Class</th><td><%= @user.sailing_class %></td></tr>
+    <tr><th>SIT Date</th><td><%= @user.sit_date %></td></tr>
+    <tr><th>Roles</th><td><%= @user.roles.map(&:humanize).join(", ") %></td></tr>
+    <tr><th>Knots</th><td><%= @user.knots_on %></td></tr>
+    <tr><th>Marine Safety Refresher</th><td><%= @user.marine_safety_refresher_on %></td></tr>
+    <tr><th>ESS</th><td><%= @user.ess_qualification %></td></tr>
+    <tr><th>ESS Issued</th><td><%= @user.ess_issued_on %></td></tr>
+    <tr><th>ESS Expires</th><td><%= @user.ess_expires_on %></td></tr>
+    <tr><th>MED</th><td><%= @user.med_qualification %></td></tr>
+    <tr><th>MED Issued</th><td><%= @user.med_issued_on %></td></tr>
+    <tr><th>MED Expires</th><td><%= @user.med_expires_on %></td></tr>
+    <tr><th>WWVP</th><td><%= @user.wwvp_qualification %></td></tr>
+    <tr><th>WWVP Issued</th><td><%= @user.wwvp_issued_on %></td></tr>
+    <tr><th>WWVP Expires</th><td><%= @user.wwvp_expires_on %></td></tr>
+  </tbody>
+</table>
 
 <%= link_to "Edit", edit_user_path(@user) %>
 <%= link_to "Back", users_path %>
