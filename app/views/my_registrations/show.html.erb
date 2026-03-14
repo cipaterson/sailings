@@ -1,26 +1,23 @@
 <h1>My Registrations</h1>
 
 <% if @sailing_participants.any? %>
+  <div class="wide-table">
   <table>
     <thead>
       <tr>
-        <th>Purpose</th>
-        <th>Departs Date</th>
-        <th>Departs Time</th>
-        <th>Returns Date</th>
-        <th>Returns Time</th>
-        <th>Status</th>
+        <th>Voyage</th>
+        <th>Voyage Dates</th>
+        <th>Created</th>
+        <th>Registration</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
       <% @sailing_participants.each do |participant| %>
         <tr>
-          <td><%= participant.sailing.purpose %></td>
-          <td><%= participant.sailing.departs_date %></td>
-          <td><%= participant.sailing.departs_time %></td>
-          <td><%= participant.sailing.returns_date %></td>
-          <td><%= participant.sailing.returns_time %></td>
+          <td><%= participant.sailing.charterer %></td>
+          <td><%= participant.sailing.voyage_dates %></td>
+          <td><%= participant.created_at.in_time_zone.strftime("%d %b %Y - %H:%M") %></td>
           <td><%= participant.status %></td>
           <td>
             <%= button_to "Cancel", sailing_participant_path(participant),
@@ -31,6 +28,7 @@
       <% end %>
     </tbody>
   </table>
+  </div>
 <% else %>
   <p>You have no registrations.</p>
 <% end %>

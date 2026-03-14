@@ -24,6 +24,17 @@ class Sailing < ApplicationRecord
   def departs_time = departs_at&.strftime("%H:%M")
   def returns_date = returns_at&.to_date
   def returns_time = returns_at&.strftime("%H:%M")
+  def voyage_dates
+    return "" unless departs_at
+
+    result = "#{departs_date.strftime("%d %b %Y")} - #{departs_time}"
+    if returns_at
+      result += " to "
+      result += "#{returns_date.strftime("%d %b %Y")} - " if returns_date != departs_date
+      result += returns_time
+    end
+    result
+  end
 
   before_validation :combine_datetime_fields
 

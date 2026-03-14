@@ -2,19 +2,32 @@
 
 <%= link_to "New Voyage", new_sailing_path  if can?("office_staff") %>
 
+<%= form_with url: sailings_path, method: :get, local: true do |f| %>
+  <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+    <label>From: <%= date_field_tag :from_date, @from_date %></label>
+    <label>To: <%= date_field_tag :to_date, @to_date %></label>
+    <%= f.submit "Apply" %>
+    <%= link_to "Reset", sailings_path %>
+  </div>
+<% end %>
+
+<div class="wide-table">
 <table>
   <thead>
     <tr>
+      <th>Day</th>
+      <th>Date</th>
       <th>Purpose</th>
-      <th>Departs Date</th>
-      <th>Departs Time</th>
-      <th>Returns Date</th>
-      <th>Returns Time</th>
+      <th>Charterer</th>
+      <th>Time</th>
+      <th>Date Return</th>
+      <th>Time Return</th>
       <th>LN Contact</th>
       <th>Master</th>
       <th>Crew</th>
+      <th>Comments</th>
       <% if can?("crewing_operator") %>
-      <th></th>
+        <th></th>
       <% end %>
       <th></th>
     </tr>
@@ -22,20 +35,25 @@
   <tbody>
     <% @sailings.each do |sailing| %>
       <tr>
-          <% if can?("office_staff") %>
-          <td><%= link_to sailing.purpose, sailing_path(sailing) %></td>
-          <% else %>
-          <td><%= sailing.purpose %></td>
-          <% end %>
+        <td><%= sailing.departs_at&.strftime("%a") %></td>
         <td><%= sailing.departs_at&.to_date %></td>
+        <td>
+          <% if can?("office_staff") %>
+            <%= link_to sailing.purpose, sailing_path(sailing) %>
+          <% else %>
+            <%= sailing.purpose %>
+          <% end %>
+        </td>
+        <td><%= sailing.charterer %></td>
         <td><%= sailing.departs_at&.strftime("%H:%M") %></td>
         <td><%= sailing.returns_at&.to_date unless sailing.returns_at&.to_date == sailing.departs_at&.to_date %></td>
         <td><%= sailing.returns_at&.strftime("%H:%M") %></td>
         <td><%= sailing.ln_contact %></td>
         <td><%= sailing.master %></td>
         <td><%= sailing.participants_count %></td>
+        <td><%= sailing.comments %></td>
         <% if can?("crewing_operator") %>
-            <td><%= link_to "Manage Crew", sailing_sailing_participants_path(sailing) %></td>
+          <td><%= link_to "Manage Crew", sailing_sailing_participants_path(sailing) %></td>
         <% end %>
         <td>
           <% my_participant = @my_participants[sailing.id] %>
@@ -50,3 +68,6 @@
     <% end %>
   </tbody>
 </table>
+</div>
+
+<%= render "application/pagination", current_page: @current_page, total_pages: @total_pages, from_date: @from_date, to_date: @to_date %>

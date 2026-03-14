@@ -9,8 +9,10 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
-body,
-body > * {
-    grid-column: 1 / -1;
-    padding-left: 5%;
+.wide-table {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-left: 8px;
+  box-sizing: border-box;
+  overflow-x: auto;
 }

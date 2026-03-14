@@ -1,8 +1,30 @@
 class SailingsController < ApplicationController
   before_action :set_sailing, only: %i[show edit update destroy manifest]
 
+  PER_PAGE = 15
+
   def index
-    @sailings = Sailing.left_joins(:sailing_participants).select("sailings.*, COUNT(sailing_participants.id) AS participants_count").group("sailings.id")
+    @from_date = if params.key?(:from_date)
+                   Date.parse(params[:from_date]) rescue nil
+                 else
+                   Date.today
+                 end
+    @to_date = Date.parse(params[:to_date]) rescue nil if params[:to_date].present?
+
+    base = Sailing.all
+    base = base.where("departs_at >= ?", @from_date.beginning_of_day) if @from_date
+    base = base.where("departs_at <= ?", @to_date.end_of_day) if @to_date
+
+    @current_page = (params[:page] || 1).to_i.clamp(1, Float::INFINITY)
+    @total_pages  = [(base.count.to_f / PER_PAGE).ceil, 1].max
+    @current_page = @current_page.clamp(1, @total_pages)
+
+    @sailings = base.left_joins(:sailing_participants)
+                    .select("sailings.*, COUNT(sailing_participants.id) AS participants_count")
+                    .group("sailings.id")
+                    .limit(PER_PAGE)
+                    .offset((@current_page - 1) * PER_PAGE)
+
     @my_participants = Current.user.sailing_participants
                              .where(sailing_id: @sailings.map(&:id))
                              .index_by(&:sailing_id)
