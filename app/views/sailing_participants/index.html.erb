@@ -37,7 +37,7 @@
 
   <div>
     <%= f.submit "Save All" %>
-    <%= link_to "Cancel", sailing_sailing_participants_path(@sailing) %>
+    <%= link_to "Cancel", sailings_path(@sailing) %>
   </div>
 <% end %>
 
@@ -59,10 +59,7 @@
       <%= f.select :user_id, available_users.map { |u| [u.email_address, u.id] }, { include_blank: "Select crew member" } %>
     </div>
 
-    <div>
-      <%= f.label :status %>
-      <%= f.select :status, SailingParticipant::STATUSES, { include_blank: "Select status" } %>
-    </div>
+    <%= f.hidden_field :status, value: "Accepted" %>
 
     <div>
       <%= f.submit "Add Crew Member" %>
