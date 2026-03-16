@@ -3,7 +3,15 @@
 one:
   email_address: one@example.com
   password_digest: <%= password_digest %>
+  first_name: Alice
+  last_name: Zebra
+  membership_type: Individual
+  roles_mask: 2
 
 two:
   email_address: two@example.com
   password_digest: <%= password_digest %>
+  first_name: Bob
+  last_name: Apple
+  membership_type: Life
+  roles_mask: 0

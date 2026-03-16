@@ -5,10 +5,10 @@
 <table>
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Email</th>
+      <th><%= sort_link "Name", "last_name" %></th>
+      <th><%= sort_link "Email", "email_address" %></th>
       <th>Mobile Phone</th>
-      <th>Membership Type</th>
+      <th><%= sort_link "Membership Type", "membership_type" %></th>
       <th>Roles</th>
     </tr>
   </thead>
