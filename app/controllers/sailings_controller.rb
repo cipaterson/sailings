@@ -1,5 +1,6 @@
 class SailingsController < ApplicationController
   before_action :set_sailing, only: %i[show edit update destroy manifest]
+  before_action :require_office_staff_or_crewing_operator!, only: %i[new create edit update destroy manifest]
 
   PER_PAGE = 15
 

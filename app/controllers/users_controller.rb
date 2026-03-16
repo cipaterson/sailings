@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_user, only: %i[show edit update destroy]
+  before_action :require_office_staff!, only: %i[index new create destroy]
+  before_action :require_self_or_office_staff!, only: %i[show edit update]
 
   def index
     @users = User.all
@@ -43,6 +45,12 @@ class UsersController < ApplicationController
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def require_self_or_office_staff!
+    unless @user == Current.user || Current.user&.has_role?("office_staff")
+      redirect_to root_path, alert: "You are not authorized to perform this action."
+    end
   end
 
   def user_params

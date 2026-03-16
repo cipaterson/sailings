@@ -1,5 +1,6 @@
 class SailingParticipantsController < ApplicationController
   before_action :set_sailing, only: [:index, :create, :bulk_update]
+  before_action :require_office_staff_or_crewing_operator!, only: [:index, :bulk_update]
 
   def index
     @sailing_participants = @sailing.sailing_participants.includes(:user)
@@ -8,6 +9,11 @@ class SailingParticipantsController < ApplicationController
 
   def create
     resolved_params = sailing_participant_params
+    adding_other_user = resolved_params[:user_id].present? && resolved_params[:user_id].to_s != Current.user.id.to_s
+    if adding_other_user && !Current.user&.has_role?("office_staff") && !Current.user&.has_role?("crewing_operator")
+      redirect_to root_path, alert: "You are not authorized to perform this action."
+      return
+    end
     resolved_params = resolved_params.merge(user_id: Current.user.id) if resolved_params[:user_id].blank?
     @sailing_participant = @sailing.sailing_participants.build(resolved_params)
     if @sailing_participant.save
