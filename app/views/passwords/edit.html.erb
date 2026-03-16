@@ -2,8 +2,24 @@
 
 <%# tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
 
-<%= form_with url: password_path(params[:token]), method: :put do |form| %>
-  <%= form.password_field :password, required: true, autocomplete: "new-password", placeholder: "Enter new password", maxlength: 72 %><br>
-  <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", placeholder: "Repeat new password", maxlength: 72 %><br>
-  <%= form.submit "Save" %>
+<%= form_with url: password_path(params[:token]), method: :put, data: { controller: "password-strength" } do |form| %>
+  <%= form.password_field :password, required: true, autocomplete: "new-password",
+        placeholder: "Enter new password", maxlength: 72,
+        data: { password_strength_target: "password", action: "input->password-strength#check" } %><br>
+
+  <ul class="password-checklist">
+    <li data-rule="length"    data-password-strength-target="rule" class="failing">✗ At least 8 characters</li>
+    <li data-rule="uppercase" data-password-strength-target="rule" class="failing">✗ At least one uppercase letter</li>
+    <li data-rule="lowercase" data-password-strength-target="rule" class="failing">✗ At least one lowercase letter</li>
+    <li data-rule="digit"     data-password-strength-target="rule" class="failing">✗ At least one number</li>
+    <li data-rule="special"   data-password-strength-target="rule" class="failing">✗ At least one special character</li>
+  </ul>
+
+  <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password",
+        placeholder: "Repeat new password", maxlength: 72,
+        data: { password_strength_target: "confirmation", action: "input->password-strength#check" } %><br>
+
+  <span data-password-strength-target="matchMessage" class="password-match-message"></span><br>
+
+  <%= form.submit "Save", data: { password_strength_target: "submit" }, disabled: true %>
 <% end %>

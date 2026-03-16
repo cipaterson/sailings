@@ -9,6 +9,27 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
+.password-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 12px;
+  font-size: 0.875rem;
+}
+
+.password-checklist li.passing,
+.password-match-message.passing {
+  color: green;
+}
+
+.password-checklist li.failing,
+.password-match-message.failing {
+  color: red;
+}
+
+.password-match-message {
+  font-size: 0.875rem;
+}
+
 .wide-table {
   width: 100vw;
   margin-left: calc(50% - 50vw);

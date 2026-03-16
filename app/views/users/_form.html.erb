@@ -23,7 +23,8 @@
   }
 </style>
 
-<%= form_with model: user do |f| %>
+<%= form_with model: user,
+      data: (show_password ? { controller: "password-strength", "password-strength-optional-value": true } : {}) do |f| %>
   <% if user.errors.any? %>
     <div>
       <ul>
@@ -70,11 +71,21 @@
         <% if show_password %>
           <div>
             <%= f.label :password %>
-            <%= f.password_field :password %>
+            <%= f.password_field :password, autocomplete: "new-password", maxlength: 72,
+                  data: { password_strength_target: "password", action: "input->password-strength#check" } %>
+            <ul class="password-checklist">
+              <li data-rule="length"    data-password-strength-target="rule">✗ At least 8 characters</li>
+              <li data-rule="uppercase" data-password-strength-target="rule">✗ At least one uppercase letter</li>
+              <li data-rule="lowercase" data-password-strength-target="rule">✗ At least one lowercase letter</li>
+              <li data-rule="digit"     data-password-strength-target="rule">✗ At least one number</li>
+              <li data-rule="special"   data-password-strength-target="rule">✗ At least one special character</li>
+            </ul>
           </div>
           <div>
             <%= f.label :password_confirmation %>
-            <%= f.password_field :password_confirmation %>
+            <%= f.password_field :password_confirmation, autocomplete: "new-password", maxlength: 72,
+                  data: { password_strength_target: "confirmation", action: "input->password-strength#check" } %>
+            <span data-password-strength-target="matchMessage" class="password-match-message"></span>
           </div>
         <% end %>
 
@@ -219,6 +230,6 @@
   </div>
 
   <div>
-    <%= f.submit %>
+    <%= f.submit data: (show_password ? { password_strength_target: "submit" } : {}) %>
   </div>
 <% end %>
