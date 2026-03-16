@@ -15,11 +15,4 @@ Rails.application.configure do
     # Specify URI for violation reports
     # policy.report_uri "/csp-violation-report-endpoint"
   end
-
-  # Generate session nonces for permitted importmap and inline scripts.
-  config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
-  config.content_security_policy_nonce_directives = %w(script-src)
-
-  # Automatically add `nonce` to `javascript_tag` and `javascript_include_tag`.
-  config.content_security_policy_nonce_auto = true
 end

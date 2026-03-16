@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for sailings on 2026-03-12T14:06:00+11:00
+# fly.toml app configuration file generated for sailings-morning-shadow-8718 on 2026-03-16T13:18:00+11:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'sailings'
+app = 'sailings-morning-shadow-8718'
 primary_region = 'syd'
 console_command = '/rails/bin/rails console'
 
@@ -15,16 +15,12 @@ console_command = '/rails/bin/rails console'
   SOLID_QUEUE_IN_PUMA = 'true'
 
 [processes]
-  app = "./bin/rails server"
+  app = './bin/rails server'
 
 [[mounts]]
   source = 'data'
   destination = '/data'
-  auto_extend_size_threshold = 80
-  auto_extend_size_increment = '1GB'
-  auto_extend_size_limit = '10GB'
 
-  # Minimum number of machines to keep running at all times.
 [http_service]
   internal_port = 8080
   force_https = true
@@ -32,6 +28,18 @@ console_command = '/rails/bin/rails console'
   auto_start_machines = true
   min_machines_running = 1
   processes = ['app']
+
+  [[http_service.checks]]
+    interval = '10s'
+    timeout = '2s'
+    grace_period = '5s'
+    method = 'GET'
+    path = '/up'
+    protocol = 'http'
+    tls_skip_verify = false
+
+    [http_service.checks.headers]
+      X-Forwarded-Proto = 'https'
 
   [[http_service.checks]]
     interval = '10s'
