@@ -22,7 +22,7 @@
           <td>
             <%= button_to "Cancel", sailing_participant_path(participant),
                 method: :delete,
-                data: { turbo_confirm: "Are you sure you want to cancel this registration?" } %>
+                data: { turbo_confirm: "Are you sure you want to cancel this registration?", confirm: "Are you sure you want to cancel this registration?" } %>
           </td>
         </tr>
       <% end %>

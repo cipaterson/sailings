@@ -11,8 +11,12 @@ Rails.application.configure do
     policy.img_src     :self, :data
     policy.object_src  :none
     policy.script_src  :self, :https
-    policy.style_src   :self, :unsafe_inline # unsafe_inline needed for Turbo's inline styles
+    policy.style_src   :self, :unsafe_inline, "https://cdn.simplecss.org" # unsafe_inline needed for Turbo's inline styles
     # Specify URI for violation reports
     # policy.report_uri "/csp-violation-report-endpoint"
   end
+
+  # Nonce allows the importmap inline script tag (and therefore Turbo/Stimulus) through CSP
+  config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
+  config.content_security_policy_nonce_directives = %w[script-src]
 end

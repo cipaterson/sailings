@@ -3,16 +3,16 @@
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 #
 if ! User.find_by(email_address: "admin@example.com")
-  User.create!(email_address: "admin@example.com", password: "qqq", roles: [:office_staff, :crewing_operator])
+  User.create!(email_address: "admin@example.com", password: "Password123!", roles: [:office_staff, :crewing_operator])
 end
 if ! User.find_by(email_address: "office@example.com")
-  User.create!(email_address: "office@example.com", password: "qqq", roles: [:office_staff])
+  User.create!(email_address: "office@example.com", password: "Password123!", roles: [:office_staff])
 end
 if ! User.find_by(email_address: "crewing@ladynelson.org.au")
-  User.create!(email_address: "crewing@ladynelson.org.au", password: "qqq", roles: [:crewing_operator])
+  User.create!(email_address: "crewing@ladynelson.org.au", password: "Password123!", roles: [:crewing_operator])
 end
 if ! User.find_by(email_address: "pleb@example.com")
-  User.create!(email_address: "pleb@example.com", password: "qqq", roles: [:member])
+  User.create!(email_address: "pleb@example.com", password: "Password123!", roles: [:member])
 end
 
 # require 'csv'
