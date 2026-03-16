@@ -3,8 +3,22 @@ class UsersController < ApplicationController
   before_action :require_office_staff!, only: %i[index new create destroy]
   before_action :require_self_or_office_staff!, only: %i[show edit update]
 
+  SORTABLE_COLUMNS = %w[last_name email_address membership_type].freeze
+
   def index
-    @users = User.all
+    @sort = SORTABLE_COLUMNS.include?(params[:sort]) ? params[:sort] : "last_name"
+    @direction = params[:direction] == "desc" ? "desc" : "asc"
+
+    order_sql = case @sort
+    when "last_name"
+      "last_name #{@direction}, first_name #{@direction}"
+    when "membership_type"
+      "membership_type #{@direction}, last_name asc, first_name asc"
+    else
+      "#{@sort} #{@direction}"
+    end
+
+    @users = User.order(Arel.sql(order_sql))
   end
 
   def show
