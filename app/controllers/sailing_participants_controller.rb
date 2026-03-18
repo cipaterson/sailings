@@ -1,6 +1,6 @@
 class SailingParticipantsController < ApplicationController
-  before_action :set_sailing, only: [:index, :create, :bulk_update]
-  before_action :require_office_staff_or_crewing_operator!, only: [:index, :bulk_update]
+  before_action :set_sailing, only: [ :index, :create, :bulk_update ]
+  before_action :require_office_staff_or_crewing_operator!, only: [ :index, :bulk_update ]
 
   def index
     @sailing_participants = @sailing.sailing_participants.includes(:user)

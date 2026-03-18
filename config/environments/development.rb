@@ -49,7 +49,7 @@ Rails.application.configure do
     address: "smtp-relay.brevo.com",
     port: 587,
     authentication: :plain
-    ##enable_starttls_auto: true
+    # #enable_starttls_auto: true
   }
 
   # Print deprecation notices to the Rails logger.

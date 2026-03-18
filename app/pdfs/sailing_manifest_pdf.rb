@@ -34,10 +34,10 @@ class SailingManifestPdf
       [ "Purpose",   @sailing.purpose,                   "Master",   @sailing.master ],
       [ "Departs",   format_datetimeday(@sailing.departs_at), "Returns",  format_datetime(@sailing.returns_at) ],
       [ "Charterer", @sailing.charterer,                  "LN Contact", @sailing.ln_contact ],
-      [          "Passengers", @sailing.passenger_count ],
+      [          "Passengers", @sailing.passenger_count ]
     ]
 
-    table(rows, width: bounds.width, cell_style: { border_width: 0, padding: [2, 6] }) do
+    table(rows, width: bounds.width, cell_style: { border_width: 0, padding: [ 2, 6 ] }) do
       column(0).font_style = :bold
       column(0).width = 70
       column(2).font_style = :bold
@@ -75,7 +75,7 @@ class SailingManifestPdf
       end
 
       cells.size    = 8
-      cells.padding = [3, 4]
+      cells.padding = [ 3, 4 ]
       cells.border_width = 0.5
       cells.border_color = "CCCCCC"
     end

@@ -7,9 +7,9 @@ class SailingsController < ApplicationController
   def index
     @from_date = if params.key?(:from_date)
                    Date.parse(params[:from_date]) rescue nil
-                 else
+    else
                    Date.today
-                 end
+    end
     @to_date = Date.parse(params[:to_date]) rescue nil if params[:to_date].present?
 
     base = Sailing.all
@@ -17,7 +17,7 @@ class SailingsController < ApplicationController
     base = base.where("departs_at <= ?", @to_date.end_of_day) if @to_date
 
     @current_page = (params[:page] || 1).to_i.clamp(1, Float::INFINITY)
-    @total_pages  = [(base.count.to_f / PER_PAGE).ceil, 1].max
+    @total_pages  = [ (base.count.to_f / PER_PAGE).ceil, 1 ].max
     @current_page = @current_page.clamp(1, @total_pages)
 
     @sailings = base.left_joins(:sailing_participants)

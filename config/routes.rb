@@ -5,14 +5,14 @@ Rails.application.routes.draw do
     member do
       get :manifest
     end
-    resources :sailing_participants, only: [:index, :create] do
+    resources :sailing_participants, only: [ :index, :create ] do
       collection do
         patch :bulk_update
       end
     end
   end
-  resources :sailing_participants, only: [:destroy]
-  resource :my_registrations, only: [:show]
+  resources :sailing_participants, only: [ :destroy ]
+  resource :my_registrations, only: [ :show ]
   resources :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
