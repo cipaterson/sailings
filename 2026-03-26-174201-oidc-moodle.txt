@@ -1,0 +1,560 @@
+ ▐▛███▜▌   Claude Code v2.1.84
+▝▜█████▛▘  Sonnet 4.6 · Claude Pro
+  ▘▘ ▝▝    ~/sources/sailings
+
+❯ Continue this work                                                            
+# Project: Rails + Moodle Shared Authentication (SSO)                           
+                                                                                
+## Goal                                                                         
+Enable single sign-on between a bespoke Rails app and Moodle, using the Rails   
+app as the OIDC identity provider. No additional auth infrastructure (no        
+Keycloak, Authentik, etc.).                                                     
+                                                                                
+## Chosen Approach                                                              
+**Rails acts as the OIDC provider** via `doorkeeper` +                          
+`doorkeeper-openid_connect` gems. Moodle connects to Rails using the            
+`auth_oidc` Moodle plugin.                                                      
+                                                                                
+## Architecture                                                                 
+```                                                                             
+User → Moodle → redirects to Rails (/oauth/authorize)                           
+             → User logs in to Rails                                            
+             → Rails issues token, redirects back to Moodle                     
+             → Moodle validates token, logs user in                             
+```                                                                             
+                                                                                
+## Key Implementation Steps                                                     
+                                                                                
+### Rails Side                                                                  
+1. Add gems: `doorkeeper`, `doorkeeper-openid_connect`                          
+2. Run generators and migrate:                                                  
+   ```bash                                                                      
+   rails generate doorkeeper:install                                            
+   rails generate doorkeeper:migration                                          
+   rails generate doorkeeper:openid_connect:install                             
+   rails db:migrate                                                             
+   ```                                                                          
+3. Configure `config/initializers/doorkeeper.rb`                                
+   - `resource_owner_authenticator` returns `current_user` or redirects to      
+login                                                                           
+   - Grant flow: `authorization_code`                                           
+4. Configure `config/initializers/doorkeeper_openid_connect.rb`                 
+   - Set issuer to Rails app URL                                                
+   - RSA signing key stored in Rails credentials under `oidc.signing_key`       
+   - Expose claims: `email`, `name`                                             
+5. Generate RSA signing key: `openssl genrsa -out private.pem 2048`, store in   
+credentials                                                                     
+6. Register Moodle as a Doorkeeper client (in console or seed):                 
+   ```ruby                                                                      
+   Doorkeeper::Application.create!(                                             
+     name: "Moodle",                                                            
+     redirect_uri: "https://yourmoodle.com/admin/oauth2callback.php",           
+     scopes: "openid email profile",                                            
+     confidential: true                                                         
+   )                                                                            
+   ```                                                                          
+7. Mount routes in `config/routes.rb`:                                          
+   ```ruby                                                                      
+   use_doorkeeper { skip_controllers :applications, :authorized_applications }  
+   use_doorkeeper_openid_connect                                                
+   ```                                                                          
+                                                                                
+### Moodle Side                                                                 
+- Install `auth_oidc` plugin                                                    
+- Configure with Rails endpoints:                                               
+  - Discovery URL: `https://yourrailsapp.com/.well-known/openid-configuration`  
+  - Or manually set authorize/token/userinfo/jwks endpoints                     
+- Enter `client_id` and `client_secret` from Doorkeeper application record      
+- Enable JIT (Just-in-Time) provisioning for auto user creation on first login  
+                                                                                
+## Known Caveats / Outstanding Work                                             
+- [ ] Single logout not yet implemented — logging out of one app does not log   
+out of the other; requires OIDC back-channel logout                             
+- [ ] JIT provisioning in Moodle needs to be verified/enabled                   
+- [ ] Rails app becoming a dependency of Moodle — if Rails is down, Moodle      
+logins fail; consider implications for maintenance windows                      
+- [ ] Test full auth flow end-to-end in staging before production               
+                                                                                
+## Key URLs (fill in your values)                                               
+- Rails app: `https://yourrailsapp.com`                                         
+- Moodle: `https://yourmoodle.com`                                              
+- OIDC discovery: `https://yourrailsapp.com/.well-known/openid-configuration`   
+                                                                                
+## Alternatives Considered & Rejected                                           
+- **Keycloak** — too heavy, Java/JVM overhead                                   
+- **Authentik** — not significantly lighter (needs Redis + worker + db)         
+- **Kanidm / Dex / Zitadel** — Go/Rust based, lighter, but unnecessary extra    
+infrastructure                                                                  
+- **Shared database** — tight coupling, rejected early                          
+                                                                                
+
+● Let me check the current state of the implementation.
+
+  Searched for 2 patterns, read 1 file (ctrl+o to expand)
+
+● Nothing has been implemented yet. Let me start with step 1 — adding the gems.
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(Gemfile)
+  ⎿  Added 4 lines
+      49 
+      50  gem "csv"
+      51 
+      52 +# OIDC provider for Moodle SSO                                 
+      53 +gem "doorkeeper"                                               
+      54 +gem "doorkeeper-openid_connect"                                
+      55 +                                                               
+      56  group :development, :test do
+      57    # See https://guides.rubyonrails.org/debugging_rails_applicat
+          ions.html#debugging-with-the-debug-gem
+      58    gem "debug", platforms: %i[ mri windows ], require: "debug/pr
+          elude"
+
+● Bash(bundle install 2>&1)
+  ⎿  Fetching gem metadata from https://rubygems.org/.........
+     Resolving dependencies...
+     WARN: Unresolved or ambiguous specs during Gem::Specification.reset:
+     … +10 lines (ctrl+o to expand)
+  ⎿  (timeout 2m)
+
+● Bash(bin/rails generate doorkeeper:install 2>&1)
+  ⎿  Error: Exit code 1
+
+     (process:109220): VIPS-WARNING **: 16:55:50.438: unable to load 
+     "/usr/lib/vips-modules-8.18/vips-openslide.so" -- libopenslide.so.1: cannot
+      open shared object file: No such file or directory
+     /home/chris/.local/share/mise/installs/ruby/3.4.8/lib/ruby/gems/3.4.0/gems/
+     doorkeeper-openid_connect-1.9.0/lib/doorkeeper/openid_connect/config.rb:14:
+     in 'Doorkeeper::OpenidConnect.configuration': Configuration for Doorkeeper 
+     OpenID Connect missing. Do you have doorkeeper_openid_connect initializer? 
+     (Doorkeeper::OpenidConnect::Errors::MissingConfiguration)
+        from /home/chris/.local/share/mise/installs/ruby/3.4.8/lib/ruby/gems/3.4
+     gems/doorkeeper-openid_connect-1.9.0/lib/doorkeeper/openid_connect/orm/acti
+     ve_record/access_grant.rb:9:in 'block in 
+     Doorkeeper::OpenidConnect::AccessGrant.prepended'
+        from /home/chris/.local/share/mise/installs/ruby/3.4.8/lib/ruby/gems/3.4
+     gems/doorkeeper-openid_connect-1.9.0/lib/doorkeeper/openid_connect/orm/acti
+     ve_record/access_grant.rb:7:in 'Module#class_eval'
+        from /home/chris/.local/share/mise/installs/ruby/3.4.8/lib/ruby/gems/3.4
+     gems/doorkeeper-openid_connect-1.9.0/lib/doorkeeper/openid_connect/orm/acti
+     ve_record/access_grant.rb:7:in 
+     'Doorkeeper::OpenidConnect::AccessGrant.prepended'
+        from /home/chris/.local/share/mise/installs/ruby/3.4.8/lib/ruby/gems/3.4
+     gems/doorkeeper-openid_connect-1.9.0/lib/doorkeeper/openid_connect/orm/acti
+     ve_record.rb:20:in 'Module#prepend'
+        from /home/chris/.local/share/mise/installs/ruby/3.4.8/lib/ruby/gems/3.4
+     gems/doorkeeper-openid_connect-1.9.0/lib/doorkeeper/openid_connect/orm/acti
+     ve_record.rb:20:in 'Doorkeeper::OpenidConnect::Orm::ActiveRecord#run_hooks'
+        from /home/chris/.local/share/mise/installs/ruby/3.4.8/lib/ruby/gems/3.4
+     gems/doorkeeper-5.9.0/lib/doorkeeper.rb:173:in 'Doorkeeper.run_orm_hooks'
+
+
+     … +50 lines (ctrl+o to see all)
+
+● The doorkeeper-openid_connect gem fails to boot without its initializer. I
+  need to create a stub first, then run the generators.
+
+● Write(config/initializers/doorkeeper_openid_connect.rb)
+  ⎿  Wrote 5 lines to config/initializers/doorkeeper_openid_connect.rb
+      1 Doorkeeper::OpenidConnect.configure do
+      2   issuer { |_resource_owner, _application| "" }
+      3   signing_key ""
+      4   subject { |_resource_owner, _application| "" }
+      5 end
+
+● Bash(bin/rails generate doorkeeper:install 2>&1)
+  ⎿  (process:110945): VIPS-WARNING **: 17:08:02.045: unable to load "/usr/
+     lib/vips-modules-8.18/vips-openslide.so" -- libopenslide.so.1: cannot
+     open shared object file: No such file or directory
+     … +28 lines (ctrl+o to expand)
+
+● Bash(bin/rails generate doorkeeper:migration 2>&1 && bin/rails generate
+      doorkeeper:openid_connect:install 2>&1)
+  ⎿        create  db/migrate/20260326081240_create_doorkeeper_tables.rb
+         conflict  config/initializers/doorkeeper_openid_connect.rb
+     Overwrite /home/chris/sources/sailings/config/initial
+     … +7 lines (ctrl+o to expand)
+
+● Good. Now let me run the migration and then configure both initializers
+  properly.
+
+● Bash(bin/rails db:migrate 2>&1)
+  ⎿  == 20260326081240 CreateDoorkeeperTables: migrating ==================
+     =========
+     -- create_table(:oauth_applications)
+     … +21 lines (ctrl+o to expand)
+
+● Now let me look at the app's auth setup to wire up the doorkeeper config
+  correctly.
+
+  Read 2 files (ctrl+o to expand)
+
+● Now let me read and configure both initializers properly.
+
+  Read 2 files (ctrl+o to expand)
+
+● Let me check the User model to understand its attributes.
+
+● Bash(cat app/models/user.rb && bin/rails db:schema:dump 2>/dev/null; cat
+      db/schema.rb | grep -A 20 "create_table \"users\"")
+  ⎿  class User < ApplicationRecord
+       has_secure_password
+       has_many :sessions, dependent: :destroy
+     … +31 lines (ctrl+o to expand)
+
+● Now I have all the context needed. Let me configure everything. I'll do the
+  two initializers and routes simultaneously, then handle credentials and the
+  RSA key.
+
+  Read 1 file (ctrl+o to expand)
+
+● The generators added use_doorkeeper and use_doorkeeper_openid_connect at the
+  top — good. Let me fix the routes to skip the apps/authorized_apps UI, then
+  configure both initializers.
+
+● Update(config/routes.rb)
+  ⎿  Added 1 line, removed 1 line
+      1  Rails.application.routes.draw do
+      2    use_doorkeeper_openid_connect
+      3 -  use_doorkeeper                                                
+      3 +  use_doorkeeper { skip_controllers :applications, :authorized_a
+        +pplications }                                                   
+      4    resource :session
+      5    resources :passwords, param: :token
+      6    resources :sailings do
+
+● Now configure doorkeeper.rb:
+● Update(config/initializers/doorkeeper.rb)
+  ⎿  Added 8 lines, removed 4 lines
+      22 
+      23    # This block will be called to check whether the resource own
+          er is authenticated or not.
+      24    resource_owner_authenticator do
+      25 -    raise "Please configure doorkeeper resource_owner_authentic
+         -ator block located in #{__FILE__}"                             
+      26 -    # Put your resource owner authentication logic here.       
+      27 -    # Example implementation:                                  
+      28 -    #   User.find_by(id: session[:user_id]) || redirect_to(new_
+         -user_session_url)                                              
+      25 +    # Use the Rails app's own session-based auth (Authenticatio
+         +n concern)                                                     
+      26 +    Current.session = Session.find_by(id: cookies.signed[:sessi
+         +on_id]) if cookies.signed[:session_id]                         
+      27 +    Current.user || redirect_to(new_session_url)               
+      28    end
+      29 
+      30 +  # Skip the OAuth consent screen — Moodle is a trusted first-p
+         +arty client                                                    
+      31 +  skip_authorization do |_resource_owner, _client|             
+      32 +    true                                                       
+      33 +  end                                                          
+      34 +                                                               
+      35    # If you didn't skip applications controller from Doorkeeper 
+          routes in your application routes.rb
+      36    # file then you need to declare this block in order to restri
+          ct access to the web interface for
+      37    # adding oauth authorized applications. In other case it will
+           return 403 Forbidden response
+
+● Update(config/initializers/doorkeeper.rb)
+  ⎿  Added 2 lines, removed 2 lines
+      263    # For more information go to
+      264    # https://doorkeeper.gitbook.io/guides/ruby-on-rails/scopes
+      265    #
+      266 -  # default_scopes  :public                                   
+      267 -  # optional_scopes :write, :update                           
+      266 +  default_scopes  :openid                                     
+      267 +  optional_scopes :email, :profile                            
+      268 
+      269    # Allows to restrict only certain scopes for grant_type.
+      270    # By default, all the scopes will be available for all the g
+           rant types.
+
+● Update(config/initializers/doorkeeper.rb)
+  ⎿  Added 1 line, removed 1 line
+      386    #   https://datatracker.ietf.org/doc/html/rfc6819#section-4.
+           4.2
+      387    #   https://datatracker.ietf.org/doc/html/rfc6819#section-4.
+           4.3
+      388    #
+      389 -  # grant_flows %w[authorization_code client_credentials]     
+      389 +  grant_flows %w[authorization_code]                          
+      390 
+      391    # Allows to customize OAuth grant flows that +each+ applicat
+           ion support.
+      392    # You can configure a custom block (or use a class respond t
+           o `#call`) that must
+
+● Now configure doorkeeper_openid_connect.rb with the real implementations:
+
+● Write(config/initializers/doorkeeper_openid_connect.rb)
+  ⎿  Added 30 lines, removed 65 lines
+       1  # frozen_string_literal: true
+       2 
+       3  Doorkeeper::OpenidConnect.configure do
+       4 -  issuer do |resource_owner, application|                      
+       5 -    'issuer string'                                            
+       4 +  issuer do |_resource_owner, _application|                    
+       5 +    Rails.application.credentials.oidc&.dig(:issuer) || Rails.a
+         +pplication.routes.url_helpers.root_url                         
+       6    end
+       7 
+       8 -  signing_key <<~KEY                                           
+       9 -    -----BEGIN RSA PRIVATE KEY-----                            
+      10 -    ....                                                       
+      11 -    -----END RSA PRIVATE KEY-----                              
+      12 -  KEY                                                          
+       8 +  signing_key Rails.application.credentials.oidc&.dig(:signing_
+         +key)                                                           
+       9 
+      10    subject_types_supported [:public]
+      11 
+      12    resource_owner_from_access_token do |access_token|
+      17 -    # Example implementation:                                  
+      18 -    # User.find_by(id: access_token.resource_owner_id)         
+      13 +    User.find_by(id: access_token.resource_owner_id)           
+      14    end
+      15 
+      16    auth_time_from_resource_owner do |resource_owner|
+      22 -    # Example implementation:                                  
+      23 -    # resource_owner.current_sign_in_at                        
+      17 +    resource_owner.sessions.order(created_at: :desc).first&.cre
+         +ated_at                                                        
+      18    end
+      19 
+      26 -  reauthenticate_resource_owner do |resource_owner, return_to| 
+      27 -    # Example implementation:                                  
+      28 -    # store_location_for resource_owner, return_to             
+      29 -    # sign_out resource_owner                                  
+      30 -    # redirect_to new_user_session_url                         
+      20 +  reauthenticate_resource_owner do |_resource_owner, return_to|
+      21 +    # Force re-login if max_age is requested                   
+      22 +    store_url = session[:return_to_after_authenticating]       
+      23 +    session[:return_to_after_authenticating] = return_to       
+      24 +    redirect_to new_session_url                                
+      25 +    session[:return_to_after_authenticating] = store_url if sto
+         +re_url                                                         
+      26    end
+      27 
+      33 -  select_account_for_resource_owner do |resource_owner, return_
+         -to|                                                            
+      34 -    # Example implementation:                                  
+      35 -    # store_location_for resource_owner, return_to             
+      36 -    # redirect_to account_select_url                           
+      28 +  subject do |resource_owner, _application|                    
+      29 +    resource_owner.id.to_s                                     
+      30    end
+      31 
+      39 -  subject do |resource_owner, application|                     
+      40 -    # Example implementation:                                  
+      41 -    # resource_owner.id                                        
+      32 +  claims do                                                    
+      33 +    normal_claim :email do |resource_owner|                    
+      34 +      resource_owner.email_address                             
+      35 +    end                                                        
+      36 
+      43 -    # or if you need pairwise subject identifier, implement lik
+         -e below:                                                       
+      44 -    # Digest::SHA256.hexdigest("#{resource_owner.id}#{URI.parse
+         -(application.redirect_uri).host}#{'your_secret_salt'}")        
+      45 -  end                                                          
+      37 +    normal_claim :email_verified do |_resource_owner|          
+      38 +      true                                                     
+      39 +    end                                                        
+      40 
+      47 -  # Protocol to use when generating URIs for the discovery endp
+         -oint,                                                          
+      48 -  # for example if you also use HTTPS in development           
+      49 -  # protocol do                                                
+      50 -  #   :https                                                   
+      51 -  # end                                                        
+      41 +    normal_claim :name do |resource_owner|                     
+      42 +      resource_owner.full_name                                 
+      43 +    end                                                        
+      44 
+      53 -  # Expiration time on or after which the ID Token MUST NOT be 
+         -accepted for processing. (default 120 seconds).                
+      54 -  # expiration 600                                             
+      45 +    normal_claim :given_name do |resource_owner|               
+      46 +      resource_owner.first_name                                
+      47 +    end                                                        
+      48 
+      56 -  # Enable dynamic client registration (default false)         
+      57 -  # dynamic_client_registration true                           
+      58 -                                                               
+      59 -  # You can use your own model class if you need to extend (or 
+         -even override) the default                                     
+      60 -  # Doorkeeper::OpenidConnect::Request model (e.g. to use a dif
+         -ferent database connection).                                   
+      61 -  #                                                            
+      62 -  # By default Doorkeeper OpenID Connect uses:                 
+      63 -  #                                                            
+      64 -  # open_id_request_class "Doorkeeper::OpenidConnect::Request" 
+      65 -  #                                                            
+      66 -  # Don't forget to include the OpenID Connect ORM mixin into y
+         -our custom model:                                              
+      67 -  #                                                            
+      68 -  #   * ::Doorkeeper::OpenidConnect::Orm::ActiveRecord::Mixins:
+         -:OpenidRequest                                                 
+      69 -  #                                                            
+      70 -  # For example:                                               
+      71 -  #                                                            
+      72 -  # open_id_request_class "MyOpenidRequest"                    
+      73 -  #                                                            
+      74 -  # class MyOpenidRequest < ApplicationRecord                  
+      75 -  #   include ::Doorkeeper::OpenidConnect::Orm::ActiveRecord::M
+         -ixins::OpenidRequest                                           
+      76 -  # end                                                        
+      77 -                                                               
+      78 -  # Example claims:                                            
+      79 -  # claims do                                                  
+      80 -  #   normal_claim :_foo_ do |resource_owner|                  
+      81 -  #     resource_owner.foo                                     
+      82 -  #   end                                                      
+      83 -                                                               
+      84 -  #   normal_claim :_bar_ do |resource_owner|                  
+      85 -  #     resource_owner.bar                                     
+      86 -  #   end                                                      
+      87 -  # end                                                        
+      49 +    normal_claim :family_name do |resource_owner|              
+      50 +      resource_owner.last_name                                 
+      51 +    end                                                        
+      52 +  end                                                          
+      53  end
+
+● Now generate the RSA signing key and store it in credentials:
+
+● Bash(openssl genrsa 2048 2>/dev/null)
+  ⎿  -----BEGIN PRIVATE KEY-----
+     MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCZj+5JAWGGU3Jh
+     NT6Asb1YUZbLp3lzMHSrpNy1+Zce2Al2B+XMZFzgv4nF9boiZhZJ/sSkH/ovT+Vh
+     … +22 lines (ctrl+o to expand)
+
+● That's PKCS#8 format. Doorkeeper needs PKCS#1 (RSA PRIVATE KEY). Let me
+  regenerate:
+
+● Bash(openssl genrsa -traditional 2048 2>/dev/null)
+  ⎿  -----BEGIN RSA PRIVATE KEY-----
+     MIIEowIBAAKCAQEA2qsTP5xrfvQD0jgoMaeVR5T/o0wg5bsuFPrR6BX69dQWqKLI
+     8M5H63CC9vWmchOe6+BxNRetySJOhdK8SAVq13GANnj6a1vlXtX1QgzO79+C3XeM
+     … +21 lines (ctrl+o to expand)
+
+● Now I need to store this key and the issuer URL in Rails credentials. Let me
+  check the existing credentials structure first, then add the OIDC section:
+
+● Bash(bin/rails credentials:show 2>&1 | head -30)
+  ⎿  smtp:
+       user_name: a4b136001@smtp-brevo.com
+       password: xsmtpsib-e551dfd6ea5db071515fb1d3967451991171246a859ae72ad
+     … +11 lines (ctrl+o to expand)
+
+  Read 1 file (ctrl+o to expand)
+
+● I need to add the OIDC credentials using an inline editor script:
+
+● Bash(cat > /tmp/edit_credentials.sh << 'SCRIPT'
+      #!/bin/bash…)
+  ⎿  Editing config/credentials.yml.enc...
+     File encrypted and saved.
+
+● Bash(bin/rails credentials:show 2>&1 | grep -A 3 "oidc:")
+  ⎿  oidc:
+       issuer: "https://sailings.example.com"
+       signing_key: |
+         -----BEGIN RSA PRIVATE KEY-----
+
+● Now verify the app boots correctly:
+
+● Bash(bin/rails runner "puts 'Boot OK'; puts
+      Doorkeeper::OpenidConnect.configuration.issuer.call(nil, nil)" 2>&1)
+  ⎿  Boot OK
+     https://sailings.example.com
+
+● Now check the OIDC discovery endpoint works:
+
+● Bash(bin/rails runner "puts
+      Rails.application.routes.url_helpers.oauth_discovery_provider_path" 2>&1)
+  ⎿  /.well-known/openid-configuration
+
+● Now create the Moodle client seed. Let me check what's in db/seeds.rb first:
+
+  Read 1 file (ctrl+o to expand)
+
+● Bash(bin/rails db:seed 2>&1)
+  ⎿  Created Moodle OIDC client:
+       client_id:     nonono
+       client_secret: nonono
+       Update your Moodle auth_oidc plugin with these values.
+
+● Everything is working. Let me do a final sanity check:
+
+● Bash(bin/rails runner "
+      app = Doorkeeper::Application.find_by(name: 'Moodle')…)
+  ⎿  Moodle app exists: true
+     Scopes: openid email profile
+     Confidential: true
+     … +3 lines (ctrl+o to expand)
+
+● Bash(bin/rubocop config/initializers/doorkeeper.rb
+      config/initializers/doorkeeper_openid_connect.rb config/routes.rb 2>&1 |
+      tail -15)  ⎿  Inspecting 3 files
+     .C.
+     … +13 lines (ctrl+o to expand)
+
+● Update(config/initializers/doorkeeper_openid_connect.rb)
+  ⎿  Added 1 line, removed 1 line
+       7 
+       8    signing_key Rails.application.credentials.oidc&.dig(:signing_
+          key)
+       9 
+      10 -  subject_types_supported [:public]                            
+      10 +  subject_types_supported [ :public ]                          
+      11 
+      12    resource_owner_from_access_token do |access_token|
+      13      User.find_by(id: access_token.resource_owner_id)
+
+● Bash(bin/rubocop config/initializers/doorkeeper.rb
+      config/initializers/doorkeeper_openid_connect.rb config/routes.rb 2>&1 |
+      tail -5)
+  ⎿  Inspecting 3 files
+     ...
+
+     3 files inspected, no offenses detected
+
+● All done. Here's a summary of what was implemented:
+
+  Completed steps:
+
+  1. Gems added — doorkeeper + doorkeeper-openid_connect in Gemfile, installed
+  with bundle install
+  2. Generators run — doorkeeper:install, doorkeeper:migration,
+  doorkeeper:openid_connect:install, migrations run (creates oauth_applications,
+   oauth_access_grants, oauth_access_tokens tables)
+  3. doorkeeper.rb configured:
+    - resource_owner_authenticator — reads the app's cookie-based session (via
+  Current.session) or redirects to new_session_url
+    - skip_authorization — always true (no consent screen for Moodle)
+    - Scopes: openid default, email profile optional
+    - Grant flows: authorization_code only
+  4. doorkeeper_openid_connect.rb configured:
+    - Issuer from credentials (oidc.issuer)
+    - RSA 2048 signing key from credentials (oidc.signing_key)
+    - resource_owner_from_access_token → User.find_by(id: ...)
+    - Claims: email, email_verified, name, given_name, family_name
+  5. RSA key generated and stored in encrypted credentials under
+  oidc.signing_key
+  6. Routes fixed — use_doorkeeper skips applications/authorized_applications UI
+  7. Moodle client seeded in db/seeds.rb — idempotent, prints client_id/secret
+  on first run
+
+  What you still need to do:
+
+  - Update the Moodle redirect URI in db/seeds.rb (replace moodle.example.com)
+  and update credentials issuer URL (replace sailings.example.com) for each
+  environment
+  - Configure Moodle's auth_oidc plugin with the printed client_id/client_secret
+   and discovery URL https://yourrailsapp.com/.well-known/openid-configuration
+  - Test the end-to-end flow in staging before production
+
+✻ Crunched for 4m 34s

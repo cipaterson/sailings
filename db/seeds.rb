@@ -27,3 +27,17 @@ if Sailing.count < 10
       status: "draft")
   end
 end
+
+# Moodle OIDC client — client_id/secret are printed on first run; update Moodle config accordingly
+unless Doorkeeper::Application.find_by(name: "Moodle")
+  app = Doorkeeper::Application.create!(
+    name: "Moodle",
+    redirect_uri: "https://training.ladynelson.org.au/admin/oauth2callback.php",
+    scopes: "openid email profile",
+    confidential: true
+  )
+  puts "Created Moodle OIDC client:"
+  puts "  client_id:     #{app.uid}"
+  puts "  client_secret: #{app.secret}"
+  puts "  Update your Moodle auth_oidc plugin with these values."
+end
