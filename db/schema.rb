@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_26_081240) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_02_095301) do
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer "application_id", null: false
     t.datetime "created_at", null: false
@@ -51,6 +51,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_26_081240) do
     t.string "uid", null: false
     t.datetime "updated_at", null: false
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "oauth_openid_requests", force: :cascade do |t|
+    t.integer "access_grant_id", null: false
+    t.string "nonce", null: false
+    t.index ["access_grant_id"], name: "index_oauth_openid_requests_on_access_grant_id"
   end
 
   create_table "sailing_participants", force: :cascade do |t|
@@ -129,6 +135,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_26_081240) do
 
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", on_delete: :cascade
   add_foreign_key "sailing_participants", "sailings"
   add_foreign_key "sailing_participants", "users"
   add_foreign_key "sessions", "users"
