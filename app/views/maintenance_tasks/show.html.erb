@@ -1,0 +1,36 @@
+<h1>Maintenance Task</h1>
+
+<p>
+  <strong>Problem:</strong>
+  <%= @maintenance_task.problem_description %>
+</p>
+
+<p>
+  <strong>Date Reported:</strong>
+  <%= @maintenance_task.date_reported.strftime("%d %b %Y %H:%M") if @maintenance_task.date_reported %>
+</p>
+
+<p>
+  <strong>Reported By:</strong>
+  <%= @maintenance_task.who_reported_name %>
+</p>
+
+<p>
+  <strong>Date Fixed:</strong>
+  <%= @maintenance_task.date_fixed.strftime("%d %b %Y %H:%M") if @maintenance_task.date_fixed %>
+</p>
+
+<p>
+  <strong>Fixed By:</strong>
+  <%= @maintenance_task.who_fixed_name %>
+</p>
+
+<p>
+  <strong>Comments:</strong>
+  <%= @maintenance_task.comments %>
+</p>
+
+<p>
+  <%= link_to "Edit", edit_maintenance_task_path(@maintenance_task), class: "button" %>
+  <%= link_to "Back", maintenance_tasks_path, class: "button" %>
+</p>

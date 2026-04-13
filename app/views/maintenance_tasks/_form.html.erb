@@ -1,0 +1,45 @@
+<%= form_with model: maintenance_task do |f| %>
+  <% if maintenance_task.errors.any? %>
+    <div>
+      <ul>
+        <% maintenance_task.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :problem_description %>
+    <%= f.text_field :problem_description %>
+  </div>
+
+  <div>
+    <%= f.label :date_reported %>
+    <%= f.datetime_field :date_reported %>
+  </div>
+
+  <div>
+    <%= f.label :who_reported, "Reported By" %>
+    <%= f.select :who_reported, User.order(:first_name, :last_name).map { |u| [u.full_name, u.id] }, include_blank: "Select member" %>
+  </div>
+
+  <div>
+    <%= f.label :date_fixed %>
+    <%= f.datetime_field :date_fixed %>
+  </div>
+
+  <div>
+    <%= f.label :who_fixed, "Fixed By" %>
+    <%= f.select :who_fixed, User.order(:first_name, :last_name).map { |u| [u.full_name, u.id] }, include_blank: "Select member" %>
+  </div>
+
+  <div>
+    <%= f.label :comments %>
+    <%= f.text_area :comments %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>

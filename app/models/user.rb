@@ -5,7 +5,7 @@ class User < ApplicationRecord
   has_many :sailings, through: :sailing_participants
 
   MEMBERSHIP_TYPES = %w[Life Family Individual Junior].freeze
-  ROLES = %w[member office_staff crewing_operator trainer purser].freeze
+  ROLES = %w[member office_staff crewing_operator trainer purser maintenance].freeze
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
