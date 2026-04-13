@@ -1,5 +1,5 @@
 class Sailing < ApplicationRecord
-  STATUSES = %w[draft active archived].freeze
+  SAILING_TYPES = %w[Voyage Training Charter Maintenance Special].freeze
 
   AUSTRALIAN_STATES = [
     "Australian Capital Territory",
@@ -16,7 +16,8 @@ class Sailing < ApplicationRecord
   has_many :users, through: :sailing_participants
 
   validates :purpose, presence: true
-  validates :status, inclusion: { in: STATUSES }
+  validates :sailing_type, inclusion: { in: SAILING_TYPES }, allow_blank: true
+  enum :sailing_type, SAILING_TYPES.index_by { |t| t }, scopes: false
 
   attr_writer :departs_date, :departs_time, :returns_date, :returns_time
 

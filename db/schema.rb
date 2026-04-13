@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_02_095301) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_13_064749) do
   create_table "maintenance_tasks", force: :cascade do |t|
     t.text "comments"
     t.datetime "created_at", null: false
@@ -71,6 +71,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_02_095301) do
   end
 
   create_table "sailing_participants", force: :cascade do |t|
+    t.integer "attended"
     t.datetime "created_at", null: false
     t.integer "sailing_id", null: false
     t.string "status"
@@ -102,7 +103,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_02_095301) do
     t.integer "passenger_count"
     t.string "purpose"
     t.datetime "returns_at"
-    t.string "status"
+    t.string "sailing_type"
     t.datetime "updated_at", null: false
   end
 

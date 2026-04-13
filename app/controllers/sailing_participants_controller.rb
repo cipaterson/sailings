@@ -31,10 +31,12 @@ class SailingParticipantsController < ApplicationController
 
   def bulk_update
     statuses = params[:statuses] || {}
+    attended = params[:attended] || {}
     statuses.each do |id, status|
       participant = @sailing.sailing_participants.find(id)
       old_status = participant.status
-      if participant.update(status: status)
+      attended_value = attended[id] == "1" ? 1 : 0
+      if participant.update(status: status, attended: attended_value)
         if old_status != participant.status
           SailingParticipantMailer.status_changed(participant, old_status).deliver_later
         end

@@ -23,6 +23,7 @@ class SailingsController < ApplicationController
     @sailings = base.left_joins(:sailing_participants)
                     .select("sailings.*, COUNT(sailing_participants.id) AS participants_count")
                     .group("sailings.id")
+                    .order("sailings.departs_at ASC")
                     .limit(PER_PAGE)
                     .offset((@current_page - 1) * PER_PAGE)
 
@@ -79,6 +80,6 @@ class SailingsController < ApplicationController
   end
 
   def sailing_params
-    params.require(:sailing).permit(:purpose, :status, :departs_date, :departs_time, :returns_date, :returns_time, :ln_contact, :master, :comments, :charterer, :passenger_count, :additional_details, :engineer, :charter_full_name, :charter_email_address, :charter_work_phone, :charter_mobile, :charter_address1, :charter_address2, :charter_city, :charter_state, :charter_postcode)
+    params.require(:sailing).permit(:purpose, :sailing_type, :departs_date, :departs_time, :returns_date, :returns_time, :ln_contact, :master, :comments, :charterer, :passenger_count, :additional_details, :engineer, :charter_full_name, :charter_email_address, :charter_work_phone, :charter_mobile, :charter_address1, :charter_address2, :charter_city, :charter_state, :charter_postcode)
   end
 end

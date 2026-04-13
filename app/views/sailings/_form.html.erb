@@ -42,8 +42,8 @@
       </div>
 
       <div>
-        <%= f.label :status %>
-        <%= f.select :status, Sailing::STATUSES, { include_blank: "Select status" } %>
+        <%= f.label :sailing_type %>
+        <%= f.select :sailing_type, Sailing::SAILING_TYPES, { include_blank: "Select type" } %>
       </div>
 
       <div>

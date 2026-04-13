@@ -13,6 +13,7 @@
         <th>MED</th>
         <th>WWVP Expires</th>
         <th>MSR</th>
+        <th>Attended</th>
         <th>Status</th>
       </tr>
     </thead>
@@ -26,6 +27,9 @@
           <td><%= participant.user.med_qualification %></td>
           <td><%= participant.user.wwvp_expires_on %></td>
           <td><%= participant.user.marine_safety_refresher_on %></td>
+          <td>
+            <%= check_box_tag "attended[#{participant.id}]", "1", participant.attended.to_i == 1 %>
+          </td>
           <td>
             <%= select_tag "statuses[#{participant.id}]",
                 options_for_select(SailingParticipant::STATUSES, participant.status) %>
