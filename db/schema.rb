@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_13_064749) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_13_071829) do
   create_table "maintenance_tasks", force: :cascade do |t|
     t.text "comments"
     t.datetime "created_at", null: false
     t.datetime "date_fixed"
     t.datetime "date_reported", null: false
+    t.text "fixed_note"
     t.string "problem_description", null: false
+    t.string "state"
     t.datetime "updated_at", null: false
     t.string "who_fixed"
     t.string "who_reported", null: false

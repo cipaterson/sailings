@@ -2,10 +2,8 @@
 
 <table>
   <tbody>
+      <tr><th>Sailing Type</th><td><%= @sailing.sailing_type || "Please Edit to select" %></td></tr>
     <tr><th>Purpose</th><td><%= @sailing.purpose %></td></tr>
-    <% if @sailing.sailing_type.present? %>
-      <tr><th>Sailing Type</th><td><%= @sailing.sailing_type %></td></tr>
-    <% end %>
     <tr><th>Departs At</th><td><%= @sailing.departs_date %> <%= @sailing.departs_time %></td></tr>
     <tr><th>Returns At</th><td><%= @sailing.returns_date %> <%= @sailing.returns_time %></td></tr>
     <tr><th>LN Contact</th><td><%= @sailing.ln_contact %></td></tr>
