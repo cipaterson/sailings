@@ -36,11 +36,13 @@
     <nav>
       <%= link_to "Home", root_path, class: "button" %>
       <%= link_to "My Registrations", my_registrations_path, class: "button" %>
-      <%= link_to "Members", users_path, class: "button" if can?("office_staff") %>
-      <%= link_to "Maint Tasks", maintenance_tasks_path, class: "button" if Current.user&.has_role?("maintenance") || Current.user&.has_role?("office_staff") || Current.user&.has_role?("crewing_operator") %>
       <%= link_to "Member Resources", "https://sites.google.com/ladynelson.org.au/members", target: "_blank", class: "button" %>
-      <%= button_to "Logout", session_path, method: :delete, class: "button", style: "float: right; border: none; cursor: pointer;" %>
-      <%= link_to "My Profile", user_path(Current.user), class: "button", style: "float: right;" %>
+      <%= link_to "My Profile", user_path(Current.user), class: "button", style: "" %>
+      <%= button_to "Logout", session_path, method: :delete, class: "button", style: "float: right; border: none;" %>
+    </nav>
+    <nav>
+      <%= link_to "Members", users_path, class: "button" if can?("office_staff") %>
+      <%= link_to "Maint Tasks", maintenance_tasks_path, class: "button" if Current.user&.has_role?("maintenance") %>
     </nav>
     <% end %>
     <%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>

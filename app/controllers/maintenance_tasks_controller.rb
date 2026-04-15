@@ -2,7 +2,7 @@ class MaintenanceTasksController < ApplicationController
   before_action :set_maintenance_task, only: %i[show edit update destroy]
 
   def index
-    @maintenance_tasks = MaintenanceTask.order(date_reported: :desc)
+    @maintenance_tasks = MaintenanceTask.order("date_fixed ASC")
   end
 
   def show
@@ -10,6 +10,8 @@ class MaintenanceTasksController < ApplicationController
 
   def new
     @maintenance_task = MaintenanceTask.new
+    @maintenance_task.state = "Reported"
+    @maintenance_task.priority = "Low"
   end
 
   def create
@@ -44,6 +46,6 @@ class MaintenanceTasksController < ApplicationController
   end
 
   def maintenance_task_params
-    params.require(:maintenance_task).permit(:problem_description, :date_reported, :date_fixed, :who_reported, :who_fixed, :comments)
+    params.require(:maintenance_task).permit(:problem_description, :state, :priority, :date_reported, :date_fixed, :who_reported, :who_fixed, :fixed_note, :comments)
   end
 end

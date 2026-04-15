@@ -6,6 +6,8 @@
   <thead>
     <tr>
       <th>Problem</th>
+      <th>State</th>
+      <th>Priority</th>
       <th>Date Reported</th>
       <th>Reported By</th>
       <th>Date Fixed</th>
@@ -16,6 +18,8 @@
     <% @maintenance_tasks.each do |task| %>
       <tr>
         <td><%= link_to task.problem_description, task %></td>
+        <td><%= task.state %></td>
+        <td><%= task.priority %></td>
         <td><%= task.date_reported.strftime("%d %b %Y") if task.date_reported %></td>
         <td><%= task.who_reported_name %></td>
         <td><%= task.date_fixed.strftime("%d %b %Y") if task.date_fixed %></td>

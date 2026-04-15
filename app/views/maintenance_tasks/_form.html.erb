@@ -20,6 +20,16 @@
   </div>
 
   <div>
+    <%= f.label :state %>
+    <%= f.select :state, MaintenanceTask::STATES, { include_blank: "Select state" } %>
+  </div>
+
+  <div>
+    <%= f.label :priority %>
+    <%= f.select :priority, MaintenanceTask::PRIORITIES, { include_blank: "Select priority" } %>
+  </div>
+
+  <div>
     <%= f.label :who_reported, "Reported By" %>
     <%= f.select :who_reported, User.order(:first_name, :last_name).map { |u| [u.full_name, u.id] }, include_blank: "Select member" %>
   </div>
@@ -32,6 +42,11 @@
   <div>
     <%= f.label :who_fixed, "Fixed By" %>
     <%= f.select :who_fixed, User.order(:first_name, :last_name).map { |u| [u.full_name, u.id] }, include_blank: "Select member" %>
+  </div>
+
+  <div>
+    <%= f.label :fixed_note, "Fixed Note" %>
+    <%= f.text_area :fixed_note %>
   </div>
 
   <div>

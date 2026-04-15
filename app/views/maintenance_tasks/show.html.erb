@@ -1,36 +1,18 @@
 <h1>Maintenance Task</h1>
 
-<p>
-  <strong>Problem:</strong>
-  <%= @maintenance_task.problem_description %>
-</p>
+<table>
+  <tbody>
+    <tr><th>Problem</th><td><%= @maintenance_task.problem_description %></td></tr>
+    <tr><th>Date Reported</th><td><%= @maintenance_task.date_reported.strftime("%d %b %Y %H:%M") if @maintenance_task.date_reported %></td></tr>
+    <tr><th>State</th><td><%= @maintenance_task.state %></td></tr>
+    <tr><th>Priority</th><td><%= @maintenance_task.priority %></td></tr>
+    <tr><th>Reported By</th><td><%= @maintenance_task.who_reported_name %></td></tr>
+    <tr><th>Date Fixed</th><td><%= @maintenance_task.date_fixed.strftime("%d %b %Y %H:%M") if @maintenance_task.date_fixed %></td></tr>
+    <tr><th>Fixed By</th><td><%= @maintenance_task.who_fixed_name %></td></tr>
+    <tr><th>Fixed Note</th><td><%= @maintenance_task.fixed_note %></td></tr>
+    <tr><th>Comments</th><td><%= @maintenance_task.comments %></td></tr>
+  </tbody>
+</table>
 
-<p>
-  <strong>Date Reported:</strong>
-  <%= @maintenance_task.date_reported.strftime("%d %b %Y %H:%M") if @maintenance_task.date_reported %>
-</p>
-
-<p>
-  <strong>Reported By:</strong>
-  <%= @maintenance_task.who_reported_name %>
-</p>
-
-<p>
-  <strong>Date Fixed:</strong>
-  <%= @maintenance_task.date_fixed.strftime("%d %b %Y %H:%M") if @maintenance_task.date_fixed %>
-</p>
-
-<p>
-  <strong>Fixed By:</strong>
-  <%= @maintenance_task.who_fixed_name %>
-</p>
-
-<p>
-  <strong>Comments:</strong>
-  <%= @maintenance_task.comments %>
-</p>
-
-<p>
-  <%= link_to "Edit", edit_maintenance_task_path(@maintenance_task), class: "button" %>
-  <%= link_to "Back", maintenance_tasks_path, class: "button" %>
-</p>
+<%= link_to "Edit", edit_maintenance_task_path(@maintenance_task), class: "button" %>
+<%= link_to "Back", maintenance_tasks_path, class: "button" %>
