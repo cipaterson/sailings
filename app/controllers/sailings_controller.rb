@@ -62,7 +62,7 @@ class SailingsController < ApplicationController
 
   def update
     if @sailing.update(sailing_params)
-      redirect_to @sailing, notice: "Sailing was successfully updated."
+      redirect_to sailings_path, notice: "Sailing was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end

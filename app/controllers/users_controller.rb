@@ -30,7 +30,7 @@ class UsersController < ApplicationController
     params_to_update = user_params
     params_to_update = params_to_update.reject { |k, v| k.to_s.in?(%w[password password_confirmation]) && v.blank? }
     if @user.update(params_to_update)
-      redirect_to @user, notice: "User was successfully updated."
+      redirect_to users_path, notice: "User was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end

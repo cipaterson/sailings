@@ -1,8 +1,40 @@
 class MaintenanceTasksController < ApplicationController
   before_action :set_maintenance_task, only: %i[show edit update destroy]
 
+  PER_PAGE = 15
+
+  def in_progress
+    base = MaintenanceTask.where(date_fixed: nil).order(date_reported: :asc)
+
+    @current_page = (params[:page] || 1).to_i.clamp(1, Float::INFINITY)
+    @total_pages = [ (base.count.to_f / PER_PAGE).ceil, 1 ].max
+    @current_page = @current_page.clamp(1, @total_pages)
+
+    @maintenance_tasks = base
+                          .limit(PER_PAGE)
+                          .offset((@current_page - 1) * PER_PAGE)
+  end
+
   def index
-    @maintenance_tasks = MaintenanceTask.order("date_fixed ASC")
+@from_date = if params.key?(:from_date)
+                   Date.parse(params[:from_date]) rescue nil
+else
+                   1.month.ago.to_date
+end
+    @to_date = Date.parse(params[:to_date]) rescue nil if params[:to_date].present?
+
+    base = MaintenanceTask.all
+    base = base.where("date_fixed >= ?", @from_date.beginning_of_day) if @from_date
+    base = base.where("date_fixed <= ?", @to_date.end_of_day) if @to_date
+    base = base.order(date_fixed: :asc)
+
+    @current_page = (params[:page] || 1).to_i.clamp(1, Float::INFINITY)
+    @total_pages = [ (base.count.to_f / PER_PAGE).ceil, 1 ].max
+    @current_page = @current_page.clamp(1, @total_pages)
+
+    @maintenance_tasks = base
+                          .limit(PER_PAGE)
+                          .offset((@current_page - 1) * PER_PAGE)
   end
 
   def show

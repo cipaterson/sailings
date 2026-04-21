@@ -1,18 +1,9 @@
-<h1>Maintenance Tasks</h1>
+<h1>In-Progress Maintenance Tasks</h1>
 
 <p>
   <%= link_to "New Maintenance Task", new_maintenance_task_path, class: "button" %>
-  <%= link_to "In-Progress Tasks", in_progress_maintenance_tasks_path, class: "button" %>
+  <%= link_to "Fixed Tasks", maintenance_tasks_path, class: "button" %>
 </p>
-
-<%= form_with url: maintenance_tasks_path, method: :get, local: true do |f| %>
-  <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
-    <label>From: <%= date_field_tag :from_date, @from_date %></label>
-    <label>To: <%= date_field_tag :to_date, @to_date %></label>
-    <%= f.submit "Apply" %>
-    <%= link_to "Reset", maintenance_tasks_path %>
-  </div>
-<% end %>
 
 <table>
   <thead>
@@ -41,4 +32,4 @@
   </tbody>
 </table>
 
-<%= render "application/pagination", current_page: @current_page, total_pages: @total_pages, from_date: @from_date, to_date: @to_date %>
+<%= render "application/pagination", current_page: @current_page, total_pages: @total_pages, from_date: nil, to_date: nil %>
