@@ -3,11 +3,11 @@
 <table>
   <tbody>
     <tr><th>Problem</th><td><%= @maintenance_task.problem_description %></td></tr>
-    <tr><th>Date Reported</th><td><%= @maintenance_task.date_reported.strftime("%d %b %Y %H:%M") if @maintenance_task.date_reported %></td></tr>
+    <tr><th>Date Reported</th><td><%= @maintenance_task.date_reported.strftime("%d %b %Y") if @maintenance_task.date_reported %></td></tr>
     <tr><th>State</th><td><%= @maintenance_task.state %></td></tr>
     <tr><th>Priority</th><td><%= @maintenance_task.priority %></td></tr>
     <tr><th>Reported By</th><td><%= @maintenance_task.who_reported_name %></td></tr>
-    <tr><th>Date Fixed</th><td><%= @maintenance_task.date_fixed.strftime("%d %b %Y %H:%M") if @maintenance_task.date_fixed %></td></tr>
+    <tr><th>Date Fixed</th><td><%= @maintenance_task.date_fixed.strftime("%d %b %Y") if @maintenance_task.date_fixed %></td></tr>
     <tr><th>Fixed By</th><td><%= @maintenance_task.who_fixed_name %></td></tr>
     <tr><th>Fixed Note</th><td><%= @maintenance_task.fixed_note %></td></tr>
     <tr><th>Comments</th><td><%= @maintenance_task.comments %></td></tr>
@@ -15,4 +15,4 @@
 </table>
 
 <%= link_to "Edit", edit_maintenance_task_path(@maintenance_task), class: "button" %>
-<%= link_to "Back", maintenance_tasks_path, class: "button" %>
+<%= link_to "Back", in_progress_maintenance_tasks_path, class: "button" %>

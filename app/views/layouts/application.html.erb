@@ -36,9 +36,10 @@
     <nav>
       <%= link_to "Home", root_path, class: "button" %>
       <%= link_to "My Registrations", my_registrations_path, class: "button" %>
-      <%= link_to "Member Resources", "https://sites.google.com/ladynelson.org.au/members", target: "_blank", class: "button" %>
-      <%= link_to "My Profile", user_path(Current.user), class: "button", style: "" %>
-      <%= button_to "Logout", session_path, method: :delete, class: "button", style: "float: right; border: none;" %>
+      <%= link_to "Resources", "https://sites.google.com/ladynelson.org.au/members", target: "_blank", class: "button" %>
+      <%= link_to "Training", "https://training.ladynelson.org.au/login/index.php", target: "_blank", class: "button" %>
+      <%= link_to "Logout", session_path, data: { turbo_method: :delete }, class: "button", style: "float: right;" %>
+      <%= link_to "My Profile", user_path(Current.user), class: "button", style: "float: right;" %>
     </nav>
     <nav>
       <%= link_to "Members", users_path, class: "button" if can?("office_staff") %>

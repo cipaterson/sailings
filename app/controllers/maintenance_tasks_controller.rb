@@ -47,6 +47,7 @@ end
   end
 
   def create
+    return_to_in_progress = params[:maintenance_task].delete(:return_to_in_progress) if params[:maintenance_task]
     @maintenance_task = MaintenanceTask.new(maintenance_task_params)
     if @maintenance_task.save
       redirect_to @maintenance_task, notice: "Maintenance task was successfully created."
@@ -59,8 +60,13 @@ end
   end
 
   def update
+    return_to_in_progress = params[:maintenance_task].delete(:return_to_in_progress) if params[:maintenance_task]
     if @maintenance_task.update(maintenance_task_params)
-      redirect_to @maintenance_task, notice: "Maintenance task was successfully updated."
+      if return_to_in_progress == "true"
+        redirect_to in_progress_maintenance_tasks_path, notice: "Maintenance task was successfully updated."
+      else
+        redirect_to maintenance_tasks_path, notice: "Maintenance task was successfully updated."
+      end
     else
       render :edit, status: :unprocessable_entity
     end
@@ -78,6 +84,6 @@ end
   end
 
   def maintenance_task_params
-    params.require(:maintenance_task).permit(:problem_description, :state, :priority, :date_reported, :date_fixed, :who_reported, :who_fixed, :fixed_note, :comments)
+    params.require(:maintenance_task).permit(:problem_description, :state, :priority, :date_reported, :date_fixed, :who_reported, :who_fixed, :fixed_note, :comments, :return_to_in_progress)
   end
 end

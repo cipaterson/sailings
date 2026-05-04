@@ -1,7 +1,7 @@
-<h1>Maintenance Tasks</h1>
+<h1>Fixed Maintenance Tasks</h1>
 
 <p>
-  <%= link_to "New Maintenance Task", new_maintenance_task_path, class: "button" %>
+  <%= link_to "New", new_maintenance_task_path, class: "button" %>
   <%= link_to "In-Progress Tasks", in_progress_maintenance_tasks_path, class: "button" %>
 </p>
 
@@ -24,18 +24,20 @@
       <th>Reported By</th>
       <th>Date Fixed</th>
       <th>Fixed By</th>
+      <th>Fixed Note</th>
     </tr>
   </thead>
   <tbody>
     <% @maintenance_tasks.each do |task| %>
       <tr>
-        <td><%= link_to task.problem_description, task %></td>
+        <td><%= link_to task.problem_description, edit_maintenance_task_path(task, return_to_in_progress: false) %></td>
         <td><%= task.state %></td>
         <td><%= task.priority %></td>
         <td><%= task.date_reported.strftime("%d %b %Y") if task.date_reported %></td>
         <td><%= task.who_reported_name %></td>
         <td><%= task.date_fixed.strftime("%d %b %Y") if task.date_fixed %></td>
         <td><%= task.who_fixed_name %></td>
+        <td><%= task.fixed_note %></td>
       </tr>
     <% end %>
   </tbody>
