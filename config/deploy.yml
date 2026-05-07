@@ -9,7 +9,7 @@ image: sailings
 # Deploy to these servers.
 servers:
   web:
-    - 192.168.0.1
+    - rails.lan
   # job:
   #   hosts:
   #     - 192.168.0.1
@@ -24,7 +24,7 @@ servers:
 #
 # proxy:
 #   ssl: true
-#   host: app.example.com
+#   host: sailings.drupal.lan
 
 # Where you keep your container images.
 registry:
@@ -93,8 +93,8 @@ builder:
   #   - RAILS_MASTER_KEY
 
 # Use a different ssh user than root
-# ssh:
-#   user: app
+ssh:
+  user: root
 
 # Use accessory services (secrets come from .kamal/secrets).
 # accessories:
