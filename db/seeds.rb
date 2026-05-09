@@ -26,8 +26,7 @@ if Sailing.count < 10
     Sailing.create!(purpose: row['Purpose'].presence || "blank", departs_date: row['Date'], departs_time: row['Time'],
       returns_date: row['Date Return'], returns_time: row['Time Return'], charterer: row['Charterer'],
       ln_contact: row['LN Contact'], master: row['Master'], passenger_count: row['No. of Passengers'],
-      comments: row['Comments'],
-      status: "draft")
+      comments: row['Comments'])
   end
 end
 
