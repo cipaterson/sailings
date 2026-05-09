@@ -17,7 +17,7 @@ class SailingParticipantsController < ApplicationController
     resolved_params = resolved_params.merge(user_id: Current.user.id) if resolved_params[:user_id].blank?
     @sailing_participant = @sailing.sailing_participants.build(resolved_params)
     if @sailing_participant.save
-      if resolved_params[:user_id] == Current.user.id
+      if resolved_params[:user_id].to_s == Current.user.id.to_s
         redirect_to sailings_path, notice: "You have been registered for this sailing."
       else
         SailingParticipantMailer.status_changed(@sailing_participant, nil).deliver_later

@@ -1,5 +1,6 @@
 class MaintenanceTasksController < ApplicationController
   before_action :set_maintenance_task, only: %i[show edit update destroy]
+  before_action :require_maintenance_or_office_staff!, only: %i[new create edit update destroy]
 
   PER_PAGE = 15
 
@@ -83,7 +84,11 @@ end
     @maintenance_task = MaintenanceTask.find(params[:id])
   end
 
+  def require_maintenance_or_office_staff!
+    require_role!("maintenance", "office_staff")
+  end
+
   def maintenance_task_params
-    params.require(:maintenance_task).permit(:problem_description, :state, :priority, :date_reported, :date_fixed, :who_reported, :who_fixed, :fixed_note, :comments, :return_to_in_progress)
+    params.require(:maintenance_task).permit(:problem_description, :state, :priority, :date_reported, :date_fixed, :who_reported, :who_fixed, :fixed_note, :comments)
   end
 end
