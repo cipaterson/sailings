@@ -1,0 +1,11 @@
+# This is kamal's deploy.yml configuration file for a Raspberry PI destination.
+#
+servers:
+  web:
+    - rails.lan
+
+builder:
+  arch: arm64
+
+ssh:
+  user: sailings

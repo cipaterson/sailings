@@ -9,7 +9,7 @@ image: sailings
 # Deploy to these servers.
 servers:
   web:
-    - rails.lan
+    - 170.64.186.134
   # job:
   #   hosts:
   #     - 192.168.0.1
@@ -69,7 +69,7 @@ aliases:
   dbc: app exec --interactive --reuse "bin/rails dbconsole --include-password"
 
 # Use a persistent storage volume for sqlite database files and local Active Storage files.
-# Recommended to change this to a mounted volume path that is backed up off server.
+# This to a mounted volume path that is backed up off server.
 volumes:
   - "/var/data/sailings/storage:/data"
 
@@ -80,7 +80,9 @@ asset_path: /rails/public/assets
 
 # Configure the image builder.
 builder:
-  arch: arm64
+  arch: amd64
+  # This sets the build context for the Docker image, default is HEAD of git repo.
+  context: "."
 
   # # Build image via remote server (useful for faster amd64 builds on arm64 computers)
   # remote: ssh://docker@docker-builder-server
