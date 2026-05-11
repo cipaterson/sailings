@@ -82,7 +82,7 @@ asset_path: /rails/public/assets
 builder:
   arch: amd64
   # This sets the build context for the Docker image, default is HEAD of git repo.
-  context: "."
+  #context: "."
 
   # # Build image via remote server (useful for faster amd64 builds on arm64 computers)
   # remote: ssh://docker@docker-builder-server
@@ -96,7 +96,7 @@ builder:
 
 # Use a different ssh user than root
 ssh:
-  user: root
+  user: sailings
 
 # Use accessory services (secrets come from .kamal/secrets).
 # accessories:
