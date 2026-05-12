@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resources :sailings do
+    collection do
+      get :calendar
+    end
     member do
       get :manifest
     end

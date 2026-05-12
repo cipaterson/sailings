@@ -1,6 +1,7 @@
 <h1>Voyages</h1>
 
 <%= link_to "New Voyage", new_sailing_path  if can?("office_staff") %>
+<%= link_to "Calendar view", calendar_sailings_path %>
 
 <%= form_with url: sailings_path, method: :get, local: true do |f| %>
   <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">

@@ -32,6 +32,22 @@ class SailingsController < ApplicationController
                              .index_by(&:sailing_id)
   end
 
+  def calendar
+    @year  = (params[:year]  || Date.today.year).to_i
+    @month = (params[:month] || Date.today.month).to_i
+    first  = Date.new(@year, @month, 1)
+    last   = first.end_of_month
+
+    @sailings = Sailing.where("departs_at <= ?", last.end_of_day)
+                       .where("returns_at >= ? OR (returns_at IS NULL AND departs_at >= ?)",
+                              first.beginning_of_day, first.beginning_of_day)
+                       .order(:departs_at)
+
+    @my_participants = Current.user.sailing_participants
+                             .where(sailing_id: @sailings.map(&:id))
+                             .index_by(&:sailing_id)
+  end
+
   def show
   end
 

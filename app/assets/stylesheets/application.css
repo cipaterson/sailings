@@ -30,6 +30,16 @@
   font-size: 0.875rem;
 }
 
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid #ccc; border-left: 1px solid #ccc; }
+.calendar-cell { border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 4px; min-height: 80px; vertical-align: top; }
+.calendar-cell.today { background: #fffbe6; }
+.calendar-cell.other-month { background: #f5f5f5; color: #aaa; }
+.calendar-day-number { font-size: 0.75rem; font-weight: bold; margin-bottom: 2px; }
+.calendar-sailing { font-size: 0.7rem; background: #d0e8ff; border-radius: 3px; padding: 1px 3px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; position: relative; z-index: 1; }
+.calendar-sailing.registered { background: #c6f0c2; }
+.calendar-sailing.continues-right { margin-right: -5px; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.calendar-sailing.continues-left { margin-left: -5px; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 4px; }
+
 .wide-table {
   width: 100vw;
   margin-left: calc(50% - 50vw);
