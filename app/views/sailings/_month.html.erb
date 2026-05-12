@@ -1,0 +1,52 @@
+<%
+  first_of_month = Date.new(@year, @month, 1)
+  last_of_month  = first_of_month.end_of_month
+  grid_start     = first_of_month.beginning_of_week(:monday)
+  grid_end       = last_of_month.end_of_week(:monday)
+  today          = Date.today
+%>
+
+<div class="calendar-grid">
+  <% %w[Mon Tue Wed Thu Fri Sat Sun].each do |day| %>
+    <div style="border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 4px; font-weight: bold; font-size: 0.8rem; text-align: center; background: #f0f0f0;">
+      <%= day %>
+    </div>
+  <% end %>
+
+  <% (grid_start..grid_end).each do |day| %>
+    <%
+      in_month = (day >= first_of_month && day <= last_of_month)
+      cell_classes = ["calendar-cell"]
+      cell_classes << "today"       if day == today
+      cell_classes << "other-month" unless in_month
+      day_sailings = sailings.select { |s|
+        depart_day = s.departs_at.to_date
+        return_day = s.returns_at&.to_date || depart_day
+        depart_day <= day && return_day >= day
+      }
+    %>
+    <div class="<%= cell_classes.join(" ") %>">
+      <div class="calendar-day-number"><%= day.day %></div>
+      <% day_sailings.each do |sailing| %>
+        <%
+          depart_day = sailing.departs_at.to_date
+          return_day = sailing.returns_at&.to_date || depart_day
+          continues_right = return_day > day && day.wday != 0
+          continues_left  = depart_day < day && day.wday != 1
+          sailing_classes = [ "calendar-sailing" ]
+          sailing_classes << "registered"       if my_participants[sailing.id]
+          sailing_classes << "continues-right"  if continues_right
+          sailing_classes << "continues-left"   if continues_left
+        %>
+        <%= link_to sailing_path(sailing),
+                    class: sailing_classes.join(" "),
+                    title: [sailing.purpose, sailing.charterer].compact.join(" — ") do %>
+          <%= sailing.purpose.presence || sailing.charterer %>
+          <span class="calendar-sailing-time">
+            <%= sailing.departs_at.strftime("%H:%M") %><% if sailing.returns_at %> – <%= sailing.returns_at.strftime("%H:%M") %><% end %>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

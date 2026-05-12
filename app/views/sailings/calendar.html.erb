@@ -1,62 +1,60 @@
-<h1>Voyages — <%= Date::MONTHNAMES[@month] %> <%= @year %></h1>
-
-<div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
-  <%= link_to "New Voyage", new_sailing_path if can?("office_staff") %>
-  <%= link_to "List view", sailings_path %>
-  <%
-    prev_month = Date.new(@year, @month, 1).prev_month
-    next_month = Date.new(@year, @month, 1).next_month
-  %>
-  <%= link_to "‹ #{Date::MONTHNAMES[prev_month.month]} #{prev_month.year}", calendar_sailings_path(year: prev_month.year, month: prev_month.month) %>
-  <%= link_to "#{Date::MONTHNAMES[next_month.month]} #{next_month.year} ›", calendar_sailings_path(year: next_month.year, month: next_month.month) %>
-</div>
+<%
+  title = case @view
+  when "week"
+    week_start = @date.beginning_of_week(:monday)
+    "Voyages — Week of #{week_start.strftime("%-d %B %Y")}"
+  when "day"
+    "Voyages — #{@date.strftime("%A, %-d %B %Y")}"
+  else
+    "Voyages — #{Date::MONTHNAMES[@month]} #{@year}"
+  end
+%>
+<h1><%= title %></h1>
 
 <%
-  first_of_month = Date.new(@year, @month, 1)
-  last_of_month  = first_of_month.end_of_month
-  grid_start     = first_of_month.beginning_of_week(:monday)
-  grid_end       = last_of_month.end_of_week(:monday)
-  today          = Date.today
+  prev_params = { view: @view }
+  next_params = { view: @view }
+  prev_label  = ""
+  next_label  = ""
+
+  case @view
+  when "week"
+    ws        = @date.beginning_of_week(:monday)
+    prev_date = ws - 1.week
+    next_date = ws + 1.week
+    prev_params.merge!(year: prev_date.year, month: prev_date.month, day: prev_date.day)
+    next_params.merge!(year: next_date.year, month: next_date.month, day: next_date.day)
+    prev_label = "‹ Week of #{prev_date.strftime("%-d %b")}"
+    next_label = "Week of #{next_date.strftime("%-d %b")} ›"
+  when "day"
+    prev_date = @date - 1.day
+    next_date = @date + 1.day
+    prev_params.merge!(year: prev_date.year, month: prev_date.month, day: prev_date.day)
+    next_params.merge!(year: next_date.year, month: next_date.month, day: next_date.day)
+    prev_label = "‹ #{prev_date.strftime("%-d %b")}"
+    next_label = "#{next_date.strftime("%-d %b")} ›"
+  else
+    prev_month = Date.new(@year, @month, 1).prev_month
+    next_month = Date.new(@year, @month, 1).next_month
+    prev_params.merge!(year: prev_month.year, month: prev_month.month)
+    next_params.merge!(year: next_month.year, month: next_month.month)
+    prev_label = "‹ #{Date::MONTHNAMES[prev_month.month]} #{prev_month.year}"
+    next_label = "#{Date::MONTHNAMES[next_month.month]} #{next_month.year} ›"
+  end
 %>
 
-<div class="calendar-grid">
-  <% %w[Mon Tue Wed Thu Fri Sat Sun].each do |day| %>
-    <div style="border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 4px; font-weight: bold; font-size: 0.8rem; text-align: center; background: #f0f0f0;">
-      <%= day %>
-    </div>
-  <% end %>
+<div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+  <span style="display: flex; gap: 0.25rem;">
+    <%= link_to "Month", calendar_sailings_path(view: "month", year: @year, month: @month),
+          style: @view == "month" ? "font-weight: bold; text-decoration: underline;" : "" %>
+    <%= link_to "Week", calendar_sailings_path(view: "week", year: @date.year, month: @date.month, day: @date.day),
+          style: @view == "week" ? "font-weight: bold; text-decoration: underline;" : "" %>
+    <%= link_to "Day", calendar_sailings_path(view: "day", year: @date.year, month: @date.month, day: @date.day),
+          style: @view == "day" ? "font-weight: bold; text-decoration: underline;" : "" %>
+  </span>
 
-  <% (grid_start..grid_end).each do |day| %>
-    <%
-      in_month = (day >= first_of_month && day <= last_of_month)
-      cell_classes = ["calendar-cell"]
-      cell_classes << "today"       if day == today
-      cell_classes << "other-month" unless in_month
-      day_sailings = @sailings.select { |s|
-        depart_day = s.departs_at.to_date
-        return_day = s.returns_at&.to_date || depart_day
-        depart_day <= day && return_day >= day
-      }
-    %>
-    <div class="<%= cell_classes.join(" ") %>">
-      <div class="calendar-day-number"><%= day.day %></div>
-      <% day_sailings.each do |sailing| %>
-        <%
-          depart_day = sailing.departs_at.to_date
-          return_day = sailing.returns_at&.to_date || depart_day
-          continues_right = return_day > day && day.wday != 0
-          continues_left  = depart_day < day && day.wday != 1
-          sailing_classes = [ "calendar-sailing" ]
-          sailing_classes << "registered"       if @my_participants[sailing.id]
-          sailing_classes << "continues-right"  if continues_right
-          sailing_classes << "continues-left"   if continues_left
-        %>
-        <%= link_to sailing_path(sailing),
-                    class: sailing_classes.join(" "),
-                    title: [sailing.purpose, sailing.charterer].compact.join(" — ") do %>
-          <%= sailing.purpose.presence || sailing.charterer %>
-        <% end %>
-      <% end %>
-    </div>
-  <% end %>
+  <%= link_to prev_label, calendar_sailings_path(prev_params) %>
+  <%= link_to next_label, calendar_sailings_path(next_params) %>
 </div>
+
+<%= render "sailings/#{@view}", sailings: @sailings, my_participants: @my_participants %>

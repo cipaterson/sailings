@@ -1,0 +1,89 @@
+<%
+  week_start     = @date.beginning_of_week(:monday)
+  week_days      = (0..6).map { |i| week_start + i.days }
+  today          = Date.today
+  week_multi_day = sailings.select { |s|
+    s.returns_at && s.returns_at.to_date > s.departs_at.to_date
+  }
+%>
+
+<div class="cal-week-headers">
+  <div class="cal-time-gutter-spacer"></div>
+  <% week_days.each do |day| %>
+    <div class="cal-week-day-header<%= " today-header" if day == today %>">
+      <%= link_to calendar_sailings_path(view: "day", year: day.year, month: day.month, day: day.day) do %>
+        <%= day.strftime("%a %-d %b") %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<% if week_multi_day.any? %>
+  <div class="cal-allday-row">
+    <div class="cal-time-gutter-spacer"></div>
+    <div class="cal-allday-grid">
+      <% week_multi_day.each do |sailing| %>
+        <%
+          col_start = [(sailing.departs_at.to_date - week_start).to_i, 0].max + 1
+          col_end   = [(sailing.returns_at.to_date - week_start).to_i, 6].min + 2
+          bar_classes = ["cal-allday-bar"]
+          bar_classes << "registered" if my_participants[sailing.id]
+        %>
+        <%= link_to sailing_path(sailing),
+                    class: bar_classes.join(" "),
+                    style: "grid-column: #{col_start} / #{col_end};",
+                    title: [sailing.purpose, sailing.charterer].compact.join(" — ") do %>
+          <strong><%= sailing.purpose.presence || sailing.charterer %></strong>
+          <span class="cal-sailing-time">
+            <%= sailing.departs_at.strftime("%-d %b %H:%M") %> – <%= sailing.returns_at.strftime("%-d %b %H:%M") %>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% if sailings.empty? %>
+  <p class="cal-no-events">There are no events</p>
+<% else %>
+  <div class="cal-scroll-container" data-controller="time-grid">
+    <div class="cal-time-wrapper">
+      <div class="cal-time-gutter">
+        <% 0.upto(23) do |hour| %>
+          <div class="cal-time-label" style="top: <%= hour * 60 %>px;"><%= sprintf("%02d:00", hour) %></div>
+        <% end %>
+      </div>
+
+      <% week_days.each do |day| %>
+        <%
+          day_start = day.beginning_of_day
+          day_end   = day.end_of_day
+          timed_sailings = sailings.select { |s|
+            next false unless s.departs_at.to_date <= day && (s.returns_at&.to_date || s.departs_at.to_date) >= day
+            !(s.returns_at && s.returns_at.to_date > s.departs_at.to_date)
+          }
+        %>
+        <div class="cal-day-col<%= " today-col" if day == today %>">
+          <% timed_sailings.each do |sailing| %>
+            <%
+              start_t   = [sailing.departs_at, day_start].max
+              end_t     = sailing.returns_at ? [sailing.returns_at, day_end].min : sailing.departs_at + 1.hour
+              top_px    = ((start_t - day_start) / 60).round
+              height_px = [((end_t - start_t) / 60).round, 24].max
+              block_classes = ["cal-sailing-block"]
+              block_classes << "registered" if my_participants[sailing.id]
+            %>
+            <%= link_to sailing_path(sailing),
+                        class: block_classes.join(" "),
+                        style: "top: #{top_px}px; height: #{height_px}px;" do %>
+              <strong><%= sailing.purpose.presence || sailing.charterer %></strong>
+              <span class="cal-sailing-time">
+                <%= sailing.departs_at.strftime("%H:%M") %><% if sailing.returns_at %> – <%= sailing.returns_at.strftime("%H:%M") %><% end %>
+              </span>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

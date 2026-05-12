@@ -33,10 +33,21 @@ class SailingsController < ApplicationController
   end
 
   def calendar
+    @view  = params[:view].presence_in(%w[month week day]) || "month"
     @year  = (params[:year]  || Date.today.year).to_i
     @month = (params[:month] || Date.today.month).to_i
-    first  = Date.new(@year, @month, 1)
-    last   = first.end_of_month
+    @day   = (params[:day]   || Date.today.day).to_i
+    @date  = Date.new(@year, @month, @day) rescue Date.new(@year, @month, 1)
+
+    first, last = case @view
+    when "week"
+      week_start = @date.beginning_of_week(:monday)
+      [ week_start, week_start + 6.days ]
+    when "day"
+      [ @date, @date ]
+    else
+      [ Date.new(@year, @month, 1), Date.new(@year, @month, 1).end_of_month ]
+    end
 
     @sailings = Sailing.where("departs_at <= ?", last.end_of_day)
                        .where("returns_at >= ? OR (returns_at IS NULL AND departs_at >= ?)",
