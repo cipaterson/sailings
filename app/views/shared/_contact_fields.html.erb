@@ -1,0 +1,37 @@
+<div class="contact-fields">
+  <div class="contact-field-block">
+    <%= f.label :"#{prefix}_full_name", "Full name" %>
+    <%= f.text_field :"#{prefix}_full_name" %>
+  </div>
+
+  <div class="contact-field-block">
+    <%= f.label :"#{prefix}_address1", "Address" %>
+    <%= f.text_field :"#{prefix}_address1" %>
+    <%= f.text_field :"#{prefix}_address2" %>
+    <div class="contact-address-grid">
+      <div>
+        <%= f.label :"#{prefix}_city", "City/Suburb" %>
+        <%= f.text_field :"#{prefix}_city" %>
+      </div>
+      <div>
+        <%= f.label :"#{prefix}_state", "State" %>
+        <%= f.select :"#{prefix}_state", Sailing::AUSTRALIAN_STATES, { include_blank: "Select state" } %>
+      </div>
+      <div>
+        <%= f.label :"#{prefix}_postcode", "Postcode" %>
+        <%= f.text_field :"#{prefix}_postcode" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-info-grid">
+    <%= f.label :"#{prefix}_email_address", "Email" %>
+    <%= f.email_field :"#{prefix}_email_address" %>
+
+    <%= f.label :"#{prefix}_work_phone", "Work Phone" %>
+    <%= f.telephone_field :"#{prefix}_work_phone" %>
+
+    <%= f.label :"#{prefix}_mobile", "Mobile" %>
+    <%= f.telephone_field :"#{prefix}_mobile" %>
+  </div>
+</div>

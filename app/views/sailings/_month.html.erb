@@ -38,7 +38,7 @@
           sailing_classes << "continues-right"  if continues_right
           sailing_classes << "continues-left"   if continues_left
         %>
-        <%= link_to sailing_path(sailing),
+        <%= link_to edit_sailing_path(sailing),
                     class: sailing_classes.join(" "),
                     title: [sailing.purpose, sailing.charterer].compact.join(" — ") do %>
           <%= sailing.purpose.presence || sailing.charterer %>

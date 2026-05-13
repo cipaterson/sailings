@@ -36,28 +36,21 @@
 
   <div class="tab-panels">
     <div id="panel-info" class="tab-panel">
-      <div>
-        <%= f.label :purpose %>
-        <%= f.text_field :purpose %>
-      </div>
+      <%= render 'voyage_dates', f: f %>
 
       <div>
-        <%= f.label :sailing_type %>
+        <%= f.label :sailing_type, "Sailing Type" %>
         <%= f.select :sailing_type, Sailing::SAILING_TYPES, { include_blank: "Select type" } %>
       </div>
 
       <div>
-        <%= f.label :departs_date, "Departs Date" %>
-        <%= f.date_field :departs_date %>
-        <%= f.label :departs_time, "Departs Time" %>
-        <%= f.time_field :departs_time %>
+        <%= f.label :purpose, "Voyage Purpose" %>
+        <%= f.text_field :purpose %>
       </div>
 
       <div>
-        <%= f.label :returns_date, "Returns Date" %>
-        <%= f.date_field :returns_date %>
-        <%= f.label :returns_time, "Returns Time" %>
-        <%= f.time_field :returns_time %>
+        <%= f.label :passenger_count, "No. of Passengers" %>
+        <%= f.number_field :passenger_count %>
       </div>
 
       <div>
@@ -66,8 +59,13 @@
       </div>
 
       <div>
-        <%= f.label :master %>
-        <%= f.text_field :master %>
+        <%= f.label :charterer %>
+        <%= f.text_field :charterer %>
+      </div>
+
+      <div>
+        <%= f.label :additional_details %>
+        <%= f.text_area :additional_details %>
       </div>
 
       <div>
@@ -76,71 +74,18 @@
       </div>
 
       <div>
-        <%= f.label :charterer %>
-        <%= f.text_field :charterer %>
-      </div>
-
-      <div>
-        <%= f.label :passenger_count %>
-        <%= f.number_field :passenger_count %>
+        <%= f.label :master %>
+        <%= f.text_field :master %>
       </div>
 
       <div>
         <%= f.label :engineer %>
         <%= f.text_field :engineer %>
       </div>
-
-      <div>
-        <%= f.label :additional_details %>
-        <%= f.text_area :additional_details %>
-      </div>
     </div>
 
     <div id="panel-charter" class="tab-panel">
-      <div>
-        <%= f.label :charter_full_name, "Full Name" %>
-        <%= f.text_field :charter_full_name %>
-      </div>
-
-      <div>
-        <%= f.label :charter_email_address, "Email Address" %>
-        <%= f.email_field :charter_email_address %>
-      </div>
-
-      <div>
-        <%= f.label :charter_work_phone, "Work Phone" %>
-        <%= f.telephone_field :charter_work_phone %>
-      </div>
-
-      <div>
-        <%= f.label :charter_mobile, "Mobile" %>
-        <%= f.telephone_field :charter_mobile %>
-      </div>
-
-      <div>
-        <%= f.label :charter_address1, "Address" %>
-        <%= f.text_field :charter_address1 %>
-      </div>
-
-      <div>
-        <%= f.label :charter_address2, "Address 2" %>
-        <%= f.text_field :charter_address2 %>
-      </div>
-
-      <div>
-        <%= f.label :charter_city, "City" %>
-        <%= f.text_field :charter_city %>
-      </div>
-
-      <div>
-        <%= f.label :charter_state, "State" %>
-        <%= f.select :charter_state, Sailing::AUSTRALIAN_STATES, { include_blank: "Select state" } %>
-      </div>
-
-      <div>
-        <%= f.label :charter_postcode, "Postcode" %>
-        <%= f.text_field :charter_postcode %>
-      </div>
+      <%= render 'shared/contact_fields', f: f, prefix: 'charter' %>
     </div>
   </div>
 

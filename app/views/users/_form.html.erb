@@ -151,64 +151,36 @@
       </div>
 
       <div id="panel-qualifications" class="tab-panel">
-        <style>
-          .qual-row { display: flex; gap: 1.5rem; align-items: flex-end; margin-bottom: 0.5rem; }
-          .qual-row div { display: flex; flex-direction: column; }
-        </style>
-
-        <fieldset>
-          <legend>ESS</legend>
-          <div class="qual-row">
-            <div>
-              <%= f.label :ess_qualification, "Qualification" %>
-              <%= f.text_field :ess_qualification %>
-            </div>
-            <div>
-              <%= f.label :ess_issued_on, "Date Issued" %>
-              <%= f.date_field :ess_issued_on %>
-            </div>
-            <div>
-              <%= f.label :ess_expires_on, "Date Expired" %>
-              <%= f.date_field :ess_expires_on %>
-            </div>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>MED</legend>
-          <div class="qual-row">
-            <div>
-              <%= f.label :med_qualification, "Qualification" %>
-              <%= f.text_field :med_qualification %>
-            </div>
-            <div>
-              <%= f.label :med_issued_on, "Date Issued" %>
-              <%= f.date_field :med_issued_on %>
-            </div>
-            <div>
-              <%= f.label :med_expires_on, "Date Expired" %>
-              <%= f.date_field :med_expires_on %>
-            </div>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>WWVP</legend>
-          <div class="qual-row">
-            <div>
-              <%= f.label :wwvp_qualification, "Qualification" %>
-              <%= f.text_field :wwvp_qualification %>
-            </div>
-            <div>
-              <%= f.label :wwvp_issued_on, "Date Issued" %>
-              <%= f.date_field :wwvp_issued_on %>
-            </div>
-            <div>
-              <%= f.label :wwvp_expires_on, "Date Expired" %>
-              <%= f.date_field :wwvp_expires_on %>
-            </div>
-          </div>
-        </fieldset>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Qualification</th>
+              <th>Date Issued</th>
+              <th>Date Expired</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>ESS</th>
+              <td><%= f.text_field :ess_qualification %></td>
+              <td><%= f.date_field :ess_issued_on %></td>
+              <td><%= f.date_field :ess_expires_on %></td>
+            </tr>
+            <tr>
+              <th>MED</th>
+              <td><%= f.text_field :med_qualification %></td>
+              <td><%= f.date_field :med_issued_on %></td>
+              <td><%= f.date_field :med_expires_on %></td>
+            </tr>
+            <tr>
+              <th>WWVP</th>
+              <td><%= f.text_field :wwvp_qualification %></td>
+              <td><%= f.date_field :wwvp_issued_on %></td>
+              <td><%= f.date_field :wwvp_expires_on %></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div id="panel-roles" class="tab-panel">

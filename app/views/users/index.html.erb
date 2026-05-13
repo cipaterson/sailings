@@ -1,6 +1,24 @@
 <h1>Members</h1>
 
-<%= link_to "New Member", new_user_path if can?("office_staff") %>
+<%= link_to "New Member", new_user_path, class: "button" if can?("office_staff") %>
+
+<%= form_with url: users_path, method: :get do |f| %>
+  <div style="display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; margin-bottom: 0.5rem;">
+    <div class="role-filter">
+      <% User::ROLES.each do |role| %>
+        <label>
+          <%= check_box_tag "roles[]", role, @selected_roles.include?(role) %>
+          <%= role.humanize %>
+        </label>
+      <% end %>
+    </div>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <%= text_field_tag :search, @search, placeholder: "Name or email" %>
+      <%= f.submit "Filter" %>
+      <%= link_to "Reset", users_path %>
+    </div>
+  </div>
+<% end %>
 
 <table>
   <thead>

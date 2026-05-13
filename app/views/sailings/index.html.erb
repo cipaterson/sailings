@@ -1,6 +1,6 @@
 <h1>Voyages</h1>
 
-<%= link_to "New Voyage", new_sailing_path  if can?("office_staff") %>
+<%= link_to "New Voyage", new_sailing_path, class: "button" if can?("office_staff") %>
 
 <%= form_with url: sailings_path, method: :get, local: true do |f| %>
   <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
@@ -39,7 +39,7 @@
         <td><%= sailing.departs_at&.to_date %></td>
         <td>
           <% if can?("office_staff") %>
-            <%= link_to sailing.purpose, sailing_path(sailing) %>
+            <%= link_to sailing.purpose, edit_sailing_path(sailing) %>
           <% else %>
             <%= sailing.purpose %>
           <% end %>
@@ -53,12 +53,12 @@
         <td><%= sailing.participants_count %></td>
         <td><%= sailing.comments %></td>
         <% if can?("crewing_operator") %>
-          <td><%= link_to "Manage Crew", sailing_sailing_participants_path(sailing) %></td>
+          <td><%= link_to "Manage Crew", sailing_sailing_participants_path(sailing), class: "button" %></td>
         <% end %>
         <td>
           <% my_participant = @my_participants[sailing.id] %>
           <% if my_participant %>
-            <%= "Registered!" %>
+            Registered!
           <% else %>
             <%= button_to "Register", sailing_sailing_participants_path(sailing),
                 params: { sailing_participant: { status: "EOI" } } %>
