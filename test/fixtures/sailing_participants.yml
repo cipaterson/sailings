@@ -1,0 +1,9 @@
+one_on_voyage:
+  sailing: voyage
+  user: one
+  status: EOI
+
+two_on_voyage:
+  sailing: voyage
+  user: two
+  status: Accepted

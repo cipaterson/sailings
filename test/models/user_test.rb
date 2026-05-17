@@ -82,4 +82,94 @@ class UserTest < ActiveSupport::TestCase
     assert_includes User.with_role("trainer"), user
     assert_not_includes User.with_role("purser"), user
   end
+
+  # full_name
+
+  test "full_name returns first and last name" do
+    user = User.new(first_name: "Jane", last_name: "Doe")
+    assert_equal "Jane Doe", user.full_name
+  end
+
+  test "full_name with only first name" do
+    user = User.new(first_name: "Jane", last_name: nil)
+    assert_equal "Jane", user.full_name
+  end
+
+  test "full_name with only last name" do
+    user = User.new(first_name: nil, last_name: "Doe")
+    assert_equal "Doe", user.full_name
+  end
+
+  test "full_name falls back to email_address when no name set" do
+    user = User.new(email_address: "jane@example.com")
+    assert_equal "jane@example.com", user.full_name
+  end
+
+  # membership_type validation
+
+  test "valid membership types are accepted" do
+    User::MEMBERSHIP_TYPES.each do |type|
+      user = User.new(membership_type: type)
+      user.valid?
+      assert_empty user.errors[:membership_type], "Expected #{type} to be valid"
+    end
+  end
+
+  test "invalid membership type is rejected" do
+    user = User.new(membership_type: "Gold")
+    user.valid?
+    assert user.errors[:membership_type].any?
+  end
+
+  test "blank membership type is allowed" do
+    user = User.new(membership_type: "")
+    user.valid?
+    assert_empty user.errors[:membership_type]
+  end
+
+  # password_complexity validation
+
+  test "password too short is invalid" do
+    user = User.new(password: "Ab1!")
+    user.valid?
+    assert_includes user.errors[:password].join, "at least 8 characters"
+  end
+
+  test "password missing uppercase is invalid" do
+    user = User.new(password: "alllower1!")
+    user.valid?
+    assert_includes user.errors[:password].join, "uppercase"
+  end
+
+  test "password missing lowercase is invalid" do
+    user = User.new(password: "ALLUPPER1!")
+    user.valid?
+    assert_includes user.errors[:password].join, "lowercase"
+  end
+
+  test "password missing digit is invalid" do
+    user = User.new(password: "NoDigits!")
+    user.valid?
+    assert_includes user.errors[:password].join, "digit"
+  end
+
+  test "password missing special character is invalid" do
+    user = User.new(password: "NoSpecial1")
+    user.valid?
+    assert_includes user.errors[:password].join, "special"
+  end
+
+  test "password meeting all requirements is valid" do
+    user = User.new(password: "ValidPass1!")
+    user.valid?
+    assert_empty user.errors[:password]
+  end
+
+  test "password complexity is skipped when password is not present" do
+    user = users(:one)
+    user.valid?
+    complexity_keywords = %w[uppercase lowercase digit special characters]
+    complexity_errors = user.errors[:password].select { |e| complexity_keywords.any? { |kw| e.include?(kw) } }
+    assert_empty complexity_errors
+  end
 end

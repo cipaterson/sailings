@@ -1,0 +1,122 @@
+require "test_helper"
+
+class SailingTest < ActiveSupport::TestCase
+  # Validations
+
+  test "valid with purpose" do
+    sailing = Sailing.new(purpose: "Harbour cruise")
+    assert sailing.valid?
+  end
+
+  test "invalid without purpose" do
+    sailing = Sailing.new
+    assert_not sailing.valid?
+    assert_includes sailing.errors[:purpose], "can't be blank"
+  end
+
+  test "valid sailing_type values are accepted" do
+    Sailing::SAILING_TYPES.each do |type|
+      sailing = Sailing.new(purpose: "Test", sailing_type: type)
+      assert sailing.valid?, "Expected #{type} to be valid"
+    end
+  end
+
+  test "invalid sailing_type raises ArgumentError" do
+    assert_raises(ArgumentError) { Sailing.new(purpose: "Test", sailing_type: "Joyride") }
+  end
+
+  test "blank sailing_type is allowed" do
+    sailing = Sailing.new(purpose: "Test", sailing_type: "")
+    assert sailing.valid?
+  end
+
+  # combine_datetime_fields callback
+
+  test "combine_datetime_fields sets departs_at from date and time" do
+    sailing = Sailing.new(purpose: "Test")
+    sailing.departs_date = "2026-06-01"
+    sailing.departs_time = "09:00"
+    sailing.valid?
+    assert_equal Time.zone.parse("2026-06-01 09:00"), sailing.departs_at
+  end
+
+  test "combine_datetime_fields sets returns_at from date and time" do
+    sailing = Sailing.new(purpose: "Test")
+    sailing.returns_date = "2026-06-01"
+    sailing.returns_time = "17:00"
+    sailing.valid?
+    assert_equal Time.zone.parse("2026-06-01 17:00"), sailing.returns_at
+  end
+
+  test "combine_datetime_fields leaves departs_at unchanged when departs_date is blank" do
+    sailing = Sailing.new(purpose: "Test", departs_at: Time.zone.parse("2026-06-01 09:00"))
+    sailing.departs_date = ""
+    sailing.valid?
+    assert_equal Time.zone.parse("2026-06-01 09:00"), sailing.departs_at
+  end
+
+  test "combine_datetime_fields handles missing time gracefully" do
+    sailing = Sailing.new(purpose: "Test")
+    sailing.departs_date = "2026-06-01"
+    sailing.departs_time = ""
+    sailing.valid?
+    assert_not_nil sailing.departs_at
+  end
+
+  # Date/time readers
+
+  test "departs_date returns nil when departs_at is nil" do
+    sailing = Sailing.new
+    assert_nil sailing.departs_date
+  end
+
+  test "departs_time returns nil when departs_at is nil" do
+    sailing = Sailing.new
+    assert_nil sailing.departs_time
+  end
+
+  test "departs_date returns the date portion of departs_at" do
+    sailing = sailings(:voyage)
+    assert_equal Date.new(2026, 6, 1), sailing.departs_date
+  end
+
+  test "departs_time returns HH:MM string" do
+    sailing = sailings(:voyage)
+    assert_equal "09:00", sailing.departs_time
+  end
+
+  test "returns_date returns nil when returns_at is nil" do
+    sailing = sailings(:no_return)
+    assert_nil sailing.returns_date
+  end
+
+  # voyage_dates
+
+  test "voyage_dates returns empty string when departs_at is nil" do
+    sailing = sailings(:no_dates)
+    assert_equal "", sailing.voyage_dates
+  end
+
+  test "voyage_dates with same-day return omits return date" do
+    sailing = sailings(:voyage)
+    result = sailing.voyage_dates
+    assert_includes result, "01 Jun 2026"
+    assert_includes result, "09:00"
+    assert_includes result, "17:00"
+    assert_equal 1, result.scan("01 Jun 2026").length, "Date should appear only once for same-day sailing"
+  end
+
+  test "voyage_dates with multi-day return includes both dates" do
+    sailing = sailings(:multiday)
+    result = sailing.voyage_dates
+    assert_includes result, "10 Jul 2026"
+    assert_includes result, "12 Jul 2026"
+  end
+
+  test "voyage_dates with no return time shows only departure" do
+    sailing = sailings(:no_return)
+    result = sailing.voyage_dates
+    assert_includes result, "01 Aug 2026"
+    assert_not_includes result, "to"
+  end
+end
