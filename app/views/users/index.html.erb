@@ -20,13 +20,15 @@
   </div>
 <% end %>
 
-<table>
+<table class="wide-table">
   <thead>
     <tr>
       <th>Name</th>
       <th>Email</th>
       <th>Mobile</th>
       <th>Membership Type</th>
+      <th>Fees Paid</th>
+      <th>Fees Due</th>
       <th>Roles</th>
     </tr>
   </thead>
@@ -37,6 +39,8 @@
         <td><%= user.email_address %></td>
         <td><%= user.contact&.mobile %></td>
         <td><%= user.membership_type %></td>
+        <td><%= user.fees_paid %></td>
+        <td><%= user.fees_due %></td>
         <td><%= user.roles.join(", ") %></td>
       </tr>
     <% end %>

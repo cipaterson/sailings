@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_23_032843) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_23_054211) do
   create_table "contacts", force: :cascade do |t|
     t.string "address1"
     t.string "address2"
@@ -83,14 +83,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_032843) do
 
   create_table "users", force: :cascade do |t|
     t.date "birth_date"
+    t.date "coxswain_expires_on"
+    t.date "coxswain_issued_on"
+    t.string "coxswain_qualification"
     t.datetime "created_at", null: false
+    t.date "date_joined"
+    t.integer "days_sailed"
     t.string "email_address", null: false
     t.date "ess_expires_on"
     t.date "ess_issued_on"
     t.string "ess_qualification"
+    t.date "fees_due"
+    t.date "fees_paid"
+    t.date "first_aid_expires_on"
+    t.date "first_aid_issued_on"
+    t.string "first_aid_qualification"
     t.string "first_name"
+    t.date "food_handling_expires_on"
+    t.date "food_handling_issued_on"
+    t.string "food_handling_qualification"
     t.date "knots_on"
     t.string "last_name"
+    t.date "last_sailed"
     t.date "marine_safety_refresher_on"
     t.date "med_expires_on"
     t.date "med_issued_on"
@@ -98,8 +112,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_032843) do
     t.string "membership_type"
     t.string "occupation"
     t.string "password_digest", null: false
+    t.string "rcpt_number"
     t.integer "roles_mask", default: 0, null: false
     t.string "sailing_class"
+    t.date "sit2_date"
     t.date "sit_date"
     t.datetime "updated_at", null: false
     t.date "wwvp_expires_on"

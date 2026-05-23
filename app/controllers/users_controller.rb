@@ -85,11 +85,16 @@ class UsersController < ApplicationController
   def user_params
     params.require(:user).permit(:email_address, :password, :password_confirmation,
                                  :first_name, :last_name, :birth_date, :occupation,
-                                 :membership_type, :sailing_class, :sit_date,
+                                 :membership_type, :sailing_class,
+                                 :fees_due, :days_sailed, :date_joined, :last_sailed,
+                                 :fees_paid, :rcpt_number, :sit2_date, :sit_date,
                                  :knots_on, :marine_safety_refresher_on,
                                  :ess_qualification, :ess_issued_on, :ess_expires_on,
                                  :med_qualification, :med_issued_on, :med_expires_on,
                                  :wwvp_qualification, :wwvp_issued_on, :wwvp_expires_on,
+                                 :first_aid_qualification, :first_aid_issued_on, :first_aid_expires_on,
+                                 :coxswain_qualification, :coxswain_issued_on, :coxswain_expires_on,
+                                 :food_handling_qualification, :food_handling_issued_on, :food_handling_expires_on,
                                  roles: [],
                                  contact_attributes: [
                                    :id, :full_name, :email_address, :work_phone, :mobile,

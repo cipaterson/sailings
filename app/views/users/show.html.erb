@@ -1,5 +1,10 @@
 <h1><%= @user.full_name %></h1>
 
+<p>Your fees were last paid: <%= @user.fees_paid || "Never" %></p>
+<p>You can Edit your personal details.
+    If anything else needs to be updated, please contact the office on (03) 6234 3348
+    or <a href="mailto:office@ladynelson.org.au">office@ladynelson.org.au</a>.</p>
+
 <table>
   <tbody>
     <tr><th>Email</th><td><%= @user.email_address %></td></tr>

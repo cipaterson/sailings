@@ -120,6 +120,34 @@
           <%= f.text_field :sailing_class %>
         </div>
         <div>
+          <%= f.label :fees_due, "Fees Due" %>
+          <%= f.date_field :fees_due %>
+        </div>
+        <div>
+          <%= f.label :days_sailed, "Days Sailed" %>
+          <%= f.number_field :days_sailed %>
+        </div>
+        <div>
+          <%= f.label :date_joined, "Date Joined" %>
+          <%= f.date_field :date_joined %>
+        </div>
+        <div>
+          <%= f.label :last_sailed, "Last Sailed" %>
+          <%= f.date_field :last_sailed %>
+        </div>
+        <div>
+          <%= f.label :fees_paid, "Fees Paid" %>
+          <%= f.date_field :fees_paid %>
+        </div>
+        <div>
+          <%= f.label :rcpt_number, "Rcpt Number" %>
+          <%= f.text_field :rcpt_number %>
+        </div>
+        <div>
+          <%= f.label :sit2_date, "SIT2 Date" %>
+          <%= f.date_field :sit2_date %>
+        </div>
+        <div>
           <%= f.label :sit_date, "SIT Date" %>
           <%= f.date_field :sit_date %>
         </div>
@@ -170,6 +198,24 @@
               <td><%= f.text_field :wwvp_qualification %></td>
               <td><%= f.date_field :wwvp_issued_on %></td>
               <td><%= f.date_field :wwvp_expires_on %></td>
+            </tr>
+            <tr>
+              <th>First Aid</th>
+              <td><%= f.text_field :first_aid_qualification %></td>
+              <td><%= f.date_field :first_aid_issued_on %></td>
+              <td><%= f.date_field :first_aid_expires_on %></td>
+            </tr>
+            <tr>
+              <th>Coxswain Cert.</th>
+              <td><%= f.text_field :coxswain_qualification %></td>
+              <td><%= f.date_field :coxswain_issued_on %></td>
+              <td><%= f.date_field :coxswain_expires_on %></td>
+            </tr>
+            <tr>
+              <th>Food Handling</th>
+              <td><%= f.text_field :food_handling_qualification %></td>
+              <td><%= f.date_field :food_handling_issued_on %></td>
+              <td><%= f.date_field :food_handling_expires_on %></td>
             </tr>
           </tbody>
         </table>
