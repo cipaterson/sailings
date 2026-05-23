@@ -69,4 +69,6 @@
 </table>
 </div>
 
+<%= link_to "Export CSV", sailings_path(format: :csv, from_date: @from_date, to_date: @to_date) %>
+
 <%= render "application/pagination", current_page: @current_page, total_pages: @total_pages, from_date: @from_date, to_date: @to_date %>

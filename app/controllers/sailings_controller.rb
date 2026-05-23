@@ -16,20 +16,43 @@ class SailingsController < ApplicationController
     base = base.where("departs_at >= ?", @from_date.beginning_of_day) if @from_date
     base = base.where("departs_at <= ?", @to_date.end_of_day) if @to_date
 
-    @current_page = (params[:page] || 1).to_i.clamp(1, Float::INFINITY)
-    @total_pages  = [ (base.count.to_f / PER_PAGE).ceil, 1 ].max
-    @current_page = @current_page.clamp(1, @total_pages)
+    filtered = base.left_joins(:sailing_participants)
+                   .select("sailings.*, COUNT(sailing_participants.id) AS participants_count")
+                   .group("sailings.id")
+                   .order("sailings.departs_at ASC")
 
-    @sailings = base.left_joins(:sailing_participants)
-                    .select("sailings.*, COUNT(sailing_participants.id) AS participants_count")
-                    .group("sailings.id")
-                    .order("sailings.departs_at ASC")
-                    .limit(PER_PAGE)
-                    .offset((@current_page - 1) * PER_PAGE)
-
-    @my_participants = Current.user.sailing_participants
-                             .where(sailing_id: @sailings.map(&:id))
-                             .index_by(&:sailing_id)
+    respond_to do |format|
+      format.html do
+        @current_page = (params[:page] || 1).to_i.clamp(1, Float::INFINITY)
+        @total_pages  = [ (base.count.to_f / PER_PAGE).ceil, 1 ].max
+        @current_page = @current_page.clamp(1, @total_pages)
+        @sailings = filtered.limit(PER_PAGE).offset((@current_page - 1) * PER_PAGE)
+        @my_participants = Current.user.sailing_participants
+                                 .where(sailing_id: @sailings.map(&:id))
+                                 .index_by(&:sailing_id)
+      end
+      format.csv do
+        csv_data = CSV.generate(headers: true) do |csv|
+          csv << [ "Day", "Date", "Purpose", "Charterer", "Depart Time", "Return Date", "Return Time", "LN Contact", "Master", "Crew", "Comments" ]
+          filtered.each do |s|
+            csv << [
+              s.departs_at&.strftime("%a"),
+              s.departs_at&.to_date,
+              s.purpose,
+              s.charterer,
+              s.departs_at&.strftime("%H:%M"),
+              (s.returns_at&.to_date unless s.returns_at&.to_date == s.departs_at&.to_date),
+              s.returns_at&.strftime("%H:%M"),
+              s.ln_contact,
+              s.master,
+              s.participants_count,
+              s.comments
+            ]
+          end
+        end
+        send_data csv_data, filename: "voyages-#{Date.today}.csv", type: "text/csv"
+      end
+    end
   end
 
   def calendar

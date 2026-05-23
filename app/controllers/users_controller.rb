@@ -17,6 +17,19 @@ class UsersController < ApplicationController
       term = "%#{@search}%"
       @users = @users.where("(first_name || ' ' || last_name) LIKE ? OR email_address LIKE ?", term, term)
     end
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        csv_data = CSV.generate(headers: true) do |csv|
+          csv << [ "Name", "Email", "Mobile Phone", "Membership Type", "Roles" ]
+          @users.each do |u|
+            csv << [ u.full_name, u.email_address, u.mobile_phone, u.membership_type, u.roles.join(", ") ]
+          end
+        end
+        send_data csv_data, filename: "members-#{Date.today}.csv", type: "text/csv"
+      end
+    end
   end
 
   def show
