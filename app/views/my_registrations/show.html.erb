@@ -9,6 +9,7 @@
         <th>Voyage Dates</th>
         <th>Created</th>
         <th>Registration</th>
+        <th>Comment</th>
         <th></th>
       </tr>
     </thead>
@@ -19,6 +20,7 @@
           <td><%= participant.sailing.voyage_dates %></td>
           <td><%= participant.created_at.in_time_zone.strftime("%d %b %Y - %H:%M") %></td>
           <td><%= participant.status %></td>
+          <td><%= participant.comment %></td>
           <td><%= link_to "Edit", edit_sailing_participant_path(participant), class: "button" %></td>
         </tr>
       <% end %>
