@@ -25,7 +25,7 @@
     <tr>
       <th>Name</th>
       <th>Email</th>
-      <th>Mobile Phone</th>
+      <th>Mobile</th>
       <th>Membership Type</th>
       <th>Roles</th>
     </tr>
@@ -33,9 +33,9 @@
   <tbody>
     <% @users.each do |user| %>
       <tr>
-        <td><%= link_to user.full_name, user %></td>
+        <td><%= link_to user.full_name, edit_user_path(user) %></td>
         <td><%= user.email_address %></td>
-        <td><%= user.mobile_phone %></td>
+        <td><%= user.contact&.mobile %></td>
         <td><%= user.membership_type %></td>
         <td><%= user.roles.join(", ") %></td>
       </tr>

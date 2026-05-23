@@ -1,37 +1,42 @@
+<% hide_name_email = local_assigns.fetch(:hide_name_email, false) %>
 <div class="contact-fields">
+  <% unless hide_name_email %>
   <div class="contact-field-block">
-    <%= f.label :"#{prefix}_full_name", "Full name" %>
-    <%= f.text_field :"#{prefix}_full_name" %>
+    <%= f.label :full_name, "Full name" %>
+    <%= f.text_field :full_name %>
   </div>
+  <% end %>
 
   <div class="contact-field-block">
-    <%= f.label :"#{prefix}_address1", "Address" %>
-    <%= f.text_field :"#{prefix}_address1" %>
-    <%= f.text_field :"#{prefix}_address2" %>
+    <%= f.label :address1, "Address" %>
+    <%= f.text_field :address1 %>
+    <%= f.text_field :address2 %>
     <div class="contact-address-grid">
       <div>
-        <%= f.label :"#{prefix}_city", "City/Suburb" %>
-        <%= f.text_field :"#{prefix}_city" %>
+        <%= f.label :city, "City/Suburb" %>
+        <%= f.text_field :city %>
       </div>
       <div>
-        <%= f.label :"#{prefix}_state", "State" %>
-        <%= f.select :"#{prefix}_state", Sailing::AUSTRALIAN_STATES, { include_blank: "Select state" } %>
+        <%= f.label :state, "State" %>
+        <%= f.select :state, Sailing::AUSTRALIAN_STATES, { include_blank: "Select state" } %>
       </div>
       <div>
-        <%= f.label :"#{prefix}_postcode", "Postcode" %>
-        <%= f.text_field :"#{prefix}_postcode" %>
+        <%= f.label :postcode, "Postcode" %>
+        <%= f.text_field :postcode %>
       </div>
     </div>
   </div>
 
   <div class="contact-info-grid">
-    <%= f.label :"#{prefix}_email_address", "Email" %>
-    <%= f.email_field :"#{prefix}_email_address" %>
+    <% unless hide_name_email %>
+    <%= f.label :email_address, "Email" %>
+    <%= f.email_field :email_address %>
+    <% end %>
 
-    <%= f.label :"#{prefix}_work_phone", "Work Phone" %>
-    <%= f.telephone_field :"#{prefix}_work_phone" %>
+    <%= f.label :work_phone, "Work Phone" %>
+    <%= f.telephone_field :work_phone %>
 
-    <%= f.label :"#{prefix}_mobile", "Mobile" %>
-    <%= f.telephone_field :"#{prefix}_mobile" %>
+    <%= f.label :mobile, "Mobile" %>
+    <%= f.telephone_field :mobile %>
   </div>
 </div>

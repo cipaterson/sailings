@@ -5,8 +5,9 @@
     <tr><th>Email</th><td><%= @user.email_address %></td></tr>
     <tr><th>First Name</th><td><%= @user.first_name %></td></tr>
     <tr><th>Last Name</th><td><%= @user.last_name %></td></tr>
-    <tr><th>Mobile Phone</th><td><%= @user.mobile_phone %></td></tr>
-    <tr><th>Home Phone</th><td><%= @user.home_phone %></td></tr>
+    <tr><th>Mobile</th><td><%= @user.contact&.mobile %></td></tr>
+    <tr><th>Work Phone</th><td><%= @user.contact&.work_phone %></td></tr>
+    <tr><th>Address</th><td><%= @user.contact&.address1 %></td></tr>
     <tr><th>Birth Date</th><td><%= @user.birth_date %></td></tr>
     <tr><th>Occupation</th><td><%= @user.occupation %></td></tr>
     <tr><th>Membership Type</th><td><%= @user.membership_type %></td></tr>

@@ -14,6 +14,10 @@ class Sailing < ApplicationRecord
 
   has_many :sailing_participants, dependent: :destroy
   has_many :users, through: :sailing_participants
+  has_one :charter_contact, -> { where(contact_type: "charter_contact") },
+          class_name: "Contact", as: :contactable, dependent: :destroy
+  accepts_nested_attributes_for :charter_contact, allow_destroy: true, reject_if: :all_blank
+
 
   validates :purpose, presence: true
   validates :sailing_type, inclusion: { in: SAILING_TYPES }, allow_blank: true

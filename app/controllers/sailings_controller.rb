@@ -87,6 +87,7 @@ class SailingsController < ApplicationController
 
   def new
     @sailing = Sailing.new
+    @sailing.build_charter_contact
   end
 
   def create
@@ -99,6 +100,7 @@ class SailingsController < ApplicationController
   end
 
   def edit
+    @sailing.charter_contact || @sailing.build_charter_contact
   end
 
   def manifest
@@ -130,6 +132,13 @@ class SailingsController < ApplicationController
   end
 
   def sailing_params
-    params.require(:sailing).permit(:purpose, :sailing_type, :departs_date, :departs_time, :returns_date, :returns_time, :ln_contact, :master, :comments, :charterer, :passenger_count, :additional_details, :engineer, :charter_full_name, :charter_email_address, :charter_work_phone, :charter_mobile, :charter_address1, :charter_address2, :charter_city, :charter_state, :charter_postcode)
+    params.require(:sailing).permit(
+      :purpose, :sailing_type, :departs_date, :departs_time, :returns_date, :returns_time,
+      :ln_contact, :master, :comments, :charterer, :passenger_count, :additional_details, :engineer,
+      charter_contact_attributes: [
+        :id, :full_name, :email_address, :work_phone, :mobile,
+        :address1, :address2, :city, :state, :postcode
+      ]
+    )
   end
 end

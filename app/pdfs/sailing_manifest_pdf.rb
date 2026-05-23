@@ -55,7 +55,7 @@ class SailingManifestPdf
       u = p.user
       [
         u.full_name,
-        u.mobile_phone.to_s,
+        u.contact&.mobile.to_s,
         u.ess_qualification.to_s,
         u.sailing_class.to_s,
         u.med_qualification.to_s,

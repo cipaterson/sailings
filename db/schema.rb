@@ -10,7 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_23_004946) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_23_032843) do
+  create_table "contacts", force: :cascade do |t|
+    t.string "address1"
+    t.string "address2"
+    t.string "city"
+    t.string "contact_type"
+    t.integer "contactable_id", null: false
+    t.string "contactable_type", null: false
+    t.datetime "created_at", null: false
+    t.string "email_address"
+    t.string "full_name"
+    t.string "mobile"
+    t.string "postcode"
+    t.string "state"
+    t.datetime "updated_at", null: false
+    t.string "work_phone"
+    t.index ["contactable_type", "contactable_id"], name: "index_contacts_on_contactable_type_and_contactable_id"
+  end
+
   create_table "maintenance_tasks", force: :cascade do |t|
     t.text "comments"
     t.datetime "created_at", null: false
@@ -40,15 +58,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_004946) do
 
   create_table "sailings", force: :cascade do |t|
     t.text "additional_details"
-    t.string "charter_address1"
-    t.string "charter_address2"
-    t.string "charter_city"
-    t.string "charter_email_address"
-    t.string "charter_full_name"
-    t.string "charter_mobile"
-    t.string "charter_postcode"
-    t.string "charter_state"
-    t.string "charter_work_phone"
     t.string "charterer"
     t.text "comments"
     t.datetime "created_at", null: false
@@ -80,7 +89,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_004946) do
     t.date "ess_issued_on"
     t.string "ess_qualification"
     t.string "first_name"
-    t.string "home_phone"
     t.date "knots_on"
     t.string "last_name"
     t.date "marine_safety_refresher_on"
@@ -88,7 +96,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_004946) do
     t.date "med_issued_on"
     t.string "med_qualification"
     t.string "membership_type"
-    t.string "mobile_phone"
     t.string "occupation"
     t.string "password_digest", null: false
     t.integer "roles_mask", default: 0, null: false

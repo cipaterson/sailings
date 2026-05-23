@@ -5,6 +5,7 @@
   .tab-panel { display: none; }
 
   #tab-personal:checked ~ .tab-labels label[for="tab-personal"],
+  #tab-contact:checked ~ .tab-labels label[for="tab-contact"],
   #tab-membership:checked ~ .tab-labels label[for="tab-membership"],
   #tab-kin:checked ~ .tab-labels label[for="tab-kin"],
   #tab-training:checked ~ .tab-labels label[for="tab-training"],
@@ -14,6 +15,7 @@
   }
 
   #tab-personal:checked ~ .tab-panels #panel-personal,
+  #tab-contact:checked ~ .tab-panels #panel-contact,
   #tab-membership:checked ~ .tab-panels #panel-membership,
   #tab-kin:checked ~ .tab-panels #panel-kin,
   #tab-training:checked ~ .tab-panels #panel-training,
@@ -35,18 +37,8 @@
     </div>
   <% end %>
 
-  <% if false #show_password %>
-    <div>
-      <%= f.label :password %>
-      <%= f.password_field :password %>
-    </div>
-    <div>
-      <%= f.label :password_confirmation %>
-      <%= f.password_field :password_confirmation %>
-    </div>
-  <% end %>
-
   <input type="radio" name="tab" id="tab-personal" class="tab-radio" checked>
+  <input type="radio" name="tab" id="tab-contact" class="tab-radio">
   <% if can?("office_staff") %>
     <input type="radio" name="tab" id="tab-membership" class="tab-radio">
     <input type="radio" name="tab" id="tab-kin" class="tab-radio">
@@ -57,6 +49,7 @@
 
   <div class="tab-labels">
     <label for="tab-personal">Personal</label>
+    <label for="tab-contact">Contact</label>
     <% if can?("office_staff") %>
       <label for="tab-membership">Membership</label>
       <label for="tab-kin">Next of Kin</label>
@@ -68,27 +61,6 @@
 
   <div class="tab-panels">
     <div id="panel-personal" class="tab-panel">
-        <% if show_password %>
-          <div>
-            <%= f.label :password %>
-            <%= f.password_field :password, autocomplete: "new-password", maxlength: 72,
-                  data: { password_strength_target: "password", action: "input->password-strength#check" } %>
-            <ul class="password-checklist">
-              <li data-rule="length"    data-password-strength-target="rule">✗ At least 8 characters</li>
-              <li data-rule="uppercase" data-password-strength-target="rule">✗ At least one uppercase letter</li>
-              <li data-rule="lowercase" data-password-strength-target="rule">✗ At least one lowercase letter</li>
-              <li data-rule="digit"     data-password-strength-target="rule">✗ At least one number</li>
-              <li data-rule="special"   data-password-strength-target="rule">✗ At least one special character</li>
-            </ul>
-          </div>
-          <div>
-            <%= f.label :password_confirmation %>
-            <%= f.password_field :password_confirmation, autocomplete: "new-password", maxlength: 72,
-                  data: { password_strength_target: "confirmation", action: "input->password-strength#check" } %>
-            <span data-password-strength-target="matchMessage" class="password-match-message"></span>
-          </div>
-        <% end %>
-
       <div>
         <%= f.label :email_address %>
         <%= f.email_field :email_address %>
@@ -102,14 +74,6 @@
         <%= f.text_field :last_name %>
       </div>
       <div>
-        <%= f.label :mobile_phone %>
-        <%= f.telephone_field :mobile_phone %>
-      </div>
-      <div>
-        <%= f.label :home_phone %>
-        <%= f.telephone_field :home_phone %>
-      </div>
-      <div>
         <%= f.label :birth_date %>
         <%= f.date_field :birth_date %>
       </div>
@@ -117,6 +81,32 @@
         <%= f.label :occupation %>
         <%= f.text_field :occupation %>
       </div>
+      <% if show_password %>
+        <div>
+          <%= f.label :password %>
+          <%= f.password_field :password, autocomplete: "new-password", maxlength: 72,
+                data: { password_strength_target: "password", action: "input->password-strength#check" } %>
+          <ul class="password-checklist">
+            <li data-rule="length"    data-password-strength-target="rule">✗ At least 8 characters</li>
+            <li data-rule="uppercase" data-password-strength-target="rule">✗ At least one uppercase letter</li>
+            <li data-rule="lowercase" data-password-strength-target="rule">✗ At least one lowercase letter</li>
+            <li data-rule="digit"     data-password-strength-target="rule">✗ At least one number</li>
+            <li data-rule="special"   data-password-strength-target="rule">✗ At least one special character</li>
+          </ul>
+        </div>
+        <div>
+          <%= f.label :password_confirmation %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", maxlength: 72,
+                data: { password_strength_target: "confirmation", action: "input->password-strength#check" } %>
+          <span data-password-strength-target="matchMessage" class="password-match-message"></span>
+        </div>
+      <% end %>
+    </div>
+
+    <div id="panel-contact" class="tab-panel">
+      <%= f.fields_for :contact do |cf| %>
+        <%= render 'shared/contact_fields', f: cf, hide_name_email: true %>
+      <% end %>
     </div>
 
     <% if can?("office_staff") %>
@@ -136,7 +126,9 @@
       </div>
 
       <div id="panel-kin" class="tab-panel">
-        <p>Coming soon.</p>
+        <%= f.fields_for :next_of_kin do |nf| %>
+          <%= render 'shared/contact_fields', f: nf %>
+        <% end %>
       </div>
 
       <div id="panel-training" class="tab-panel">

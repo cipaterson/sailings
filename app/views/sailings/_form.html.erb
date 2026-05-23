@@ -85,7 +85,9 @@
     </div>
 
     <div id="panel-charter" class="tab-panel">
-      <%= render 'shared/contact_fields', f: f, prefix: 'charter' %>
+      <%= f.fields_for :charter_contact do |cf| %>
+        <%= render 'shared/contact_fields', f: cf %>
+      <% end %>
     </div>
   </div>
 

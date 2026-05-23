@@ -16,20 +16,20 @@
   </tbody>
 </table>
 
-<% if @sailing.charter_email_address.present? %>
+<% if @sailing.charter_contact&.email_address.present? %>
 <h2>Charter Contact</h2>
 
 <table>
   <tbody>
-    <tr><th>Full Name</th><td><%= @sailing.charter_full_name %></td></tr>
-    <tr><th>Email</th><td><%= @sailing.charter_email_address %></td></tr>
-    <tr><th>Work Phone</th><td><%= @sailing.charter_work_phone %></td></tr>
-    <tr><th>Mobile</th><td><%= @sailing.charter_mobile %></td></tr>
-    <tr><th>Address</th><td><%= @sailing.charter_address1 %></td></tr>
-    <tr><th>Address 2</th><td><%= @sailing.charter_address2 %></td></tr>
-    <tr><th>City</th><td><%= @sailing.charter_city %></td></tr>
-    <tr><th>State</th><td><%= @sailing.charter_state %></td></tr>
-    <tr><th>Postcode</th><td><%= @sailing.charter_postcode %></td></tr>
+    <tr><th>Full Name</th><td><%= @sailing.charter_contact.full_name %></td></tr>
+    <tr><th>Email</th><td><%= @sailing.charter_contact.email_address %></td></tr>
+    <tr><th>Work Phone</th><td><%= @sailing.charter_contact.work_phone %></td></tr>
+    <tr><th>Mobile</th><td><%= @sailing.charter_contact.mobile %></td></tr>
+    <tr><th>Address</th><td><%= @sailing.charter_contact.address1 %></td></tr>
+    <tr><th>Address 2</th><td><%= @sailing.charter_contact.address2 %></td></tr>
+    <tr><th>City</th><td><%= @sailing.charter_contact.city %></td></tr>
+    <tr><th>State</th><td><%= @sailing.charter_contact.state %></td></tr>
+    <tr><th>Postcode</th><td><%= @sailing.charter_contact.postcode %></td></tr>
   </tbody>
 </table>
 <% end %>

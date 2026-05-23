@@ -22,9 +22,9 @@ class UsersController < ApplicationController
       format.html
       format.csv do
         csv_data = CSV.generate(headers: true) do |csv|
-          csv << [ "Name", "Email", "Mobile Phone", "Membership Type", "Roles" ]
+          csv << [ "Name", "Email", "Mobile", "Membership Type", "Roles" ]
           @users.each do |u|
-            csv << [ u.full_name, u.email_address, u.mobile_phone, u.membership_type, u.roles.join(", ") ]
+            csv << [ u.full_name, u.email_address, u.contact&.mobile, u.membership_type, u.roles.join(", ") ]
           end
         end
         send_data csv_data, filename: "members-#{Date.today}.csv", type: "text/csv"
@@ -37,6 +37,8 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+    @user.build_contact
+    @user.build_next_of_kin
   end
 
   def create
@@ -49,6 +51,8 @@ class UsersController < ApplicationController
   end
 
   def edit
+    @user.contact || @user.build_contact
+    @user.next_of_kin || @user.build_next_of_kin
   end
 
   def update
@@ -80,12 +84,20 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:email_address, :password, :password_confirmation,
-                                 :first_name, :last_name, :mobile_phone, :home_phone,
-                                 :birth_date, :occupation, :membership_type, :sailing_class, :sit_date,
+                                 :first_name, :last_name, :birth_date, :occupation,
+                                 :membership_type, :sailing_class, :sit_date,
                                  :knots_on, :marine_safety_refresher_on,
                                  :ess_qualification, :ess_issued_on, :ess_expires_on,
                                  :med_qualification, :med_issued_on, :med_expires_on,
                                  :wwvp_qualification, :wwvp_issued_on, :wwvp_expires_on,
-                                 roles: [])
+                                 roles: [],
+                                 contact_attributes: [
+                                   :id, :full_name, :email_address, :work_phone, :mobile,
+                                   :address1, :address2, :city, :state, :postcode
+                                 ],
+                                 next_of_kin_attributes: [
+                                   :id, :full_name, :email_address, :work_phone, :mobile,
+                                   :address1, :address2, :city, :state, :postcode
+                                 ])
   end
 end

@@ -22,7 +22,7 @@
       <% @sailing_participants.each do |participant| %>
         <tr>
           <td><%= participant.user.full_name %></td>
-          <td><%= participant.user.mobile_phone %></td>
+          <td><%= participant.user.contact&.mobile %></td>
           <td><%= participant.user.ess_qualification %></td>
           <td><%= participant.user.sailing_class %></td>
           <td><%= participant.user.med_qualification %></td>

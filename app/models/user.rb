@@ -3,6 +3,13 @@ class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
   has_many :sailing_participants, dependent: :destroy
   has_many :sailings, through: :sailing_participants
+  has_one :contact, -> { where(contact_type: "contact") },
+          class_name: "Contact", as: :contactable, dependent: :destroy
+  accepts_nested_attributes_for :contact, allow_destroy: true, reject_if: :all_blank
+
+  has_one :next_of_kin, -> { where(contact_type: "next_of_kin") },
+          class_name: "Contact", as: :contactable, dependent: :destroy
+  accepts_nested_attributes_for :next_of_kin, allow_destroy: true, reject_if: :all_blank
 
   MEMBERSHIP_TYPES = %w[Life Family Individual Junior].freeze
   ROLES = %w[member office_staff crewing_operator trainer purser maintenance].freeze
@@ -23,6 +30,7 @@ class User < ApplicationRecord
   }.freeze
 
   validate :password_complexity, if: -> { password.present? }
+  before_save :sync_contact_fields
 
   # Bitmask role methods
   def roles
@@ -50,6 +58,12 @@ class User < ApplicationRecord
   }
 
   private
+
+  def sync_contact_fields
+    return unless contact
+    contact.full_name     = full_name
+    contact.email_address = email_address
+  end
 
   def password_complexity
     errors.add(:password, "must be at least 8 characters") if password.length < 8
