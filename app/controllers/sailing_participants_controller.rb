@@ -1,10 +1,18 @@
 class SailingParticipantsController < ApplicationController
-  before_action :set_sailing, only: [ :index, :create, :bulk_update ]
+  before_action :set_sailing, only: [ :index, :create, :bulk_update, :new ]
+  before_action :set_sailing_participant, only: [ :edit, :update, :destroy ]
   before_action :require_office_staff_or_crewing_operator!, only: [ :index, :bulk_update ]
 
   def index
     @sailing_participants = @sailing.sailing_participants.includes(:user)
     @sailing_participant = SailingParticipant.new
+  end
+
+  def new
+    @sailing_participant = @sailing.sailing_participants.build(user_id: Current.user.id, status: "EOI")
+  end
+
+  def edit
   end
 
   def create
@@ -29,6 +37,14 @@ class SailingParticipantsController < ApplicationController
     end
   end
 
+  def update
+    if @sailing_participant.update(sailing_participant_params)
+      redirect_to sailings_path, notice: "Registration updated."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   def bulk_update
     statuses = params[:statuses] || {}
     attended = params[:attended] || {}
@@ -46,9 +62,8 @@ class SailingParticipantsController < ApplicationController
   end
 
   def destroy
-    @sailing_participant = Current.user.sailing_participants.find(params[:id])
     @sailing_participant.destroy
-    redirect_to my_registrations_path, notice: "Registration was successfully cancelled."
+    redirect_to sailings_path, notice: "Registration was successfully cancelled."
   end
 
   private
@@ -57,7 +72,11 @@ class SailingParticipantsController < ApplicationController
     @sailing = Sailing.find(params[:sailing_id])
   end
 
+  def set_sailing_participant
+    @sailing_participant = Current.user.sailing_participants.find(params[:id])
+  end
+
   def sailing_participant_params
-    params.require(:sailing_participant).permit(:user_id, :status)
+    params.require(:sailing_participant).permit(:user_id, :status, :comment)
   end
 end

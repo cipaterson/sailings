@@ -39,6 +39,16 @@ class SailingParticipantsControllerTest < ActionDispatch::IntegrationTest
     assert_equal users(:member).id, participant.user_id
   end
 
+  test "member can register with a comment" do
+    sign_in_as users(:member)
+    assert_difference "SailingParticipant.count", 1 do
+      post sailing_sailing_participants_path(sailings(:multiday)),
+           params: { sailing_participant: { status: "EOI", comment: "my comment" } }
+    end
+    assert_redirected_to sailings_path
+    assert_equal "my comment", SailingParticipant.last.comment
+  end
+
   test "member cannot register another user" do
     sign_in_as users(:member)
     assert_no_difference "SailingParticipant.count" do
@@ -85,6 +95,17 @@ class SailingParticipantsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Accepted", sp.reload.status
   end
 
+  # --- edit / update ---
+
+  test "user can edit their own registration comment" do
+    sp = sailing_participants(:one_on_voyage)
+    sign_in_as users(:one)
+    patch sailing_participant_path(sp),
+          params: { sailing_participant: { status: sp.status, comment: "my comment" } }
+    assert_redirected_to sailings_path
+    assert_equal "my comment", sp.reload.comment
+  end
+
   # --- destroy ---
 
   test "user can cancel their own registration" do
@@ -93,7 +114,7 @@ class SailingParticipantsControllerTest < ActionDispatch::IntegrationTest
     assert_difference "SailingParticipant.count", -1 do
       delete sailing_participant_path(sp)
     end
-    assert_redirected_to my_registrations_path
+    assert_redirected_to sailings_path
   end
 
   test "user cannot cancel another user's registration" do

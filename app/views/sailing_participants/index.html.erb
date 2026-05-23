@@ -3,7 +3,7 @@
 <%= link_to "Download Manifest (PDF)", manifest_sailing_path(@sailing), target: "_blank" %>
 
 <%= form_with url: bulk_update_sailing_sailing_participants_path(@sailing), method: :patch do |f| %>
-  <table>
+  <table class="wide-table">
     <thead>
       <tr>
         <th>Name</th>
@@ -15,6 +15,7 @@
         <th>MSR</th>
         <th>Attended</th>
         <th>Status</th>
+        <th>Comment</th>
       </tr>
     </thead>
     <tbody>
@@ -34,6 +35,7 @@
             <%= select_tag "statuses[#{participant.id}]",
                 options_for_select(SailingParticipant::STATUSES, participant.status) %>
           </td>
+          <td><%= participant.comment %></td>
         </tr>
       <% end %>
     </tbody>

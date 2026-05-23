@@ -1,0 +1,7 @@
+<h1>Edit Registration</h1>
+
+<%= render "form", form_args: @sailing_participant %>
+
+<%= button_to "Delete Registration", sailing_participant_path(@sailing_participant),
+    method: :delete,
+    data: { turbo_confirm: "Unregister from this voyage?" } %>

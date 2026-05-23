@@ -58,10 +58,9 @@
         <td>
           <% my_participant = @my_participants[sailing.id] %>
           <% if my_participant %>
-            Registered!
+            <%= link_to "Registered", edit_sailing_participant_path(my_participant) %>
           <% else %>
-            <%= button_to "Register", sailing_sailing_participants_path(sailing),
-                params: { sailing_participant: { status: "EOI" } } %>
+            <%= link_to "Register", new_sailing_sailing_participant_path(sailing), class: "button" %>
           <% end %>
         </td>
       </tr>

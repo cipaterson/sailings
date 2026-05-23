@@ -8,13 +8,13 @@ Rails.application.routes.draw do
     member do
       get :manifest
     end
-    resources :sailing_participants, only: [ :index, :create ] do
+    resources :sailing_participants, only: [ :index, :create, :new ] do
       collection do
         patch :bulk_update
       end
     end
   end
-  resources :sailing_participants, only: [ :destroy ]
+  resources :sailing_participants, only: [ :destroy, :edit, :update ]
   resource :my_registrations, only: [ :show ]
   resources :users
   resources :maintenance_tasks do

@@ -1,0 +1,19 @@
+<%= form_with model: form_args do |f| %>
+  <% if f.object.errors.any? %>
+    <div>
+      <% f.object.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= f.hidden_field :status %>
+
+  <div>
+    <%= f.label :comment, "Comment (optional)" %>
+    <%= f.text_area :comment, rows: 4 %>
+  </div>
+
+  <%= f.submit "Submit" %>
+  <%= link_to "Cancel", sailings_path %>
+<% end %>
