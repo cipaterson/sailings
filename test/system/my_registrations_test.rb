@@ -18,10 +18,11 @@ class MyRegistrationsTest < ApplicationSystemTestCase
     sign_in_as users(:one)
     click_on "My Registrations"
 
+    click_on "Edit"
+
     assert_difference -> { SailingParticipant.count }, -1 do
-      accept_confirm { click_on "Cancel" }
-      # Wait for redirect back to page
-      assert_selector "h1", text: "My Registrations"
+      accept_confirm { click_on "Delete Registration" }
+      assert_current_path sailings_path
     end
   end
 end

@@ -1,39 +1,81 @@
-# README
+# Sailings
 
-A rails app to manage sailings and assignment of crew.
+A Rails web application for managing sailing voyages and club membership for **Lady Nelson Tasmania**. It handles voyage scheduling, crew participation, member records, qualifications, and facility maintenance.
 
-Dev set-up:
-Install ruby and rails acording to:
-https://guides.rubyonrails.org/install_ruby_on_rails.html
-git clone https://github.com/sailings.git
+## Features
 
-* Ruby version
-ruby 3.4.2
+- **Voyages** — Create and manage sailing events (Voyage, Training, Charter, Maintenance, Special). List and calendar views (month, week, day). Crew manifest PDF export. CSV export.
+- **Crew registration** — Members register interest (EOI) for voyages; office staff accept or manage crew. Bulk status updates from the crew management view.
+- **Member directory** — Full member profiles with contact details, next-of-kin, membership info, qualifications (ESS, MED, WWVP, First Aid, Coxswain, Food Handling), training dates, and fees tracking. Role-based access control. CSV export.
+- **My Registrations** — Personal dashboard showing a member's voyage history and participation status.
+- **Maintenance tasks** — Log and track facility maintenance issues with priority and status.
+- **Charter contacts** — Contact details attached to charter sailings.
 
-* System dependencies
+## Tech Stack
 
-* Configuration
+- **Ruby** 3.4.2, **Rails** 8.1
+- **Database** SQLite (all environments) — primary, cache, queue, and cable databases
+- **Asset pipeline** Propshaft + importmap (no Node/npm required)
+- **Frontend** Hotwire (Turbo + Stimulus)
+- **Background jobs** Solid Queue (runs inside Puma)
+- **Caching** Solid Cache · **WebSockets** Solid Cable
+- **Deployment** Kamal (Docker)
 
-* Database creation
-bin/rails db:create
-bin/rails db:migrate
+## Development Setup
 
-* Database initialization
-bin/rails db:seed
-will populate the database with sample data.
+### Prerequisites
 
-There are several users with different roles (all passwords are "qqq"):
-office@example.com
-crewing@ladynelson.org.au
-pleb@example.com
-admin@example.com - has both office and crewing roles
+Install Ruby 3.4.2 and Rails following the [official guide](https://guides.rubyonrails.org/install_ruby_on_rails.html).
 
-* How to run the test suite
-???
+### Getting started
 
-* Services (job queues, cache servers, search engines, etc.)
+```bash
+git clone https://github.com/chrispa/sailings.git
+cd sailings
+bundle install
+bin/rails db:create db:migrate db:seed
+bin/rails server
+```
 
-* Deployment instructions
-Used fly.io for deployment.
+`db:seed` loads sample data with several users (all passwords: `password`):
 
-* ...
+| Email | Role |
+|---|---|
+| `office@example.com` | Office staff |
+| `crewing@ladynelson.org.au` | Crewing operator |
+| `admin@example.com` | Office staff + crewing operator |
+| `pleb@example.com` | Member |
+
+## Common Commands
+
+```bash
+bin/rails server          # Start development server
+bin/rails test            # Run unit/integration tests
+bin/rails test:system     # Run system tests (requires Chrome)
+bin/rails db:migrate      # Run pending migrations
+bin/rails console         # Open Rails console
+bin/rubocop               # Lint
+bin/brakeman              # Security audit
+```
+
+## Roles
+
+Access is controlled via a bitmask on the `User` model:
+
+| Role | Capabilities |
+|---|---|
+| `member` | View voyages, register for sailings, manage own profile |
+| `office_staff` | Full member management, create/edit/delete voyages |
+| `crewing_operator` | Manage crew for voyages, view manifests |
+| `trainer` | Training administration |
+| `purser` | Financial administration |
+| `maintenance` | Maintenance task management |
+
+## Running Tests
+
+```bash
+bin/rails test            # All unit and integration tests
+bin/rails test:system     # Capybara/Selenium system tests (headless Chrome)
+bin/rails test test/models/user_test.rb        # Single file
+bin/rails test test/models/user_test.rb:42     # Single test by line
+```

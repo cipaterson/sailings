@@ -26,16 +26,19 @@ class SailingsTest < ApplicationSystemTestCase
       click_on "Register"
     end
 
+    # Register now opens a form; submit it to complete registration
+    click_on "Submit"
+
     assert_current_path sailings_path
-    assert_selector "[style*='color:green']", text: /registered/i
+    assert_text /registered/i
   end
 
-  test "already-registered sailing shows Registered! instead of Register button" do
+  test "already-registered sailing shows Registered instead of Register button" do
     sign_in_as users(:one)
     visit sailings_path(from_date: "")
 
     # users(:one) is registered for :voyage via fixture
-    assert_selector "td", text: "Registered!"
+    assert_selector "td a", text: "Registered"
   end
 
   # --- Creating a sailing ---

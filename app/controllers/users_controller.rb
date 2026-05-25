@@ -22,9 +22,9 @@ class UsersController < ApplicationController
       format.html
       format.csv do
         csv_data = CSV.generate(headers: true) do |csv|
-          csv << [ "Name", "Email", "Mobile", "Membership Type", "Roles" ]
+          csv << [ "Name", "Email", "Mobile", "Membership Type", "Fees Paid", "Fees Due", "Roles" ]
           @users.each do |u|
-            csv << [ u.full_name, u.email_address, u.contact&.mobile, u.membership_type, u.roles.join(", ") ]
+            csv << [ u.full_name, u.email_address, u.contact&.mobile, u.membership_type, u.fees_paid, u.fees_due, u.roles.join(", ") ]
           end
         end
         send_data csv_data, filename: "members-#{Date.today}.csv", type: "text/csv"
