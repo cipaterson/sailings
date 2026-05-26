@@ -29,15 +29,19 @@ Install Ruby 3.4.2 and Rails following the [official guide](https://guides.rubyo
 
 ### Getting started
 
+>Important Note: There are secrets (API keys, etc) encoded by a master key which MUST NOT be committed to github.  The master key must be manually created at  `./app/config/master.key`.
+
+
 ```bash
 git clone https://github.com/chrispa/sailings.git
 cd sailings
 bundle install
+echo "masterkey" > ./app/config/master.key
 bin/rails db:create db:migrate db:seed
 bin/rails server
 ```
 
-`db:seed` loads sample data with several users (all passwords: `password`):
+`db:seed` loads sample data with several users (all passwords: `Password123!`):
 
 | Email | Role |
 |---|---|
@@ -45,6 +49,7 @@ bin/rails server
 | `crewing@ladynelson.org.au` | Crewing operator |
 | `admin@example.com` | Office staff + crewing operator |
 | `pleb@example.com` | Member |
+
 
 ## Common Commands
 
@@ -79,3 +84,6 @@ bin/rails test:system     # Capybara/Selenium system tests (headless Chrome)
 bin/rails test test/models/user_test.rb        # Single file
 bin/rails test test/models/user_test.rb:42     # Single test by line
 ```
+
+## Deployment using Kamal
+Kamal is used for deploying the application to a Docker-based server. This requires docker to be installed on your local machine.  Also kamal requires an ssh key to be set up on the server.

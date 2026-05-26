@@ -1,0 +1,14 @@
+# This is kamal's deploy.yml configuration file for a IP address destination.
+#
+servers:
+  web:
+    - 170.64.223.188
+proxy:
+  ssl: false
+  host: 170.64.223.188
+
+builder:
+  arch: amd64
+
+ssh:
+  user: root

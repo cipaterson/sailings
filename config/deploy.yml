@@ -9,7 +9,7 @@ image: sailings
 # Deploy to these servers.
 servers:
   web:
-    - 170.64.186.134
+    - sailings.firstsoftware.cc
   # job:
   #   hosts:
   #     - 192.168.0.1
@@ -22,9 +22,9 @@ servers:
 #
 # Don't use this when deploying to multiple web servers (then you have to terminate SSL at your load balancer).
 #
-# proxy:
-#   ssl: true
-#   host: sailings.drupal.lan
+proxy:
+  ssl: true
+  host: sailings.firstsoftware.cc
 
 # Where you keep your container images.
 registry:
@@ -95,8 +95,8 @@ builder:
   #   - RAILS_MASTER_KEY
 
 # Use a different ssh user than root
-ssh:
-  user: sailings
+# ssh:
+#   user: sailings
 
 # Use accessory services (secrets come from .kamal/secrets).
 # accessories:
