@@ -86,4 +86,4 @@ bin/rails test test/models/user_test.rb:42     # Single test by line
 ```
 
 ## Deployment using Kamal
-Kamal is used for deploying the application to a Docker-based server. This requires docker to be installed on your local machine.  Also kamal requires an ssh key to be set up on the server.
+Kamal is used for deploying the application to a Docker-based server. This requires docker to be installed on your local machine.  Also kamal requires an ssh key to be set up on the server, i.e. passwordless login.
