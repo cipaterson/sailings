@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[show edit update destroy]
-  before_action :require_office_staff!, only: %i[index new create destroy]
+  before_action :set_user, only: %i[show edit update destroy confirm_delete disable]
+  before_action :require_office_staff!, only: %i[index new create destroy confirm_delete disable]
   before_action :require_self_or_office_staff!, only: %i[show edit update]
 
   def index
@@ -68,6 +68,22 @@ class UsersController < ApplicationController
   def destroy
     @user.destroy
     redirect_to users_path, notice: "User was successfully deleted."
+  end
+
+  def confirm_delete
+    if @user == Current.user
+      redirect_to edit_user_path(@user), alert: "You cannot delete your own account."
+    end
+  end
+
+  def disable
+    if @user == Current.user
+      redirect_to edit_user_path(@user), alert: "You cannot disable your own account."
+      return
+    end
+    @user.update!(roles_mask: 0)
+    @user.sessions.destroy_all
+    redirect_to users_path, notice: "#{@user.full_name} has been disabled."
   end
 
   private

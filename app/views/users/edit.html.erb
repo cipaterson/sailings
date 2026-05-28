@@ -2,4 +2,10 @@
 
 <%= render "form", user: @user, show_password: true %>
 
-<%= link_to "Back", :back %>
+<div style="margin-top: 1rem; display: flex; gap: 1rem; align-items: center;">
+  <%= link_to "Back", :back %>
+  <% if can?("office_staff") && @user != Current.user %>
+    <%= link_to "Delete", confirm_delete_user_path(@user),
+          style: "background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; cursor: pointer; text-decoration: none;" %>
+  <% end %>
+</div>

@@ -1,0 +1,21 @@
+<h1>Delete or Disable Member</h1>
+
+<p>Choose an action for <strong><%= @user.full_name %></strong> (<%= @user.email_address %>):</p>
+
+<dl>
+  <dt><strong>Disable</strong></dt>
+  <dd>Removes all roles from the account. The member record is kept but the user will be unable to log in.</dd>
+  <dt><strong>Delete</strong></dt>
+  <dd>Permanently removes the member and all associated data. This cannot be undone.</dd>
+</dl>
+
+<div style="display: flex; gap: 1rem; margin-top: 1.5rem; align-items: center;">
+  <%= button_to "Disable", disable_user_path(@user), method: :patch,
+        style: "background-color: darkorange; color: white; border: none; padding: 0.4rem 0.8rem; cursor: pointer;" %>
+
+  <%= button_to "Delete", user_path(@user), method: :delete,
+        form: { data: { turbo_confirm: "Permanently delete #{@user.full_name}? This cannot be undone." } },
+        style: "background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; cursor: pointer;" %>
+
+  <%= link_to "Cancel", edit_user_path(@user) %>
+</div>

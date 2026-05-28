@@ -16,7 +16,12 @@ Rails.application.routes.draw do
   end
   resources :sailing_participants, only: [ :destroy, :edit, :update ]
   resource :my_registrations, only: [ :show ]
-  resources :users
+  resources :users do
+    member do
+      get  :confirm_delete
+      patch :disable
+    end
+  end
   resources :maintenance_tasks do
     collection do
       get :in_progress
