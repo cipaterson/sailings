@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_23_054211) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_28_040243) do
   create_table "contacts", force: :cascade do |t|
     t.string "address1"
     t.string "address2"
@@ -93,7 +93,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_054211) do
     t.date "ess_expires_on"
     t.date "ess_issued_on"
     t.string "ess_qualification"
-    t.date "fees_due"
+    t.integer "fees_due"
     t.date "fees_paid"
     t.date "first_aid_expires_on"
     t.date "first_aid_issued_on"

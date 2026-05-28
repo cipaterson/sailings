@@ -121,7 +121,7 @@
         </div>
         <div>
           <%= f.label :fees_due, "Fees Due" %>
-          <%= f.date_field :fees_due %>
+          <%= f.number_field :fees_due, min: 2000, max: 2100 %>
         </div>
         <div>
           <%= f.label :days_sailed, "Days Sailed" %>
