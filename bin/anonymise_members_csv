@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "faker"
+require "csv"
+
+input_path  = ARGV[0] || File.expand_path("../../tmp/members.csv", __FILE__)
+output_path = ARGV[1] || File.expand_path("../../tmp/members_test.csv", __FILE__)
+
+abort "Input file not found: #{input_path}" unless File.exist?(input_path)
+
+rows = CSV.read(input_path, headers: true)
+
+first_names = rows.map { |r| r["First name"].to_s.strip }.reject(&:empty?).shuffle
+surnames    = rows.map { |r| r["Surname"].to_s.strip }.reject(&:empty?).shuffle
+
+Faker::Internet.unique.clear
+
+CSV.open(output_path, "w") do |out|
+  out << rows.headers
+
+  rows.each do |row|
+    first  = row["First name"].to_s.strip
+    last   = row["Surname"].to_s.strip
+    mobile = row["Phone (mobile)"].to_s.strip
+    home   = row["Phone (home)"].to_s.strip
+
+    new_first = first.empty? ? first : first_names.pop.to_s
+    new_last  = last.empty?  ? last  : surnames.pop.to_s
+
+    new_email =
+      if new_first.empty? && new_last.empty?
+        row["Email"].to_s.strip.empty? ? "" : Faker::Internet.unique.email
+      else
+        Faker::Internet.unique.email(name: "#{new_first} #{new_last}".strip)
+      end
+
+    new_mobile = mobile.empty? ? "" : Faker::PhoneNumber.cell_phone
+    new_home   = home.empty?   ? "" : Faker::PhoneNumber.phone_number
+
+    out << rows.headers.map do |header|
+      case header
+      when "First name"      then new_first
+      when "Surname"         then new_last
+      when "Email"           then new_email
+      when "Phone (mobile)"  then new_mobile
+      when "Phone (home)"    then new_home
+      else row[header]
+      end
+    end
+  end
+end
+
+puts "Done — #{rows.size} rows written to #{output_path}"
