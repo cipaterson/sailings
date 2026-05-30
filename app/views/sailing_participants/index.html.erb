@@ -1,6 +1,12 @@
 <h1>Crew for <%= @sailing.purpose %></h1>
 
-<%= link_to "Download Manifest (PDF)", manifest_sailing_path(@sailing), target: "_blank" %>
+<% accepted_emails = @sailing_participants.select { |sp| sp.status == "Accepted" }.map { |sp| sp.user.email_address } %>
+<div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+  <%= link_to "Download Manifest (PDF)", manifest_sailing_path(@sailing), target: "_blank" %>
+  <%= link_to "Email Accepted Crew",
+        "mailto:?bcc=#{accepted_emails.join(',')}&subject=#{CGI.escape('Voyage: ' + @sailing.purpose.to_s)}",
+        class: "button" if accepted_emails.any? %>
+</div>
 
 <%= form_with url: bulk_update_sailing_sailing_participants_path(@sailing), method: :patch do |f| %>
   <table class="wide-table">
@@ -45,6 +51,7 @@
     <%= f.submit "Save All" %>
     <%= link_to "Cancel", :back %>
   </div>
+  <%= link_to "Export CSV", sailing_sailing_participants_path(@sailing, format: :csv) %>
 <% end %>
 
 <h2>Add Crew</h2>
@@ -73,6 +80,18 @@
   <% end %>
 <% else %>
   <p>All users are already participating in this sailing.</p>
+<% end %>
+
+<h2>SMS Accepted Crew</h2>
+
+<%= form_with url: sms_accepted_sailing_sailing_participants_path(@sailing), method: :post do %>
+  <div>
+    <%= label_tag :sms_message, "Message" %>
+    <%= text_area_tag :sms_message, nil, rows: 4, placeholder: "Enter SMS message…", style: "width: 100%;" %>
+  </div>
+  <div style="margin-top: 0.5rem;">
+    <%= submit_tag "Send SMS to Accepted Crew" %>
+  </div>
 <% end %>
 
 <%= link_to "Back to Voyages", sailings_path %>

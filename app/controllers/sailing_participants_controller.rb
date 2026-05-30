@@ -1,11 +1,30 @@
 class SailingParticipantsController < ApplicationController
-  before_action :set_sailing, only: [ :index, :create, :bulk_update, :new ]
+  before_action :set_sailing, only: [ :index, :create, :bulk_update, :new, :sms_accepted ]
   before_action :set_sailing_participant, only: [ :edit, :update, :destroy ]
-  before_action :require_office_staff_or_crewing_operator!, only: [ :index, :bulk_update ]
+  before_action :require_office_staff_or_crewing_operator!, only: [ :index, :bulk_update, :sms_accepted ]
 
   def index
     @sailing_participants = @sailing.sailing_participants.includes(:user)
     @sailing_participant = SailingParticipant.new
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        accepted = @sailing_participants.select { |sp| sp.status == "Accepted" }
+        csv_data = CSV.generate(headers: true) do |csv|
+          csv << [ "Name", "Email", "Mobile", "ESS", "Class", "MED", "WWVP Expires", "Marine Safety Refresher", "Status" ]
+          accepted.each do |sp|
+            u = sp.user
+            csv << [ u.full_name, u.email_address, u.contact&.mobile,
+                     u.ess_qualification, u.sailing_class, u.med_qualification,
+                     u.wwvp_expires_on, u.marine_safety_refresher_on, sp.status ]
+          end
+        end
+        send_data csv_data,
+                  filename: "crew-#{@sailing.id}-#{Date.today}.csv",
+                  type: "text/csv"
+      end
+    end
   end
 
   def new
@@ -64,6 +83,27 @@ class SailingParticipantsController < ApplicationController
   def destroy
     @sailing_participant.destroy
     redirect_to sailings_path, notice: "Registration was successfully cancelled."
+  end
+
+  def sms_accepted
+    message = params[:sms_message].to_s.strip
+    if message.blank?
+      redirect_to sailing_sailing_participants_path(@sailing), alert: "Message cannot be blank."
+      return
+    end
+
+    mobiles = @sailing.sailing_participants
+                      .includes(user: :contact)
+                      .where(status: "Accepted")
+                      .filter_map { |sp| sp.user.contact&.mobile.presence }
+
+    if mobiles.empty?
+      redirect_to sailing_sailing_participants_path(@sailing), alert: "No mobile numbers found for Accepted participants."
+      return
+    end
+
+    SendSmsBatchJob.perform_later(mobiles: mobiles, message: message)
+    redirect_to sailing_sailing_participants_path(@sailing), notice: "SMS queued for #{mobiles.size} accepted participant(s)."
   end
 
   private

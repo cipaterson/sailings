@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     resources :sailing_participants, only: [ :index, :create, :new ] do
       collection do
         patch :bulk_update
+        post  :sms_accepted
       end
     end
   end
