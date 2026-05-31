@@ -3,30 +3,38 @@ class UsersController < ApplicationController
   before_action :require_office_staff!, only: %i[index new create destroy confirm_delete disable]
   before_action :require_self_or_office_staff!, only: %i[show edit update]
 
+  PER_PAGE = 15
+
   def index
     @disabled_filter = params[:disabled].present?
 
     if @disabled_filter
-      @users = User.where(roles_mask: 0)
+      base = User.where(roles_mask: 0)
     else
-      @users = User.where("roles_mask > 0")
+      base = User.where("roles_mask > 0")
       @selected_roles = Array(params[:roles]).select { |r| User::ROLES.include?(r) }
       @search = params[:search].presence
 
       if @selected_roles.any?
         mask = @selected_roles.sum { |r| 2**User::ROLES.index(r) }
-        @users = @users.where("roles_mask & ? != 0", mask)
+        base = base.where("roles_mask & ? != 0", mask)
       end
 
       if @search
         term = "%#{@search}%"
-        @users = @users.where("(first_name || ' ' || last_name) LIKE ? OR email_address LIKE ?", term, term)
+        base = base.where("(first_name || ' ' || last_name) LIKE ? OR email_address LIKE ?", term, term)
       end
     end
 
     respond_to do |format|
-      format.html
+      format.html do
+        @current_page = (params[:page] || 1).to_i.clamp(1, Float::INFINITY)
+        @total_pages  = [ (base.count.to_f / PER_PAGE).ceil, 1 ].max
+        @current_page = @current_page.clamp(1, @total_pages)
+        @users = base.order(:last_name, :first_name).limit(PER_PAGE).offset((@current_page - 1) * PER_PAGE)
+      end
       format.csv do
+        @users = base.order(:last_name, :first_name)
         csv_data = CSV.generate(headers: true) do |csv|
           csv << [ "Name", "Email", "Mobile", "Membership Type", "Fees Paid", "Fees Due", "Roles" ]
           @users.each do |u|

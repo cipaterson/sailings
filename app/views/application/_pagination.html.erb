@@ -1,5 +1,5 @@
 <% if total_pages > 1 %>
-  <% filter = { from_date: defined?(from_date) ? from_date : nil, to_date: defined?(to_date) ? to_date : nil }.compact %>
+  <% filter = request.query_parameters.except("page") %>
   <nav style="display: flex; gap: 0.4rem; align-items: center; margin-top: 1rem;">
     <%# Previous %>
     <% if current_page > 1 %>

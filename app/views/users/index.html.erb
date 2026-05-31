@@ -57,3 +57,5 @@
 </table>
 
 <%= link_to "Export CSV", users_path(format: :csv, roles: @selected_roles, search: @search) %>
+
+<%= render "application/pagination", current_page: @current_page, total_pages: @total_pages %>
