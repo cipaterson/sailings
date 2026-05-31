@@ -11,7 +11,8 @@ Rails.application.configure do
     policy.img_src     :self, :data
     policy.object_src  :none
     policy.script_src  :self, :https
-    policy.style_src   :self, :unsafe_inline, "https://cdn.simplecss.org" # unsafe_inline needed for Turbo's inline styles
+    policy.style_src   :self, :unsafe_inline, "https://cdn.simplecss.org", "https://cdn.jsdelivr.net" # unsafe_inline needed for Turbo's inline styles
+    policy.connect_src :self, "https://cdn.jsdelivr.net"
     # Specify URI for violation reports
     # policy.report_uri "/csp-violation-report-endpoint"
   end

@@ -69,7 +69,9 @@
 
     <div>
       <%= f.label :user_id, "Member" %>
-      <%= f.select :user_id, available_users.map { |u| [u.email_address, u.id] }, { include_blank: "Select crew member" } %>
+      <%= f.select :user_id, available_users.map { |u| [u.full_name, u.id] },
+            { include_blank: "Select crew member" },
+            { data: { controller: "searchable-select" } } %>
     </div>
 
     <%= f.hidden_field :status, value: "Accepted" %>
