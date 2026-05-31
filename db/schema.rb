@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_28_040243) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_31_130712) do
   create_table "contacts", force: :cascade do |t|
     t.string "address1"
     t.string "address2"
@@ -69,6 +69,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_040243) do
     t.string "purpose"
     t.datetime "returns_at"
     t.string "sailing_type"
+    t.string "status", default: "draft"
     t.datetime "updated_at", null: false
   end
 

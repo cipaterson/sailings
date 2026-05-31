@@ -69,11 +69,18 @@ class SailingParticipantsController < ApplicationController
     attended = params[:attended] || {}
     statuses.each do |id, status|
       participant = @sailing.sailing_participants.find(id)
-      old_status = participant.status
+      old_status   = participant.status
+      old_attended = participant.attended.to_i
       attended_value = attended[id] == "1" ? 1 : 0
       if participant.update(status: status, attended: attended_value)
         if old_status != participant.status
           SailingParticipantMailer.status_changed(participant, old_status).deliver_later
+        end
+        if @sailing.sailing_type == "Sail" && attended_value == 1 && old_attended != 1
+          participant.user.update!(
+            days_sailed: participant.user.days_sailed.to_i + 1,
+            last_sailed: @sailing.departs_at&.to_date
+          )
         end
       end
     end

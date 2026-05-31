@@ -1,20 +1,26 @@
 class SailingsController < ApplicationController
-  before_action :set_sailing, only: %i[show edit update destroy manifest]
-  before_action :require_office_staff_or_crewing_operator!, only: %i[new create edit update destroy manifest]
+  before_action :set_sailing, only: %i[show edit update destroy manifest set_status]
+  before_action :require_office_staff_or_crewing_operator!, only: %i[new create edit update destroy manifest set_status]
 
   PER_PAGE = 15
 
   def index
-    @from_date = if params.key?(:from_date)
-                   Date.parse(params[:from_date]) rescue nil
-    else
-                   Date.today
-    end
-    @to_date = Date.parse(params[:to_date]) rescue nil if params[:to_date].present?
+    @status_filter = params[:status].presence
 
-    base = Sailing.all
-    base = base.where("departs_at >= ?", @from_date.beginning_of_day) if @from_date
-    base = base.where("departs_at <= ?", @to_date.end_of_day) if @to_date
+    if @status_filter
+      base = Sailing.where(status: @status_filter)
+    else
+      @from_date = if params.key?(:from_date)
+                     Date.parse(params[:from_date]) rescue nil
+                   else
+                     Date.today
+                   end
+      @to_date = Date.parse(params[:to_date]) rescue nil if params[:to_date].present?
+
+      base = Sailing.all
+      base = base.where("departs_at >= ?", @from_date.beginning_of_day) if @from_date
+      base = base.where("departs_at <= ?", @to_date.end_of_day) if @to_date
+    end
 
     filtered = base.left_joins(:sailing_participants)
                    .select("sailings.*, COUNT(sailing_participants.id) AS participants_count")
@@ -120,6 +126,11 @@ class SailingsController < ApplicationController
     end
   end
 
+  def set_status
+    @sailing.update!(status: params[:status])
+    redirect_back fallback_location: sailings_path
+  end
+
   def destroy
     @sailing.destroy
     redirect_to sailings_path, notice: "Sailing was successfully deleted."
@@ -133,7 +144,7 @@ class SailingsController < ApplicationController
 
   def sailing_params
     params.require(:sailing).permit(
-      :purpose, :sailing_type, :departs_date, :departs_time, :returns_date, :returns_time,
+      :purpose, :sailing_type, :status, :departs_date, :departs_time, :returns_date, :returns_time,
       :ln_contact, :master, :comments, :charterer, :passenger_count, :additional_details, :engineer,
       charter_contact_attributes: [
         :id, :full_name, :email_address, :work_phone, :mobile,

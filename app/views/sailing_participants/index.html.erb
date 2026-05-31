@@ -1,4 +1,4 @@
-<h1>Crew for <%= @sailing.purpose %></h1>
+<h1><%= @sailing.display_name %></h1>
 
 <% accepted_emails = @sailing_participants.select { |sp| sp.status == "Accepted" }.map { |sp| sp.user.email_address } %>
 <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
@@ -53,6 +53,18 @@
   </div>
   <%= link_to "Export CSV", sailing_sailing_participants_path(@sailing, format: :csv) %>
 <% end %>
+
+<div style="text-align: center; margin: 1rem 0;">
+  <%= form_with url: set_status_sailing_path(@sailing), method: :patch do |f| %>
+    <input type="hidden" name="status" value="scheduled">
+    <label>
+      <input type="checkbox" name="status" value="closed"
+             <%= "checked" if @sailing.status == "closed" %>
+             onchange="this.form.submit()">
+      Close to Registrations
+    </label>
+  <% end %>
+</div>
 
 <h2>Add Crew</h2>
 

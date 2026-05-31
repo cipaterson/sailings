@@ -1,5 +1,6 @@
 class Sailing < ApplicationRecord
-  SAILING_TYPES = %w[Voyage Training Charter Maintenance Special].freeze
+  SAILING_TYPES    = %w[Sail Maintenance Engineering Other].freeze
+  SAILING_STATUSES = %w[draft scheduled closed done].freeze
 
   AUSTRALIAN_STATES = [
     "Australian Capital Territory",
@@ -20,10 +21,18 @@ class Sailing < ApplicationRecord
 
 
   validates :purpose, presence: true
-  validates :sailing_type, inclusion: { in: SAILING_TYPES }, allow_blank: true
+  validates :sailing_type, presence: true, inclusion: { in: SAILING_TYPES }
   enum :sailing_type, SAILING_TYPES.index_by { |t| t }, scopes: false
+  enum :status, SAILING_STATUSES.index_by { |s| s }, scopes: false
 
   attr_writer :departs_date, :departs_time, :returns_date, :returns_time
+
+  def display_name
+    parts = [purpose]
+    parts << departs_at.strftime("%d %b %Y") if departs_at
+    parts << "(#{charterer})" if charterer.present?
+    parts.join(" – ")
+  end
 
   def departs_date = departs_at&.to_date
   def departs_time = departs_at&.strftime("%H:%M")
@@ -42,8 +51,13 @@ class Sailing < ApplicationRecord
   end
 
   before_validation :combine_datetime_fields
+  before_validation :auto_set_status
 
   private
+
+  def auto_set_status
+    self.status = "scheduled" if departs_at.present? && status == "draft"
+  end
 
   def combine_datetime_fields
     self.departs_at = Time.zone.parse("#{@departs_date} #{@departs_time}") if @departs_date.present?

@@ -6,7 +6,8 @@ Rails.application.routes.draw do
       get :calendar
     end
     member do
-      get :manifest
+      get   :manifest
+      patch :set_status
     end
     resources :sailing_participants, only: [ :index, :create, :new ] do
       collection do

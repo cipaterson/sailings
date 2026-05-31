@@ -44,6 +44,11 @@
       </div>
 
       <div>
+        <%= f.label :status, "Status" %>
+        <%= f.select :status, Sailing::SAILING_STATUSES %>
+      </div>
+
+      <div>
         <%= f.label :purpose, "Voyage Purpose" %>
         <%= f.text_field :purpose %>
       </div>

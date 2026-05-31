@@ -1,14 +1,23 @@
 <h1>Voyages</h1>
 
 <%= link_to "New Voyage", new_sailing_path, class: "button" if can?("office_staff") %>
+<% if can?("office_staff") %>
+  <% if @status_filter == "draft" %>
+    <%= link_to "All Voyages", sailings_path, class: "button" %>
+  <% else %>
+    <%= link_to "Draft Voyages", sailings_path(status: "draft"), class: "button" %>
+  <% end %>
+<% end %>
 
-<%= form_with url: sailings_path, method: :get, local: true do |f| %>
-  <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
-    <label>From: <%= date_field_tag :from_date, @from_date %></label>
-    <label>To: <%= date_field_tag :to_date, @to_date %></label>
-    <%= f.submit "Apply" %>
-    <%= link_to "Reset", sailings_path %>
-  </div>
+<% unless @status_filter %>
+  <%= form_with url: sailings_path, method: :get, local: true do |f| %>
+    <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+      <label>From: <%= date_field_tag :from_date, @from_date %></label>
+      <label>To: <%= date_field_tag :to_date, @to_date %></label>
+      <%= f.submit "Apply" %>
+      <%= link_to "Reset", sailings_path %>
+    </div>
+  <% end %>
 <% end %>
 
 <div class="wide-table">
@@ -59,8 +68,10 @@
           <% my_participant = @my_participants[sailing.id] %>
           <% if my_participant %>
             <%= link_to "Registered", edit_sailing_participant_path(my_participant) %>
-          <% else %>
+          <% elsif sailing.status == "scheduled" %>
             <%= link_to "Register", new_sailing_sailing_participant_path(sailing), class: "button" %>
+          <% else %>
+            <button disabled>Register</button>
           <% end %>
         </td>
       </tr>
