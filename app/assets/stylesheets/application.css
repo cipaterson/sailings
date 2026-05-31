@@ -9,6 +9,78 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
+/* ===== Production theme: override Simple.css variables ===== */
+:root {
+    --sans-font: Arial, Helvetica, Geneva, sans-serif;
+    --bg: #fff;
+    --accent-bg: #f1f0eb;
+    --text: #5a5a59;
+    --text-light: #777777;
+    --border: #ddd;
+    --accent: #0074bd;
+    --accent-hover: #005a9e;
+    --accent-text: #fff;
+    --standard-border-radius: 4px;
+}
+html {
+    background-color: #b6b6b6;
+}
+h1,
+h2,
+h3 {
+    color: #e2a83f;
+    font-weight: 300;
+}
+a {
+    color: #0074bd;
+}
+a:hover {
+    color: red;
+}
+header + nav,
+header + nav + nav {
+    background: transparent;
+    border: none;
+    padding: 0.25rem 0;
+}
+nav a.button,
+nav > a {
+    background-color: #2f414f;
+    color: #fff;
+    border: 1px solid #e2a83f;
+    border-radius: 4px;
+    transition:
+        background-color 0.2s,
+        color 0.2s;
+}
+nav a.button:hover,
+nav > a:hover {
+    background-color: #ffbe47;
+    color: #2f414f;
+    text-decoration: none;
+}
+[type="submit"],
+button[type="submit"] {
+    background-color: #4d8f46;
+    border-color: #336600;
+    color: #fff;
+}
+[type="submit"]:hover,
+button[type="submit"]:hover {
+    background-color: #0a6700;
+    border-color: #0a6700;
+}
+fieldset {
+    background-color: #f1f0eb;
+}
+legend {
+    background-color: #d8a13d;
+    color: #fff;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+}
+/* ===== End production theme ===== */
+
 .role-filter {
     display: flex;
     flex-direction: column;
