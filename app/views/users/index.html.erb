@@ -1,9 +1,17 @@
 <h1>Members</h1>
 
 <%= link_to "New Member", new_user_path, class: "button" if can?("office_staff") %>
+<% if can?("office_staff") %>
+  <% if @disabled_filter %>
+    <%= link_to "All Members", users_path, class: "button" %>
+  <% else %>
+    <%= link_to "Disabled Members", users_path(disabled: 1), class: "button" %>
+  <% end %>
+<% end %>
 
 <%= form_with url: users_path, method: :get do |f| %>
   <div style="display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; margin-bottom: 0.5rem;">
+    <% unless @disabled_filter %>
     <div class="role-filter">
       <% User::ROLES.each do |role| %>
         <label>
@@ -12,6 +20,7 @@
         </label>
       <% end %>
     </div>
+    <% end %>
     <div style="display: flex; gap: 1rem; align-items: center;">
       <%= text_field_tag :search, @search, placeholder: "Name or email" %>
       <%= f.submit "Filter" %>

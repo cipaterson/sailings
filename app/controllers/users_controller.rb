@@ -4,18 +4,24 @@ class UsersController < ApplicationController
   before_action :require_self_or_office_staff!, only: %i[show edit update]
 
   def index
-    @users = User.all
-    @selected_roles = Array(params[:roles]).select { |r| User::ROLES.include?(r) }
-    @search = params[:search].presence
+    @disabled_filter = params[:disabled].present?
 
-    if @selected_roles.any?
-      mask = @selected_roles.sum { |r| 2**User::ROLES.index(r) }
-      @users = @users.where("roles_mask & ? != 0", mask)
-    end
+    if @disabled_filter
+      @users = User.where(roles_mask: 0)
+    else
+      @users = User.where("roles_mask > 0")
+      @selected_roles = Array(params[:roles]).select { |r| User::ROLES.include?(r) }
+      @search = params[:search].presence
 
-    if @search
-      term = "%#{@search}%"
-      @users = @users.where("(first_name || ' ' || last_name) LIKE ? OR email_address LIKE ?", term, term)
+      if @selected_roles.any?
+        mask = @selected_roles.sum { |r| 2**User::ROLES.index(r) }
+        @users = @users.where("roles_mask & ? != 0", mask)
+      end
+
+      if @search
+        term = "%#{@search}%"
+        @users = @users.where("(first_name || ' ' || last_name) LIKE ? OR email_address LIKE ?", term, term)
+      end
     end
 
     respond_to do |format|
