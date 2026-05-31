@@ -144,7 +144,7 @@ class SailingsController < ApplicationController
 
   def sailing_params
     params.require(:sailing).permit(
-      :purpose, :sailing_type, :status, :departs_date, :departs_time, :returns_date, :returns_time,
+      :purpose, :sailing_type, :status, :training, :departs_date, :departs_time, :returns_date, :returns_time,
       :ln_contact, :master, :comments, :charterer, :passenger_count, :additional_details, :engineer,
       charter_contact_attributes: [
         :id, :full_name, :email_address, :work_phone, :mobile,

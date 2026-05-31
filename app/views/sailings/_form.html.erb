@@ -38,14 +38,19 @@
     <div id="panel-info" class="tab-panel">
       <%= render 'voyage_dates', f: f %>
 
-      <div>
-        <%= f.label :sailing_type, "Sailing Type" %>
-        <%= f.select :sailing_type, Sailing::SAILING_TYPES, { include_blank: "Select type" } %>
-      </div>
-
-      <div>
-        <%= f.label :status, "Status" %>
-        <%= f.select :status, Sailing::SAILING_STATUSES %>
+      <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+        <div>
+          <%= f.label :sailing_type, "Sailing Type" %>
+          <%= f.select :sailing_type, Sailing::SAILING_TYPES, { include_blank: "Select type" } %>
+        </div>
+        <div>
+          <%= f.label :status, "Status" %>
+          <%= f.select :status, Sailing::SAILING_STATUSES %>
+        </div>
+        <div>
+          <%= f.label :training, "Training" %>
+          <%= f.select :training, Sailing::TRAINING_TYPES, { include_blank: "None" } %>
+        </div>
       </div>
 
       <div>

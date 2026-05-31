@@ -82,7 +82,18 @@ class SailingParticipantsController < ApplicationController
             last_sailed: @sailing.departs_at&.to_date
           )
         end
+        if @sailing.training.present? && attended_value == 1 && old_attended != 1
+          training_field = { "MSR" => :marine_safety_refresher_on,
+                             "SIT1" => :sit_date,
+                             "SIT2" => :sit2_date }[@sailing.training]
+          participant.user.update!(training_field => @sailing.departs_at&.to_date) if training_field
+        end
       end
+    end
+    if params[:close_sailing] == "1"
+      @sailing.update!(status: "closed")
+    elsif params[:reopen_sailing] == "1"
+      @sailing.update!(status: "scheduled")
     end
     redirect_to sailing_sailing_participants_path(@sailing), notice: "Participants were successfully updated."
   end

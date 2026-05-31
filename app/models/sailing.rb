@@ -1,6 +1,7 @@
 class Sailing < ApplicationRecord
   SAILING_TYPES    = %w[Sail Maintenance Engineering Other].freeze
   SAILING_STATUSES = %w[draft scheduled closed done].freeze
+  TRAINING_TYPES   = %w[MSR SIT1 SIT2].freeze
 
   AUSTRALIAN_STATES = [
     "Australian Capital Territory",
@@ -23,7 +24,8 @@ class Sailing < ApplicationRecord
   validates :purpose, presence: true
   validates :sailing_type, presence: true, inclusion: { in: SAILING_TYPES }
   enum :sailing_type, SAILING_TYPES.index_by { |t| t }, scopes: false
-  enum :status, SAILING_STATUSES.index_by { |s| s }, scopes: false
+  enum :status,   SAILING_STATUSES.index_by { |s| s }, scopes: false
+  enum :training, TRAINING_TYPES.index_by { |t| t },  scopes: false
 
   attr_writer :departs_date, :departs_time, :returns_date, :returns_time
 
