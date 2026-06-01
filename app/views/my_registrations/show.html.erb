@@ -16,7 +16,7 @@
     <tbody>
       <% @sailing_participants.each do |participant| %>
         <tr>
-          <td><%= participant.sailing.charterer %></td>
+          <td><%= participant.sailing.display_name %></td>
           <td><%= participant.sailing.voyage_dates %></td>
           <td><%= participant.created_at.in_time_zone.strftime("%d %b %Y - %H:%M") %></td>
           <td><%= participant.status %></td>

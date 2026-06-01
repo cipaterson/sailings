@@ -45,6 +45,7 @@
     </nav>
     <nav>
       <%= link_to "Members", users_path, class: "button" if can?("office_staff") %>
+      <%= link_to "Voyage Financials", financials_sailings_path, class: "button" if can?("office_staff") %>
       <%= link_to "Maintenance Tasks", in_progress_maintenance_tasks_path, class: "button" if Current.user&.has_role?("maintenance") %>
     </nav>
     <% end %>

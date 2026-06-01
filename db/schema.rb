@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_01_001217) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_01_045732) do
   create_table "contacts", force: :cascade do |t|
     t.string "address1"
     t.string "address2"
@@ -59,15 +59,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_01_001217) do
 
   create_table "sailings", force: :cascade do |t|
     t.text "additional_details"
+    t.string "charter_state", default: "TBC"
     t.string "charterer"
     t.text "comments"
     t.datetime "created_at", null: false
+    t.date "date_paid"
     t.datetime "departs_at"
+    t.integer "deposit_cents"
+    t.string "deposit_invoice"
+    t.date "deposit_invoice_date"
+    t.string "deposit_receipt_no"
     t.string "engineer"
+    t.integer "final_amount_cents"
+    t.string "final_invoice"
+    t.date "invoice_date"
     t.string "ln_contact"
     t.string "master"
     t.integer "passenger_count"
     t.string "purpose"
+    t.integer "quoted_cost_cents"
+    t.string "receipt_no"
     t.datetime "returns_at"
     t.string "sailing_type"
     t.string "status", default: "draft"

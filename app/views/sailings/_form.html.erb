@@ -5,12 +5,14 @@
   .tab-panel { display: none; }
 
   #sailing-tab-info:checked ~ .tab-labels label[for="sailing-tab-info"],
-  #sailing-tab-charter:checked ~ .tab-labels label[for="sailing-tab-charter"] {
+  #sailing-tab-charter:checked ~ .tab-labels label[for="sailing-tab-charter"],
+  #sailing-tab-costs:checked ~ .tab-labels label[for="sailing-tab-costs"] {
     border-color: #ccc; border-bottom-color: white; background: white; font-weight: bold;
   }
 
   #sailing-tab-info:checked ~ .tab-panels #panel-info,
-  #sailing-tab-charter:checked ~ .tab-panels #panel-charter {
+  #sailing-tab-charter:checked ~ .tab-panels #panel-charter,
+  #sailing-tab-costs:checked ~ .tab-panels #panel-costs {
     display: block;
   }
 </style>
@@ -26,12 +28,21 @@
     </div>
   <% end %>
 
-  <input type="radio" name="sailing_tab" id="sailing-tab-info" class="tab-radio" checked>
-  <input type="radio" name="sailing_tab" id="sailing-tab-charter" class="tab-radio">
+  <input type="radio" name="sailing_tab" id="sailing-tab-info" class="tab-radio"
+         <%= "checked" if params[:tab].blank? || params[:tab] == "info" %>>
+  <% if sailing.charterer.present? %>
+    <input type="radio" name="sailing_tab" id="sailing-tab-charter" class="tab-radio"
+           <%= "checked" if params[:tab] == "charter" %>>
+    <input type="radio" name="sailing_tab" id="sailing-tab-costs" class="tab-radio"
+           <%= "checked" if params[:tab] == "costs" %>>
+  <% end %>
 
   <div class="tab-labels">
     <label for="sailing-tab-info">Voyage Information</label>
-    <label for="sailing-tab-charter">Charter Contact</label>
+    <% if sailing.charterer.present? %>
+      <label for="sailing-tab-charter">Charter Contact</label>
+      <label for="sailing-tab-costs">Charter Costs</label>
+    <% end %>
   </div>
 
   <div class="tab-panels">
@@ -98,6 +109,70 @@
       <%= f.fields_for :charter_contact do |cf| %>
         <%= render 'shared/contact_fields', f: cf %>
       <% end %>
+    </div>
+
+    <div id="panel-costs" class="tab-panel">
+      <fieldset style="border: 1px solid #ccc; border-radius: 4px; padding: 1rem; margin-bottom: 1rem;">
+        <legend><strong>Quote</strong></legend>
+        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+          <div>
+            <%= f.label :charter_state, "Charter State" %>
+            <%= f.select :charter_state, Sailing::CHARTER_STATES %>
+          </div>
+          <div>
+            <%= f.label :quoted_cost, "Quoted Cost" %>
+            <%= f.text_field :quoted_cost %>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset style="border: 1px solid #ccc; border-radius: 4px; padding: 1rem; margin-bottom: 1rem;">
+        <legend><strong>Deposit</strong></legend>
+        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+          <div>
+            <%= f.label :deposit_invoice, "Invoice No." %>
+            <%= f.text_field :deposit_invoice %>
+          </div>
+          <div>
+            <%= f.label :deposit_invoice_date, "Invoice Date" %>
+            <%= f.date_field :deposit_invoice_date %>
+          </div>
+          <div>
+            <%= f.label :deposit, "Deposit Amount" %>
+            <%= f.text_field :deposit %>
+          </div>
+          <div>
+            <%= f.label :deposit_receipt_no, "Receipt No." %>
+            <%= f.text_field :deposit_receipt_no %>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset style="border: 1px solid #ccc; border-radius: 4px; padding: 1rem; margin-bottom: 1rem;">
+        <legend><strong>Final Payment</strong></legend>
+        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+          <div>
+            <%= f.label :final_invoice, "Invoice No." %>
+            <%= f.text_field :final_invoice %>
+          </div>
+          <div>
+            <%= f.label :invoice_date, "Invoice Date" %>
+            <%= f.date_field :invoice_date %>
+          </div>
+          <div>
+            <%= f.label :final_amount, "Final Amount" %>
+            <%= f.text_field :final_amount %>
+          </div>
+          <div>
+            <%= f.label :date_paid, "Date Paid" %>
+            <%= f.date_field :date_paid %>
+          </div>
+          <div>
+            <%= f.label :receipt_no, "Receipt No." %>
+            <%= f.text_field :receipt_no %>
+          </div>
+        </div>
+      </fieldset>
     </div>
   </div>
 

@@ -1,6 +1,7 @@
 class SailingsController < ApplicationController
   before_action :set_sailing, only: %i[show edit update destroy manifest set_status duplicate]
   before_action :require_office_staff_or_crewing_operator!, only: %i[new create edit update destroy manifest set_status duplicate]
+  before_action :require_office_staff!, only: %i[financials]
 
   PER_PAGE = 15
 
@@ -88,6 +89,25 @@ class SailingsController < ApplicationController
                              .index_by(&:sailing_id)
   end
 
+  def financials
+    @from_date = if params.key?(:from_date)
+                   Date.parse(params[:from_date]) rescue nil
+                 else
+                   Date.today
+                 end
+    @to_date = Date.parse(params[:to_date]) rescue nil if params[:to_date].present?
+
+    base = Sailing.where.not(charterer: [ nil, "" ])
+    base = base.where("departs_at >= ?", @from_date.beginning_of_day) if @from_date
+    base = base.where("departs_at <= ?", @to_date.end_of_day) if @to_date
+    base = base.order(departs_at: :asc)
+
+    @current_page = (params[:page] || 1).to_i.clamp(1, Float::INFINITY)
+    @total_pages  = [ (base.count.to_f / PER_PAGE).ceil, 1 ].max
+    @current_page = @current_page.clamp(1, @total_pages)
+    @sailings     = base.limit(PER_PAGE).offset((@current_page - 1) * PER_PAGE)
+  end
+
   def show
   end
 
@@ -155,6 +175,8 @@ class SailingsController < ApplicationController
     params.require(:sailing).permit(
       :purpose, :sailing_type, :status, :training, :departs_date, :departs_time, :returns_date, :returns_time,
       :ln_contact, :master, :comments, :charterer, :passenger_count, :additional_details, :engineer,
+      :charter_state, :quoted_cost, :deposit_invoice, :deposit_invoice_date, :deposit, :deposit_receipt_no,
+      :final_amount, :invoice_date, :final_invoice, :date_paid, :receipt_no,
       charter_contact_attributes: [
         :id, :full_name, :email_address, :work_phone, :mobile,
         :address1, :address2, :city, :state, :postcode

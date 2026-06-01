@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :sailings do
     collection do
       get :calendar
+      get :financials
     end
     member do
       get   :manifest

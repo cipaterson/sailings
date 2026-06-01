@@ -5,7 +5,7 @@
   <%= link_to "Download Manifest (PDF)", manifest_sailing_path(@sailing), target: "_blank" %>
   <% if accepted_emails.any? %>
     <%= link_to "Email Accepted Crew",
-          "mailto:?bcc=#{accepted_emails.join(',')}&subject=#{CGI.escape('Voyage: ' + @sailing.purpose.to_s)}",
+          "mailto:?bcc=#{accepted_emails.join(',')}&subject=#{@sailing.display_name}",
           class: "button" %>
   <% else %>
     <button type="button" disabled>Email Accepted Crew</button>

@@ -1,0 +1,39 @@
+<h1>Voyage Financials</h1>
+
+<%= form_with url: financials_sailings_path, method: :get, local: true do |f| %>
+  <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+    <label>From: <%= date_field_tag :from_date, @from_date %></label>
+    <label>To: <%= date_field_tag :to_date, @to_date %></label>
+    <%= f.submit "Apply" %>
+    <%= link_to "Reset", financials_sailings_path %>
+  </div>
+<% end %>
+
+<div class="wide-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Voyage</th>
+        <th>Charter State</th>
+        <th>Quoted Cost</th>
+        <th>Final Invoice</th>
+        <th>Final Amount</th>
+        <th>Date Paid</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sailings.each do |sailing| %>
+        <tr>
+          <td><%= link_to sailing.display_name, edit_sailing_path(sailing, tab: "costs") %></td>
+          <td><%= sailing.charter_state %></td>
+          <td><%= sailing.quoted_cost&.format %></td>
+          <td><%= sailing.final_invoice %></td>
+          <td><%= sailing.final_amount&.format %></td>
+          <td><%= sailing.date_paid %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<%= render "application/pagination", current_page: @current_page, total_pages: @total_pages %>
