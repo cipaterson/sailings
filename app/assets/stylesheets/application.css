@@ -190,9 +190,10 @@ button,
     position: relative;
     z-index: 1;
 }
-.calendar-sailing.registered {
-    background: #c6f0c2;
-}
+.calendar-sailing.charter-tbc        { background: #f48fb1; }
+.calendar-sailing.charter-confirmed   { background: #fff176; }
+.calendar-sailing.charter-outstanding { background: #ef9a9a; }
+.calendar-sailing.charter-paid        { background: #a5d6a7; }
 .calendar-sailing.continues-right {
     margin-right: -5px;
     border-top-right-radius: 0;
@@ -299,9 +300,10 @@ button,
     z-index: 2;
     opacity: 0.9;
 }
-.cal-sailing-block.registered {
-    background: #c6f0c2;
-}
+.cal-sailing-block.charter-tbc        { background: #f48fb1; }
+.cal-sailing-block.charter-confirmed   { background: #fff176; }
+.cal-sailing-block.charter-outstanding { background: #ef9a9a; }
+.cal-sailing-block.charter-paid        { background: #a5d6a7; }
 .cal-sailing-time {
     display: block;
     font-size: 0.65rem;
@@ -341,9 +343,14 @@ button,
 .cal-allday-bar:hover {
     opacity: 0.9;
 }
-.cal-allday-bar.registered {
-    background: #c6f0c2;
-}
+.cal-allday-bar.charter-tbc        { background: #f48fb1; }
+.cal-allday-bar.charter-confirmed   { background: #fff176; }
+.cal-allday-bar.charter-outstanding { background: #ef9a9a; }
+.cal-allday-bar.charter-paid        { background: #a5d6a7; }
+tr.charter-tbc        { background: #f48fb1; }
+tr.charter-confirmed  { background: #fff176; }
+tr.charter-outstanding{ background: #ef9a9a; }
+tr.charter-paid       { background: #a5d6a7; }
 .cal-scroll-container {
     max-height: 70vh;
     overflow-y: auto;

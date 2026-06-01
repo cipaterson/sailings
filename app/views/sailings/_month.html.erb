@@ -34,7 +34,7 @@
           continues_right = return_day > day && day.wday != 0
           continues_left  = depart_day < day && day.wday != 1
           sailing_classes = [ "calendar-sailing" ]
-          sailing_classes << "registered"       if my_participants[sailing.id]
+          sailing_classes << charter_calendar_class(sailing) if can?("office_staff")
           sailing_classes << "continues-right"  if continues_right
           sailing_classes << "continues-left"   if continues_left
         %>

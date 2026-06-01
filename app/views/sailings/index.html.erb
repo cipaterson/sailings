@@ -45,7 +45,7 @@
   </thead>
   <tbody>
     <% @sailings.each do |sailing| %>
-      <tr>
+      <tr class="<%= charter_calendar_class(sailing) if can?('office_staff') %>">
         <td><%= sailing.departs_at&.strftime("%a") %></td>
         <td><%= sailing.departs_at&.to_date %></td>
         <td>
@@ -55,7 +55,7 @@
             <%= sailing.purpose %>
           <% end %>
         </td>
-        <td><%= sailing.charterer %></td>
+        <td><%= sailing.charterer.present? ? link_to(sailing.charterer, edit_sailing_path(sailing, tab: "costs")) : nil %></td>
         <td><%= sailing.departs_at&.strftime("%H:%M") %></td>
         <td><%= sailing.returns_at&.to_date unless sailing.returns_at&.to_date == sailing.departs_at&.to_date %></td>
         <td><%= sailing.returns_at&.strftime("%H:%M") %></td>
