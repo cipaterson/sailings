@@ -1,6 +1,7 @@
 <div style="display: flex; align-items: center; gap: 1rem;">
   <h1 style="margin: 10;"><%= @sailing.display_name %></h1>
   <%= link_to "Manage Crew", sailing_sailing_participants_path(@sailing), class: "button" %>
+  <%= button_to "Duplicate", duplicate_sailing_path(@sailing), method: :post, class: "button" %>
 </div>
 
 <%= render "form", sailing: @sailing %>

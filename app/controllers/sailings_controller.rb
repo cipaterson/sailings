@@ -1,6 +1,6 @@
 class SailingsController < ApplicationController
-  before_action :set_sailing, only: %i[show edit update destroy manifest set_status]
-  before_action :require_office_staff_or_crewing_operator!, only: %i[new create edit update destroy manifest set_status]
+  before_action :set_sailing, only: %i[show edit update destroy manifest set_status duplicate]
+  before_action :require_office_staff_or_crewing_operator!, only: %i[new create edit update destroy manifest set_status duplicate]
 
   PER_PAGE = 15
 
@@ -129,6 +129,15 @@ class SailingsController < ApplicationController
   def set_status
     @sailing.update!(status: params[:status])
     redirect_back fallback_location: sailings_path
+  end
+
+  def duplicate
+    copy = @sailing.dup
+    copy.status     = "draft"
+    copy.departs_at = nil
+    copy.returns_at = nil
+    copy.save!
+    redirect_to edit_sailing_path(copy), notice: "Voyage duplicated. Set the dates to schedule it."
   end
 
   def destroy

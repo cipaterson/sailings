@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     member do
       get   :manifest
       patch :set_status
+      post  :duplicate
     end
     resources :sailing_participants, only: [ :index, :create, :new ] do
       collection do
