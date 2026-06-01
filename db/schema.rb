@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_31_223054) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_01_001217) do
   create_table "contacts", force: :cascade do |t|
     t.string "address1"
     t.string "address2"
@@ -45,6 +45,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_31_223054) do
 
   create_table "sailing_participants", force: :cascade do |t|
     t.integer "attended"
+    t.integer "climbing", default: 0
     t.text "comment"
     t.datetime "created_at", null: false
     t.integer "sailing_id", null: false

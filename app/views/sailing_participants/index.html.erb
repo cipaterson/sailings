@@ -12,7 +12,8 @@
   <% end %>
 </div>
 
-<%= form_with url: bulk_update_sailing_sailing_participants_path(@sailing), method: :patch do |f| %>
+<%= form_with url: bulk_update_sailing_sailing_participants_path(@sailing), method: :patch,
+      data: { controller: "unsaved-warning" } do |f| %>
   <table class="wide-table">
     <thead>
       <tr>
@@ -23,6 +24,7 @@
         <th>MED</th>
         <th>WWVP Expires</th>
         <th>MSR</th>
+        <th>Climbing</th>
         <th>Attended</th>
         <th>Status</th>
         <th>Comment</th>
@@ -38,6 +40,7 @@
           <td><%= participant.user.med_qualification %></td>
           <td><%= participant.user.wwvp_expires_on %></td>
           <td><%= participant.user.marine_safety_refresher_on %></td>
+          <td><%= { 1 => "Yes", 2 => "No" }[participant.climbing] %></td>
           <td>
             <%= check_box_tag "attended[#{participant.id}]", "1", participant.attended.to_i == 1 %>
           </td>

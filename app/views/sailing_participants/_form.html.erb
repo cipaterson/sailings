@@ -10,6 +10,11 @@
   <%= f.hidden_field :status %>
 
   <div>
+    <%= f.label :climbing, "Are you able to climb on this voyage?" %>
+    <%= f.select :climbing, [["Unspecified", 0], ["Yes", 1], ["No", 2]] %>
+  </div>
+
+  <div>
     <%= f.label :comment, "Comment (optional)" %>
     <%= f.text_area :comment, rows: 4 %>
   </div>

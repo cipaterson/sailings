@@ -38,7 +38,9 @@
       <% if can?("crewing_operator") %>
         <th></th>
       <% end %>
-      <th></th>
+      <% if can?("member") %>
+        <th></th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
@@ -64,16 +66,16 @@
         <% if can?("crewing_operator") %>
           <td><%= link_to "Manage Crew", sailing_sailing_participants_path(sailing), class: "button" %></td>
         <% end %>
-        <td>
-          <% my_participant = @my_participants[sailing.id] %>
-          <% if my_participant %>
-            <%= link_to "Registered", edit_sailing_participant_path(my_participant) %>
-          <% elsif sailing.status == "scheduled" %>
-            <%= link_to "Register", new_sailing_sailing_participant_path(sailing), class: "button" %>
-          <% else %>
-            <button disabled>Register</button>
-          <% end %>
-        </td>
+        <% if can?("member") %>
+          <td>
+            <% my_participant = @my_participants[sailing.id] %>
+            <% if my_participant %>
+              <%= link_to "Registered", edit_sailing_participant_path(my_participant) %>
+            <% elsif sailing.status == "scheduled" %>
+              <%= link_to "Register", new_sailing_sailing_participant_path(sailing), class: "button" %>
+            <% end %>
+          </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>

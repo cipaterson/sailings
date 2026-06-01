@@ -135,6 +135,6 @@ class SailingParticipantsController < ApplicationController
   end
 
   def sailing_participant_params
-    params.require(:sailing_participant).permit(:user_id, :status, :comment)
+    params.require(:sailing_participant).permit(:user_id, :status, :comment, :climbing)
   end
 end
