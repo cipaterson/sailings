@@ -44,9 +44,13 @@ Rails.application.configure do
   #
   ## config.action_mailer.delivery_method = :test
   config.action_mailer.delivery_method = :brevo
-  config.action_mailer.brevo_settings = {
-    api_key: Rails.application.credentials.dig(:brevo, :api_key)
-  }
+  # Built-in delivery methods have their own xxx_settings methods defined but if we add
+  # a custom delivery method (in an initializer), we need to delay calling brevo_settings until...
+  config.after_initialize do
+    config.action_mailer.brevo_settings = {
+      api_key: Rails.application.credentials.dig(:brevo, :api_key)
+    }
+  end
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
   config.action_mailer.smtp_settings = {
     user_name: Rails.application.credentials.dig(:smtp, :user_name),
