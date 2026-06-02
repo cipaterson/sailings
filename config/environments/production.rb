@@ -59,20 +59,15 @@ Rails.application.configure do
   config.solid_queue.connects_to = { database: { writing: :queue } }
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "sailings.zzyplza.com" }
+  config.action_mailer.default_url_options = { host: "sailings.firstsoftware.cc" }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = :smtp
-  # Specify outgoing SMTP server.
-  config.action_mailer.smtp_settings = {
-    user_name: Rails.application.credentials.dig(:smtp, :user_name),
-    password:  Rails.application.credentials.dig(:smtp, :password),
-    address: "smtp-relay.brevo.com",
-    port: 2525,
-    authentication: :plain
+  config.action_mailer.delivery_method = :brevo
+  config.action_mailer.brevo_settings = {
+    api_key: Rails.application.credentials.dig(:brevo, :api_key)
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
