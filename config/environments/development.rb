@@ -3,6 +3,9 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  MissionControl::Jobs.http_basic_auth_user = "dev"
+  MissionControl::Jobs.http_basic_auth_password = "qqq"
+
   # Make code changes take effect immediately without server restart.
   config.enable_reloading = true
 
@@ -28,6 +31,10 @@ Rails.application.configure do
   # Change to :null_store to avoid any caching.
   config.cache_store = :memory_store
 
+  # PROD: Replace the default in-process and non-durable queuing backend for Active Job.
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
+
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
@@ -41,26 +48,10 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.raise_delivery_errors = true
-  #
-  ## config.action_mailer.delivery_method = :test
-  config.action_mailer.delivery_method = :brevo
-  # Built-in delivery methods have their own xxx_settings methods defined but if we add
-  # a custom delivery method (in an initializer), we need to delay calling brevo_settings until...
-  config.after_initialize do
-    config.action_mailer.brevo_settings = {
-      api_key: Rails.application.credentials.dig(:brevo, :api_key)
-    }
-  end
-  # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
-  config.action_mailer.smtp_settings = {
-    user_name: Rails.application.credentials.dig(:smtp, :user_name),
-    password: Rails.application.credentials.dig(:smtp, :password),
-    address: "smtp-relay.brevo.com",
-    port: 587,
-    authentication: :plain
-    # #enable_starttls_auto: true
-  }
 
+  # NOTE! A new mail delivery method is configured in config/initializers/brevo_delivery.rb
+  # It uses the Brevo API to send emails.
+  #
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 

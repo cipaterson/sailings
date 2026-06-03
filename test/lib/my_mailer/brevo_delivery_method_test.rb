@@ -1,11 +1,11 @@
 require "test_helper"
-require "action_mailer/brevo_delivery_method"
+require "my_mailer/brevo_delivery_method"
 
-class ActionMailer::BrevoDeliveryMethodTest < ActiveSupport::TestCase
+class MyMailer::BrevoDeliveryMethodTest < ActiveSupport::TestCase
   FakeResponse = Data.define(:code, :body)
 
   # Test subclass that captures the HTTP request instead of making a real call.
-  class FakeBrevoDelivery < ActionMailer::BrevoDeliveryMethod
+  class FakeBrevoDelivery < MyMailer::BrevoDeliveryMethod
     attr_reader :last_request
 
     def initialize(settings, fake_response)

@@ -129,7 +129,7 @@ class SailingsControllerTest < ActionDispatch::IntegrationTest
   test "create with valid params redirects to sailing" do
     sign_in_as users(:office_staff)
     assert_difference "Sailing.count", 1 do
-      post sailings_path, params: { sailing: { purpose: "Test voyage", sailing_type: "Voyage" } }
+      post sailings_path, params: { sailing: { purpose: "Test voyage", sailing_type: "Sail" } }
     end
     assert_redirected_to sailing_path(Sailing.last)
   end

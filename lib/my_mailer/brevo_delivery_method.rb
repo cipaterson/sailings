@@ -1,13 +1,12 @@
 require "net/http"
 
-module ActionMailer
+module MyMailer
   class BrevoDeliveryMethod
-    attr_accessor :settings
 
     API_URL = "https://api.brevo.com/v3/smtp/email"
 
-    def initialize(settings)
-      @api_key = settings[:api_key]
+    def initialize(config)
+      @api_key = config[:api_key]
     end
 
     def deliver!(mail)
@@ -29,7 +28,6 @@ module ActionMailer
       }.compact.to_json
 
       response = execute_http(uri, req)
-      Rails.logger.error("Brevo delivery (#{response.code}): #{response.body}")
 
       unless response.code == "201"
         Rails.logger.error("Brevo delivery failed (#{response.code}): #{response.body}")
@@ -40,7 +38,9 @@ module ActionMailer
     private
 
     def execute_http(uri, req)
-      Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+      Net::HTTP.start(uri.hostname, uri.port, use_ssl: true, open_timeout: 5, read_timeout: 10) do |http|
+        http.request(req)
+      end
     end
 
     def html_body(mail)

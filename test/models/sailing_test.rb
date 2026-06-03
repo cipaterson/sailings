@@ -3,8 +3,8 @@ require "test_helper"
 class SailingTest < ActiveSupport::TestCase
   # Validations
 
-  test "valid with purpose" do
-    sailing = Sailing.new(purpose: "Harbour cruise")
+  test "valid with purpose and sailing_type" do
+    sailing = Sailing.new(purpose: "Harbour cruise", sailing_type: "Sail")
     assert sailing.valid?
   end
 
@@ -25,9 +25,10 @@ class SailingTest < ActiveSupport::TestCase
     assert_raises(ArgumentError) { Sailing.new(purpose: "Test", sailing_type: "Joyride") }
   end
 
-  test "blank sailing_type is allowed" do
+  test "blank sailing_type is not allowed" do
     sailing = Sailing.new(purpose: "Test", sailing_type: "")
-    assert sailing.valid?
+    assert_not sailing.valid?
+    assert_includes sailing.errors[:sailing_type], "can't be blank"
   end
 
   # combine_datetime_fields callback

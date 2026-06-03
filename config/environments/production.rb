@@ -3,6 +3,9 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  MissionControl::Jobs.http_basic_auth_user = "dev"
+  MissionControl::Jobs.http_basic_auth_password = "qqq"
+
   # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
   # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
   # This seems cause fly deploy to fail because the deploy uses a fake master key?
@@ -40,7 +43,10 @@ Rails.application.configure do
 
   # Log to STDOUT with the current request id as a default log tag.
   config.log_tags = [ :request_id ]
-  config.logger   = ActiveSupport::TaggedLogging.logger(STDOUT)
+  tagged_logger   = ActiveSupport::TaggedLogging.logger(STDOUT)
+  # file_logger     = ActiveSupport::Logger.new("log/production.log")
+  # config.logger   = ActiveSupport::BroadcastLogger.new(tagged_logger, file_logger)
+  config.logger   = tagged_logger
 
   # Change to "debug" to log everything (including potentially personally-identifiable information!).
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
@@ -65,14 +71,6 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = :brevo
-  # Built-in delivery methods have their own xxx_settings methods defined but if we add
-  # a custom delivery method (in an initializer), we need to delay calling brevo_settings until...
-  config.after_initialize do
-    config.action_mailer.brevo_settings = {
-      api_key: Rails.application.credentials.dig(:brevo, :api_key)
-    }
-  end
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
