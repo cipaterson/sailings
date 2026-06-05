@@ -12,7 +12,7 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :next_of_kin, allow_destroy: true, reject_if: :all_blank
 
   MEMBERSHIP_TYPES = %w[Life Family Individual Junior].freeze
-  ROLES = %w[member office_staff crewing_operator trainer purser maintenance].freeze
+  ROLES = %w[member office_staff crewing_operator maintenance].freeze
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 

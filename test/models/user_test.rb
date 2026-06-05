@@ -22,25 +22,24 @@ class UserTest < ActiveSupport::TestCase
 
   test "assigns multiple roles" do
     user = User.new
-    user.roles = [ "member", "trainer" ]
+    user.roles = [ "member", "maintenance" ]
     assert_includes user.roles, "member"
-    assert_includes user.roles, "trainer"
-    assert_not_includes user.roles, "purser"
+    assert_includes user.roles, "maintenance"
+    assert_not_includes user.roles, "office_staff"
   end
 
   test "has_role? returns true for assigned role" do
     user = User.new(roles: [ "office_staff" ])
     assert user.has_role?("office_staff")
-    assert_not user.has_role?("purser")
+    assert_not user.has_role?("maintenance")
   end
 
   test "predicate methods reflect assigned roles" do
-    user = User.new(roles: [ "crewing_operator", "purser" ])
+    user = User.new(roles: [ "crewing_operator", "maintenance" ])
     assert user.crewing_operator?
-    assert user.purser?
+    assert user.maintenance?
     assert_not user.member?
     assert_not user.office_staff?
-    assert_not user.trainer?
   end
 
   test "admin? is true when office_staff" do
@@ -54,7 +53,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "admin? is false when neither office_staff nor crewing_operator" do
-    user = User.new(roles: [ "member", "trainer" ])
+    user = User.new(roles: [ "member", "maintenance" ])
     assert_not user.admin?
   end
 
@@ -65,7 +64,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "roles= accepts empty array" do
-    user = User.new(roles: [ "member", "trainer" ])
+    user = User.new(roles: [ "member", "maintenance" ])
     user.roles = []
     assert_equal [], user.roles
     assert_equal 0, user.roles_mask
@@ -78,9 +77,9 @@ class UserTest < ActiveSupport::TestCase
 
   test "with_role scope returns users with that role" do
     user = users(:one)
-    user.update!(roles: [ "trainer" ])
-    assert_includes User.with_role("trainer"), user
-    assert_not_includes User.with_role("purser"), user
+    user.update!(roles: [ "maintenance" ])
+    assert_includes User.with_role("maintenance"), user
+    assert_not_includes User.with_role("office_staff"), user
   end
 
   # full_name

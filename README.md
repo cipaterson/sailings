@@ -72,8 +72,6 @@ Access is controlled via a bitmask on the `User` model:
 | `member` | View voyages, register for sailings, manage own profile |
 | `office_staff` | Full member management, create/edit/delete voyages |
 | `crewing_operator` | Manage crew for voyages, view manifests |
-| `trainer` | Training administration |
-| `purser` | Financial administration |
 | `maintenance` | Maintenance task management |
 
 ## Running Tests

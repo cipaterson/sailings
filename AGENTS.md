@@ -68,7 +68,7 @@ MEMBERSHIP_TYPES = %w[Life Family Individual Junior].freeze
 "string #{with_interpolation}"
 
 # Use %i for symbol arrays, %w for string arrays
-ROLES = %w[member office_staff crewing_operator trainer purser].freeze
+ROLES = %w[member office_staff crewing_operator maintenance].freeze
 
 # Use `and`/`or` sparingly; prefer `&&`/`||`
 # Use trailing `if/unless` for guard clauses
@@ -199,8 +199,8 @@ class UserTest < ActiveSupport::TestCase
 
   test "with_role scope returns users with that role" do
     user = users(:one)
-    user.update!(roles: [ "trainer" ])
-    assert_includes User.with_role("trainer"), user
+    user.update!(roles: [ "maintenance" ])
+    assert_includes User.with_role("maintenance"), user
   end
 end
 
