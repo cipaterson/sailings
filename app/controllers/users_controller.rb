@@ -21,8 +21,12 @@ class UsersController < ApplicationController
       end
 
       if @search
-        term = "%#{@search}%"
-        base = base.where("(first_name || ' ' || last_name) LIKE ? OR email_address LIKE ?", term, term)
+        if @search.match?(/\A\d+\z/)
+          base = base.where("fees_due >= ?", @search.to_i)
+        else
+          term = "%#{@search}%"
+          base = base.where("(first_name || ' ' || last_name) LIKE ? OR email_address LIKE ?", term, term)
+        end
       end
     end
 
@@ -73,7 +77,7 @@ class UsersController < ApplicationController
     params_to_update = user_params
     params_to_update = params_to_update.reject { |k, v| k.to_s.in?(%w[password password_confirmation]) && v.blank? }
     if @user.update(params_to_update)
-      redirect_to users_path, notice: "User was successfully updated."
+      redirect_to safe_return_to(users_path), notice: "User was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end

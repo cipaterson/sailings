@@ -64,7 +64,15 @@ class Sailing < ApplicationRecord
   private
 
   def auto_set_status
-    self.status = "scheduled" if departs_at.present? && status == "draft"
+    if persisted? && status == "draft"
+      # On update, choosing draft wins over the dates: clear them so the sailing
+      # is genuinely a draft rather than being bounced back to "scheduled".
+      self.departs_at = self.returns_at = nil
+      @departs_date = @departs_time = @returns_date = @returns_time = nil
+    elsif departs_at.present? && status == "draft"
+      # On create, a departure date promotes the default draft to scheduled.
+      self.status = "scheduled"
+    end
   end
 
   def combine_datetime_fields

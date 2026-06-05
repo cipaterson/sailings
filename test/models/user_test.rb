@@ -129,9 +129,9 @@ class UserTest < ActiveSupport::TestCase
   # password_complexity validation
 
   test "password too short is invalid" do
-    user = User.new(password: "Ab1!")
+    user = User.new(password: "Ab1")
     user.valid?
-    assert_includes user.errors[:password].join, "at least 8 characters"
+    assert_includes user.errors[:password].join, "at least 6 characters"
   end
 
   test "password missing uppercase is invalid" do
@@ -152,10 +152,16 @@ class UserTest < ActiveSupport::TestCase
     assert_includes user.errors[:password].join, "digit"
   end
 
-  test "password missing special character is invalid" do
+  test "password without a special character is valid" do
     user = User.new(password: "NoSpecial1")
     user.valid?
-    assert_includes user.errors[:password].join, "special"
+    assert_empty user.errors[:password]
+  end
+
+  test "six character password meeting other rules is valid" do
+    user = User.new(password: "Abc12x")
+    user.valid?
+    assert_empty user.errors[:password]
   end
 
   test "password meeting all requirements is valid" do

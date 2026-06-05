@@ -14,5 +14,5 @@
   </tbody>
 </table>
 
-<%= link_to "Edit", edit_maintenance_task_path(@maintenance_task), class: "button" %>
+<%= link_to "Edit", edit_maintenance_task_path(@maintenance_task, return_to: request.fullpath), class: "button" %>
 <%= link_to "Back", in_progress_maintenance_tasks_path %>

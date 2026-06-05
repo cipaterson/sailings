@@ -30,7 +30,7 @@
   <tbody>
     <% @maintenance_tasks.each do |task| %>
       <tr>
-        <td><%= link_to task.problem_description, edit_maintenance_task_path(task, return_to_in_progress: false) %></td>
+        <td><%= link_to task.problem_description, edit_maintenance_task_path(task, return_to: request.fullpath) %></td>
         <td><%= task.state %></td>
         <td><%= task.priority %></td>
         <td><%= task.date_reported.strftime("%d %b %Y") if task.date_reported %></td>

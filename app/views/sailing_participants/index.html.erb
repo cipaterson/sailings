@@ -2,7 +2,7 @@
 
 <% accepted_emails = @sailing_participants.select { |sp| sp.status == "Accepted" }.map { |sp| sp.user.email_address } %>
 <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
-  <%= link_to "Download Manifest (PDF)", manifest_sailing_path(@sailing), target: "_blank" %>
+  <%= link_to "Download Sailing Plan (PDF)", manifest_sailing_path(@sailing), target: "_blank" %>
   <% if accepted_emails.any? %>
     <%= link_to "Email Accepted Crew",
           "mailto:?bcc=#{accepted_emails.join(',')}&subject=#{@sailing.display_name}",

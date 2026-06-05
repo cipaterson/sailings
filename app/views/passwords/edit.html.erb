@@ -8,11 +8,11 @@
         data: { password_strength_target: "password", action: "input->password-strength#check" } %><br>
 
   <ul class="password-checklist">
-    <li data-rule="length"    data-password-strength-target="rule" class="failing">✗ At least 8 characters</li>
+    <li data-rule="length"    data-password-strength-target="rule" class="failing">✗ At least 6 characters</li>
     <li data-rule="uppercase" data-password-strength-target="rule" class="failing">✗ At least one uppercase letter</li>
     <li data-rule="lowercase" data-password-strength-target="rule" class="failing">✗ At least one lowercase letter</li>
     <li data-rule="digit"     data-password-strength-target="rule" class="failing">✗ At least one number</li>
-    <li data-rule="special"   data-password-strength-target="rule" class="failing">✗ At least one special character</li>
+    <li data-rule="special"   data-password-strength-target="rule" data-optional="true">✗ At least one special character (optional)</li>
   </ul>
 
   <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password",

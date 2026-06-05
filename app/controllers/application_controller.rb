@@ -8,6 +8,14 @@ class ApplicationController < ActionController::Base
 
   private
 
+    # Returns params[:return_to] when it is a safe internal path (single leading
+    # slash, not protocol-relative), otherwise the given default. Prevents
+    # open-redirects while letting edit forms send the user back to their origin.
+    def safe_return_to(default)
+      to = params[:return_to].to_s
+      to.start_with?("/") && !to.start_with?("//") ? to : default
+    end
+
     def require_role!(*roles)
       unless roles.any? { |r| Current.user&.has_role?(r.to_s) }
         redirect_to root_path, alert: "You are not authorized to perform this action."

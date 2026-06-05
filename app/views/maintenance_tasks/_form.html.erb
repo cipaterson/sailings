@@ -55,7 +55,7 @@
   </div>
 
   <div>
-    <%= f.hidden_field :return_to_in_progress, value: params[:return_to_in_progress] %>
+    <%= hidden_field_tag :return_to, params[:return_to] %>
     <%= f.submit %>
   </div>
 <% end %>

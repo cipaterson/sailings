@@ -23,10 +23,9 @@ class User < ApplicationRecord
   validates :membership_type, inclusion: { in: MEMBERSHIP_TYPES }, allow_blank: true
 
   PASSWORD_COMPLEXITY = {
-    /[A-Z]/         => "one uppercase letter",
-    /[a-z]/         => "one lowercase letter",
-    /\d/            => "one digit",
-    /[^A-Za-z0-9]/ => "one special character"
+    /[A-Z]/ => "one uppercase letter",
+    /[a-z]/ => "one lowercase letter",
+    /\d/    => "one digit"
   }.freeze
 
   validate :password_complexity, if: -> { password.present? }
@@ -66,7 +65,7 @@ class User < ApplicationRecord
   end
 
   def password_complexity
-    errors.add(:password, "must be at least 8 characters") if password.length < 8
+    errors.add(:password, "must be at least 6 characters") if password.length < 6
     PASSWORD_COMPLEXITY.each do |pattern, requirement|
       errors.add(:password, "must contain at least #{requirement}") unless password.match?(pattern)
     end

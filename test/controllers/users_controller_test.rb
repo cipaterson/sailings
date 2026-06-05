@@ -60,6 +60,16 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "show page renders all attribute sections" do
+    sign_in_as users(:office_staff)
+    get user_path(users(:member))
+    assert_response :success
+    %w[Personal Contact Membership Training Qualifications Coxswain
+       First\ Aid Food\ Handling Date\ Joined Receipt\ Number].each do |label|
+      assert_includes @response.body, label
+    end
+  end
+
   test "user can edit their own profile" do
     sign_in_as users(:member)
     get edit_user_path(users(:member))
@@ -96,6 +106,16 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     sign_in_as users(:office_staff)
     get users_path, params: { search: "member" }
     assert_response :success
+  end
+
+  test "index numeric search filters by fees_due lower bound" do
+    sign_in_as users(:office_staff)
+    users(:member).update_column(:fees_due, 2025)
+    users(:crewing_operator).update_column(:fees_due, 2010)
+    get users_path, params: { search: "2025" }
+    assert_response :success
+    assert_includes @response.body, "member@example.com"
+    assert_not_includes @response.body, "crew@example.com"
   end
 
   # --- create ---
@@ -141,6 +161,18 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     sign_in_as users(:office_staff)
     patch user_path(users(:member)), params: { user: { password: "weak" } }
     assert_response :unprocessable_entity
+  end
+
+  test "update redirects to return_to when it is a safe internal path" do
+    sign_in_as users(:office_staff)
+    patch user_path(users(:member)), params: { user: { first_name: "Jane" }, return_to: user_path(users(:member)) }
+    assert_redirected_to user_path(users(:member))
+  end
+
+  test "update ignores an off-site return_to and falls back to default" do
+    sign_in_as users(:office_staff)
+    patch user_path(users(:member)), params: { user: { first_name: "Jane" }, return_to: "//evil.com" }
+    assert_redirected_to users_path
   end
 
   # --- destroy ---

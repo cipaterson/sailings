@@ -64,6 +64,49 @@ class SailingTest < ActiveSupport::TestCase
     assert_not_nil sailing.departs_at
   end
 
+  # auto_set_status callback
+
+  def create_scheduled_sailing
+    sailing = Sailing.new(purpose: "Test", sailing_type: "Sail", status: "draft")
+    sailing.departs_date = "2026-06-01"
+    sailing.departs_time = "09:00"
+    sailing.returns_date = "2026-06-01"
+    sailing.returns_time = "17:00"
+    sailing.save!
+    sailing
+  end
+
+  test "new sailing with a departure date is promoted to scheduled" do
+    sailing = create_scheduled_sailing
+    assert_equal "scheduled", sailing.status
+    assert_not_nil sailing.departs_at
+  end
+
+  test "setting an existing sailing to draft clears its dates" do
+    sailing = create_scheduled_sailing
+    sailing.update!(status: "draft")
+    assert_equal "draft", sailing.status
+    assert_nil sailing.departs_at
+    assert_nil sailing.returns_at
+  end
+
+  test "setting draft clears dates submitted in the same update" do
+    sailing = create_scheduled_sailing
+    sailing.status = "draft"
+    sailing.departs_date = "2026-09-01"
+    sailing.departs_time = "10:00"
+    sailing.save!
+    assert_equal "draft", sailing.status
+    assert_nil sailing.departs_at
+  end
+
+  test "updating a scheduled sailing without touching status keeps its dates" do
+    sailing = create_scheduled_sailing
+    sailing.update!(purpose: "Renamed")
+    assert_equal "scheduled", sailing.status
+    assert_not_nil sailing.departs_at
+  end
+
   # Date/time readers
 
   test "departs_date returns nil when departs_at is nil" do

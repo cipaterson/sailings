@@ -27,6 +27,7 @@
 
 <%= form_with model: user,
       data: (show_password ? { controller: "password-strength", "password-strength-optional-value": true } : {}) do |f| %>
+  <%= hidden_field_tag :return_to, params[:return_to] %>
   <% if user.errors.any? %>
     <div>
       <ul>
@@ -87,11 +88,11 @@
           <%= f.password_field :password, autocomplete: "new-password", maxlength: 72,
                 data: { password_strength_target: "password", action: "input->password-strength#check" } %>
           <ul class="password-checklist">
-            <li data-rule="length"    data-password-strength-target="rule">✗ At least 8 characters</li>
+            <li data-rule="length"    data-password-strength-target="rule">✗ At least 6 characters</li>
             <li data-rule="uppercase" data-password-strength-target="rule">✗ At least one uppercase letter</li>
             <li data-rule="lowercase" data-password-strength-target="rule">✗ At least one lowercase letter</li>
             <li data-rule="digit"     data-password-strength-target="rule">✗ At least one number</li>
-            <li data-rule="special"   data-password-strength-target="rule">✗ At least one special character</li>
+            <li data-rule="special"   data-password-strength-target="rule" data-optional="true">✗ At least one special character (optional)</li>
           </ul>
         </div>
         <div>
@@ -182,37 +183,37 @@
           </thead>
           <tbody>
             <tr>
-              <th>ESS</th>
+              <td>ESS</td>
               <td><%= f.text_field :ess_qualification %></td>
               <td><%= f.date_field :ess_issued_on %></td>
               <td><%= f.date_field :ess_expires_on %></td>
             </tr>
             <tr>
-              <th>MED</th>
+              <td>MED</td>
               <td><%= f.text_field :med_qualification %></td>
               <td><%= f.date_field :med_issued_on %></td>
               <td><%= f.date_field :med_expires_on %></td>
             </tr>
             <tr>
-              <th>WWVP</th>
+              <td>WWVP</td>
               <td><%= f.text_field :wwvp_qualification %></td>
               <td><%= f.date_field :wwvp_issued_on %></td>
               <td><%= f.date_field :wwvp_expires_on %></td>
             </tr>
             <tr>
-              <th>First Aid</th>
+              <td>First Aid</td>
               <td><%= f.text_field :first_aid_qualification %></td>
               <td><%= f.date_field :first_aid_issued_on %></td>
               <td><%= f.date_field :first_aid_expires_on %></td>
             </tr>
             <tr>
-              <th>Coxswain Cert.</th>
+              <td>Coxswain Cert.</td>
               <td><%= f.text_field :coxswain_qualification %></td>
               <td><%= f.date_field :coxswain_issued_on %></td>
               <td><%= f.date_field :coxswain_expires_on %></td>
             </tr>
             <tr>
-              <th>Food Handling</th>
+              <td>Food Handling</td>
               <td><%= f.text_field :food_handling_qualification %></td>
               <td><%= f.date_field :food_handling_issued_on %></td>
               <td><%= f.date_field :food_handling_expires_on %></td>

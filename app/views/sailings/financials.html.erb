@@ -24,7 +24,7 @@
     <tbody>
       <% @sailings.each do |sailing| %>
         <tr>
-          <td><%= link_to sailing.display_name, edit_sailing_path(sailing, tab: "costs") %></td>
+          <td><%= link_to sailing.display_name, edit_sailing_path(sailing, tab: "costs", return_to: request.fullpath) %></td>
           <td><%= sailing.charter_state %></td>
           <td><%= sailing.quoted_cost&.format %></td>
           <td><%= sailing.final_invoice %></td>

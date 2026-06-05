@@ -58,7 +58,7 @@ class SailingParticipantsController < ApplicationController
 
   def update
     if @sailing_participant.update(sailing_participant_params)
-      redirect_to sailings_path, notice: "Registration updated."
+      redirect_to safe_return_to(sailings_path), notice: "Registration updated."
     else
       render :edit, status: :unprocessable_entity
     end

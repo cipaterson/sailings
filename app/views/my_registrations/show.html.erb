@@ -10,6 +10,7 @@
         <th>Created</th>
         <th>Registration</th>
         <th>Comment</th>
+        <th>Climbing</th>
         <th></th>
       </tr>
     </thead>
@@ -21,7 +22,8 @@
           <td><%= participant.created_at.in_time_zone.strftime("%d %b %Y - %H:%M") %></td>
           <td><%= participant.status %></td>
           <td><%= participant.comment %></td>
-          <td><%= link_to "Edit", edit_sailing_participant_path(participant), class: "button" %></td>
+          <td><%= { 1 => "Yes", 2 => "No" }[participant.climbing] %></td>
+          <td><%= link_to "Edit", edit_sailing_participant_path(participant, return_to: request.fullpath), class: "button" %></td>
         </tr>
       <% end %>
     </tbody>

@@ -2,19 +2,19 @@
 
 <table>
   <tbody>
-      <tr><th>Sailing Type</th><td><%= @sailing.sailing_type || "Please Edit to select" %></td></tr>
-      <tr><th>Status</th><td><%= @sailing.status %></td></tr>
-      <tr><th>Training</th><td><%= @sailing.training %></td></tr>
-    <tr><th>Purpose</th><td><%= @sailing.purpose %></td></tr>
-    <tr><th>Departs At</th><td><%= @sailing.departs_date %> <%= @sailing.departs_time %></td></tr>
-    <tr><th>Returns At</th><td><%= @sailing.returns_date %> <%= @sailing.returns_time %></td></tr>
-    <tr><th>LN Contact</th><td><%= @sailing.ln_contact %></td></tr>
-    <tr><th>Master</th><td><%= @sailing.master %></td></tr>
-    <tr><th>Engineer</th><td><%= @sailing.engineer %></td></tr>
-    <tr><th>Passenger Count</th><td><%= @sailing.passenger_count %></td></tr>
-    <tr><th>Charterer</th><td><%= @sailing.charterer %></td></tr>
-    <tr><th>Comments</th><td><%= @sailing.comments %></td></tr>
-    <tr><th>Additional Details</th><td><%= @sailing.additional_details %></td></tr>
+    <tr><td>Sailing Type</th><td><%= @sailing.sailing_type || "Please Edit to select" %></td></tr>
+    <tr><td>Status</td><td><%= @sailing.status %></td></tr>
+    <tr><td>Training</td><td><%= @sailing.training %></td></tr>
+    <tr><td>Purpose</td><td><%= @sailing.purpose %></td></tr>
+    <tr><td>Departs At</td><td><%= @sailing.departs_date %> <%= @sailing.departs_time %></td></tr>
+    <tr><td>Returns At</td><td><%= @sailing.returns_date %> <%= @sailing.returns_time %></td></tr>
+    <tr><td>LN Contact</td><td><%= @sailing.ln_contact %></td></tr>
+    <tr><td>Master</td><td><%= @sailing.master %></td></tr>
+    <tr><td>Engineer</td><td><%= @sailing.engineer %></td></tr>
+    <tr><td>Passenger Count</td><td><%= @sailing.passenger_count %></td></tr>
+    <tr><td>Charterer</td><td><%= @sailing.charterer %></td></tr>
+    <tr><td>Comments</td><td><%= @sailing.comments %></td></tr>
+    <tr><td>Additional Details</td><td><%= @sailing.additional_details %></td></tr>
   </tbody>
 </table>
 
@@ -23,18 +23,18 @@
 
 <table>
   <tbody>
-    <tr><th>Full Name</th><td><%= @sailing.charter_contact.full_name %></td></tr>
-    <tr><th>Email</th><td><%= @sailing.charter_contact.email_address %></td></tr>
-    <tr><th>Work Phone</th><td><%= @sailing.charter_contact.work_phone %></td></tr>
-    <tr><th>Mobile</th><td><%= @sailing.charter_contact.mobile %></td></tr>
-    <tr><th>Address</th><td><%= @sailing.charter_contact.address1 %></td></tr>
-    <tr><th>Address 2</th><td><%= @sailing.charter_contact.address2 %></td></tr>
-    <tr><th>City</th><td><%= @sailing.charter_contact.city %></td></tr>
-    <tr><th>State</th><td><%= @sailing.charter_contact.state %></td></tr>
-    <tr><th>Postcode</th><td><%= @sailing.charter_contact.postcode %></td></tr>
+    <tr><td>Full Name</td><td><%= @sailing.charter_contact.full_name %></td></tr>
+    <tr><td>Email</td><td><%= @sailing.charter_contact.email_address %></td></tr>
+    <tr><td>Work Phone</td><td><%= @sailing.charter_contact.work_phone %></td></tr>
+    <tr><td>Mobile</td><td><%= @sailing.charter_contact.mobile %></td></tr>
+    <tr><td>Address</td><td><%= @sailing.charter_contact.address1 %></td></tr>
+    <tr><td>Address 2</td><td><%= @sailing.charter_contact.address2 %></td></tr>
+    <tr><td>City</td><td><%= @sailing.charter_contact.city %></td></tr>
+    <tr><td>State</td><td><%= @sailing.charter_contact.state %></td></tr>
+    <tr><td>Postcode</td><td><%= @sailing.charter_contact.postcode %></td></tr>
   </tbody>
 </table>
 <% end %>
 
-<%= link_to "Edit", edit_sailing_path(@sailing), class: "button" %>
+<%= link_to "Edit", edit_sailing_path(@sailing, return_to: request.fullpath), class: "button" %>
 <%= link_to "Back", sailings_path %>

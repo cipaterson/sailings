@@ -1,4 +1,5 @@
 <%= form_with model: form_args do |f| %>
+  <%= hidden_field_tag :return_to, params[:return_to] %>
   <% if f.object.errors.any? %>
     <div>
       <% f.object.errors.full_messages.each do |msg| %>

@@ -5,33 +5,121 @@
     If anything else needs to be updated, please contact the office on (03) 6234 3348
     or <a href="mailto:office@ladynelson.org.au">office@ladynelson.org.au</a>.</p>
 
+<h2>Personal</h2>
 <table>
   <tbody>
-    <tr><th>Email</th><td><%= @user.email_address %></td></tr>
-    <tr><th>First Name</th><td><%= @user.first_name %></td></tr>
-    <tr><th>Last Name</th><td><%= @user.last_name %></td></tr>
-    <tr><th>Mobile</th><td><%= @user.contact&.mobile %></td></tr>
-    <tr><th>Work Phone</th><td><%= @user.contact&.work_phone %></td></tr>
-    <tr><th>Address</th><td><%= @user.contact&.address1 %></td></tr>
-    <tr><th>Birth Date</th><td><%= @user.birth_date %></td></tr>
-    <tr><th>Occupation</th><td><%= @user.occupation %></td></tr>
-    <tr><th>Membership Type</th><td><%= @user.membership_type %></td></tr>
-    <tr><th>Class</th><td><%= @user.sailing_class %></td></tr>
-    <tr><th>SIT Date</th><td><%= @user.sit_date %></td></tr>
-    <tr><th>Roles</th><td><%= @user.roles.map(&:humanize).join(", ") %></td></tr>
-    <tr><th>Knots</th><td><%= @user.knots_on %></td></tr>
-    <tr><th>Marine Safety Refresher</th><td><%= @user.marine_safety_refresher_on %></td></tr>
-    <tr><th>ESS</th><td><%= @user.ess_qualification %></td></tr>
-    <tr><th>ESS Issued</th><td><%= @user.ess_issued_on %></td></tr>
-    <tr><th>ESS Expires</th><td><%= @user.ess_expires_on %></td></tr>
-    <tr><th>MED</th><td><%= @user.med_qualification %></td></tr>
-    <tr><th>MED Issued</th><td><%= @user.med_issued_on %></td></tr>
-    <tr><th>MED Expires</th><td><%= @user.med_expires_on %></td></tr>
-    <tr><th>WWVP</th><td><%= @user.wwvp_qualification %></td></tr>
-    <tr><th>WWVP Issued</th><td><%= @user.wwvp_issued_on %></td></tr>
-    <tr><th>WWVP Expires</th><td><%= @user.wwvp_expires_on %></td></tr>
+    <tr><td>Email</td><td><%= @user.email_address %></td></tr>
+    <tr><td>First Name</td><td><%= @user.first_name %></td></tr>
+    <tr><td>Last Name</td><td><%= @user.last_name %></td></tr>
+    <tr><td>Birth Date</td><td><%= @user.birth_date %></td></tr>
+    <tr><td>Occupation</td><td><%= @user.occupation %></td></tr>
+    <tr><td>Roles</td><td><%= @user.roles.map(&:humanize).join(", ") %></td></tr>
   </tbody>
 </table>
 
-<%= link_to "Edit", edit_user_path(@user), class: "button" %>
+<h2>Contact</h2>
+<table>
+  <tbody>
+    <tr><td>Mobile</td><td><%= @user.contact&.mobile %></td></tr>
+    <tr><td>Work Phone</td><td><%= @user.contact&.work_phone %></td></tr>
+    <tr><td>Address</td><td><%= @user.contact&.address1 %></td></tr>
+    <tr><td>Address 2</td><td><%= @user.contact&.address2 %></td></tr>
+    <tr><td>City/Suburb</td><td><%= @user.contact&.city %></td></tr>
+    <tr><td>State</td><td><%= @user.contact&.state %></td></tr>
+    <tr><td>Postcode</td><td><%= @user.contact&.postcode %></td></tr>
+  </tbody>
+</table>
+
+<h2>Membership</h2>
+<table>
+  <tbody>
+    <tr><td>Membership Type</td><td><%= @user.membership_type %></td></tr>
+    <tr><td>Class</td><td><%= @user.sailing_class %></td></tr>
+    <tr><td>Date Joined</td><td><%= @user.date_joined %></td></tr>
+    <tr><td>Days Sailed</td><td><%= @user.days_sailed %></td></tr>
+    <tr><td>Last Sailed</td><td><%= @user.last_sailed %></td></tr>
+    <tr><td>Fees Due</td><td><%= @user.fees_due %></td></tr>
+    <tr><td>Fees Paid</td><td><%= @user.fees_paid %></td></tr>
+    <tr><td>Receipt Number</td><td><%= @user.rcpt_number %></td></tr>
+    <tr><td>SIT Date</td><td><%= @user.sit_date %></td></tr>
+    <tr><td>SIT2 Date</td><td><%= @user.sit2_date %></td></tr>
+  </tbody>
+</table>
+
+<h2>Training</h2>
+<table>
+  <tbody>
+    <tr><td>Knots</td><td><%= @user.knots_on %></td></tr>
+    <tr><td>Marine Safety Refresher</td><td><%= @user.marine_safety_refresher_on %></td></tr>
+  </tbody>
+</table>
+
+<h2>Qualifications</h2>
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Qualification</th>
+      <th>Date Issued</th>
+      <th>Date Expired</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ESS</td>
+      <td><%= @user.ess_qualification %></td>
+      <td><%= @user.ess_issued_on %></td>
+      <td><%= @user.ess_expires_on %></td>
+    </tr>
+    <tr>
+      <td>MED</td>
+      <td><%= @user.med_qualification %></td>
+      <td><%= @user.med_issued_on %></td>
+      <td><%= @user.med_expires_on %></td>
+    </tr>
+    <tr>
+      <td>WWVP</td>
+      <td><%= @user.wwvp_qualification %></td>
+      <td><%= @user.wwvp_issued_on %></td>
+      <td><%= @user.wwvp_expires_on %></td>
+    </tr>
+    <tr>
+      <td>Coxswain</td>
+      <td><%= @user.coxswain_qualification %></td>
+      <td><%= @user.coxswain_issued_on %></td>
+      <td><%= @user.coxswain_expires_on %></td>
+    </tr>
+    <tr>
+      <td>First Aid</td>
+      <td><%= @user.first_aid_qualification %></td>
+      <td><%= @user.first_aid_issued_on %></td>
+      <td><%= @user.first_aid_expires_on %></td>
+    </tr>
+    <tr>
+      <td>Food Handling</td>
+      <td><%= @user.food_handling_qualification %></td>
+      <td><%= @user.food_handling_issued_on %></td>
+      <td><%= @user.food_handling_expires_on %></td>
+    </tr>
+  </tbody>
+</table>
+
+<% if @user.next_of_kin&.full_name.present? %>
+  <h2>Next of Kin</h2>
+  <table>
+    <tbody>
+      <tr><td>Full Name</td><td><%= @user.next_of_kin.full_name %></td></tr>
+      <tr><td>Address</td><td><%= @user.next_of_kin.address1 %></td></tr>
+      <tr><td>Address 2</td><td><%= @user.next_of_kin.address2 %></td></tr>
+      <tr><td>City/Suburb</td><td><%= @user.next_of_kin.city %></td></tr>
+      <tr><td>State</td><td><%= @user.next_of_kin.state %></td></tr>
+      <tr><td>Postcode</td><td><%= @user.next_of_kin.postcode %></td></tr>
+      <tr><td>Work Phone</td><td><%= @user.next_of_kin.work_phone %></td></tr>
+      <tr><td>Mobile</td><td><%= @user.next_of_kin.mobile %></td></tr>
+      <tr><td>Email</td><td><%= @user.next_of_kin.email_address %></td></tr>
+    </tbody>
+  </table>
+<% end %>
+
+<%= link_to "Edit", edit_user_path(@user, return_to: request.fullpath), class: "button" %>
 <%= link_to "Back", users_path %>

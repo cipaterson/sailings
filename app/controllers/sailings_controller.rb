@@ -133,14 +133,14 @@ class SailingsController < ApplicationController
     participants = @sailing.sailing_participants.includes(:user).order("users.last_name, users.first_name")
     pdf = SailingManifestPdf.new(@sailing, participants)
     send_data pdf.render,
-              filename: "manifest-#{@sailing.id}.pdf",
+              filename: "Sailing Plan-#{@sailing.id}.pdf",
               type: "application/pdf",
               disposition: "inline"
   end
 
   def update
     if @sailing.update(sailing_params)
-      redirect_to sailings_path, notice: "Sailing was successfully updated."
+      redirect_to safe_return_to(sailings_path), notice: "Sailing was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end

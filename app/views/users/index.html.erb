@@ -22,7 +22,7 @@
     </div>
     <% end %>
     <div style="display: flex; gap: 1rem; align-items: center;">
-      <%= text_field_tag :search, @search, placeholder: "Name or email" %>
+      <%= text_field_tag :search, @search, placeholder: "Name, email, or fees due after" %>
       <%= f.submit "Filter" %>
       <%= link_to "Reset", users_path %>
     </div>
@@ -44,7 +44,7 @@
   <tbody>
     <% @users.each do |user| %>
       <tr>
-        <td><%= link_to user.full_name, edit_user_path(user) %></td>
+        <td><%= link_to user.full_name, edit_user_path(user, return_to: request.fullpath) %></td>
         <td><%= user.email_address %></td>
         <td><%= user.contact&.mobile %></td>
         <td><%= user.membership_type %></td>

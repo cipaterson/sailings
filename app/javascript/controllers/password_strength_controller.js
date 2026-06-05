@@ -1,11 +1,11 @@
 import { Controller } from "@hotwired/stimulus"
 
 const RULES = {
-  length:    { test: v => v.length >= 8,           label: "At least 8 characters" },
+  length:    { test: v => v.length >= 6,           label: "At least 6 characters" },
   uppercase: { test: v => /[A-Z]/.test(v),         label: "At least one uppercase letter" },
   lowercase: { test: v => /[a-z]/.test(v),         label: "At least one lowercase letter" },
   digit:     { test: v => /\d/.test(v),            label: "At least one number" },
-  special:   { test: v => /[^A-Za-z0-9]/.test(v), label: "At least one special character" }
+  special:   { test: v => /[^A-Za-z0-9]/.test(v), label: "At least one special character (optional)" }
 }
 
 export default class extends Controller {
@@ -29,11 +29,13 @@ export default class extends Controller {
 
     this.ruleTargets.forEach(rule => {
       const key = rule.dataset.rule
+      const optional = rule.dataset.optional === "true"
       const passes = RULES[key]?.test(password)
       rule.textContent = `${passes ? "✓" : "✗"} ${RULES[key]?.label}`
       rule.classList.toggle("passing", !!passes)
-      rule.classList.toggle("failing", !passes)
-      if (!passes) allPassing = false
+      // Optional rules show a neutral hint when unmet and never block submission.
+      rule.classList.toggle("failing", !passes && !optional)
+      if (!passes && !optional) allPassing = false
     })
 
     const matches = password.length > 0 && password === confirmation

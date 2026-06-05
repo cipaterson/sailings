@@ -45,17 +45,23 @@
   </thead>
   <tbody>
     <% @sailings.each do |sailing| %>
-      <tr class="<%= charter_calendar_class(sailing) if can?('office_staff') %>">
+      <tr class="<%= charter_calendar_class(sailing) if can?('office_staff') %>" >
         <td><%= sailing.departs_at&.strftime("%a") %></td>
         <td><%= sailing.departs_at&.to_date %></td>
         <td>
           <% if can?("office_staff") %>
-            <%= link_to sailing.purpose, edit_sailing_path(sailing) %>
+            <%= link_to sailing.purpose, edit_sailing_path(sailing, return_to: request.fullpath) %>
           <% else %>
             <%= sailing.purpose %>
           <% end %>
         </td>
-        <td><%= sailing.charterer.present? ? link_to(sailing.charterer, edit_sailing_path(sailing, tab: "costs")) : nil %></td>
+        <td  >
+          <% if can?("office_staff") %>
+            <%= sailing.charterer.present? ? link_to(sailing.charterer, edit_sailing_path(sailing, tab: "costs", return_to: request.fullpath)) : nil %>
+          <% else %>
+            <%= sailing.charterer %>
+          <% end %>
+        </td>
         <td><%= sailing.departs_at&.strftime("%H:%M") %></td>
         <td><%= sailing.returns_at&.to_date unless sailing.returns_at&.to_date == sailing.departs_at&.to_date %></td>
         <td><%= sailing.returns_at&.strftime("%H:%M") %></td>
@@ -70,7 +76,7 @@
           <td>
             <% my_participant = @my_participants[sailing.id] %>
             <% if my_participant %>
-              <%= link_to "Registered", edit_sailing_participant_path(my_participant) %>
+              <%= link_to "Registered", edit_sailing_participant_path(my_participant, return_to: request.fullpath) %>
             <% elsif sailing.status == "scheduled" %>
               <%= link_to "Register", new_sailing_sailing_participant_path(sailing), class: "button" %>
             <% end %>

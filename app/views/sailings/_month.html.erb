@@ -38,13 +38,23 @@
           sailing_classes << "continues-right"  if continues_right
           sailing_classes << "continues-left"   if continues_left
         %>
-        <%= link_to edit_sailing_path(sailing),
-                    class: sailing_classes.join(" "),
-                    title: [sailing.purpose, sailing.charterer].compact.join(" — ") do %>
-          <%= sailing.purpose.presence || sailing.charterer %>
-          <span class="calendar-sailing-time">
-            <%= sailing.departs_at.strftime("%H:%M") %><% if sailing.returns_at %> – <%= sailing.returns_at.strftime("%H:%M") %><% end %>
-          </span>
+        <% if can?("office_staff") %>
+          <%= link_to edit_sailing_path(sailing, return_to: request.fullpath),
+                      class: sailing_classes.join(" "),
+                      title: [sailing.purpose, sailing.charterer].compact.join(" — ") do %>
+            <%= sailing.purpose.presence || sailing.charterer %>
+            <span class="calendar-sailing-time">
+              <%= sailing.departs_at.strftime("%H:%M") %><% if sailing.returns_at %> – <%= sailing.returns_at.strftime("%H:%M") %><% end %>
+            </span>
+          <% end %>
+        <% else %>
+          <div class="<%= sailing_classes.join(" ") %>"
+               title="<%= [sailing.purpose, sailing.charterer].compact.join(" — ") %>">
+            <%= sailing.purpose.presence || sailing.charterer %>
+            <span class="calendar-sailing-time">
+              <%= sailing.departs_at.strftime("%H:%M") %><% if sailing.returns_at %> – <%= sailing.returns_at.strftime("%H:%M") %><% end %>
+            </span>
+          </div>
         <% end %>
       <% end %>
     </div>
