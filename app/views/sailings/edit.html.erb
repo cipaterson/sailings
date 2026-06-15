@@ -1,9 +1,17 @@
-<div style="display: flex; align-items: center; gap: 1rem;">
-  <h1 style="margin: 10;"><%= @sailing.display_name %></h1>
+<h1 style="margin: 10;"><%= @sailing.display_name %></h1>
+
+<div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
   <%= link_to "Manage Crew", sailing_sailing_participants_path(@sailing), class: "button" %>
   <%= button_to "Duplicate", duplicate_sailing_path(@sailing), method: :post, class: "button" %>
 </div>
 
 <%= render "form", sailing: @sailing %>
 
-<%= link_to "Back", :back %>
+<div style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem;">
+  <%= submit_tag "Update Voyage", form: "sailing-form", class: "button" %>
+  <%= link_to "Cancel", :back, class: "button" %>
+  <%= button_to "Delete", sailing_path(@sailing),
+      method: :delete,
+      class: "button",
+      data: { turbo_confirm: "Permanently delete #{@sailing.display_name}? This cannot be undone." } %>
+</div>

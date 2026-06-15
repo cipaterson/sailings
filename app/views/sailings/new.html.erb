@@ -2,4 +2,7 @@
 
 <%= render "form", sailing: @sailing %>
 
-<%= link_to "Back", sailings_path %>
+<div style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem;">
+  <%= submit_tag "Create Voyage", form: "sailing-form", class: "button" %>
+  <%= link_to "Cancel", sailings_path, class: "button" %>
+</div>

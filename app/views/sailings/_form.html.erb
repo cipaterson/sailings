@@ -17,7 +17,7 @@
   }
 </style>
 
-<%= form_with model: sailing do |f| %>
+<%= form_with model: sailing, id: "sailing-form" do |f| %>
   <%= hidden_field_tag :return_to, params[:return_to] %>
   <% if sailing.errors.any? %>
     <div>
@@ -177,7 +177,4 @@
     </div>
   </div>
 
-  <div>
-    <%= f.submit %>
-  </div>
 <% end %>

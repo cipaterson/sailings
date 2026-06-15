@@ -38,11 +38,45 @@ class UsersController < ApplicationController
         @users = base.order(:last_name, :first_name).limit(PER_PAGE).offset((@current_page - 1) * PER_PAGE)
       end
       format.csv do
-        @users = base.order(:last_name, :first_name)
+        @users = base.order(:last_name, :first_name).includes(:contact, :next_of_kin)
         csv_data = CSV.generate(headers: true) do |csv|
-          csv << [ "Name", "Email", "Mobile", "Membership Type", "Fees Paid", "Fees Due", "Roles" ]
+          csv << [
+            "First Name", "Last Name", "Email", "Birth Date", "Occupation",
+            "Membership Type", "Sailing Class", "Roles",
+            "Date Joined", "Last Sailed", "Days Sailed",
+            "Fees Paid", "Fees Due", "Receipt Number",
+            "SIT Date", "SIT2 Date", "Knots On", "Marine Safety Refresher On",
+            "ESS Qualification", "ESS Issued On", "ESS Expires On",
+            "Med Qualification", "Med Issued On", "Med Expires On",
+            "WWVP Qualification", "WWVP Issued On", "WWVP Expires On",
+            "First Aid Qualification", "First Aid Issued On", "First Aid Expires On",
+            "Coxswain Qualification", "Coxswain Issued On", "Coxswain Expires On",
+            "Food Handling Qualification", "Food Handling Issued On", "Food Handling Expires On",
+            "Mobile", "Work Phone", "Address 1", "Address 2", "City", "State", "Postcode",
+            "Next of Kin Name", "Next of Kin Email", "Next of Kin Mobile", "Next of Kin Work Phone",
+            "Next of Kin Address 1", "Next of Kin Address 2", "Next of Kin City", "Next of Kin State", "Next of Kin Postcode",
+            "Created At", "Updated At"
+          ]
           @users.each do |u|
-            csv << [ u.full_name, u.email_address, u.contact&.mobile, u.membership_type, u.fees_paid, u.fees_due, u.roles.join(", ") ]
+            contact = u.contact
+            nok = u.next_of_kin
+            csv << [
+              u.first_name, u.last_name, u.email_address, u.birth_date, u.occupation,
+              u.membership_type, u.sailing_class, u.roles.join(", "),
+              u.date_joined, u.last_sailed, u.days_sailed,
+              u.fees_paid, u.fees_due, u.rcpt_number,
+              u.sit_date, u.sit2_date, u.knots_on, u.marine_safety_refresher_on,
+              u.ess_qualification, u.ess_issued_on, u.ess_expires_on,
+              u.med_qualification, u.med_issued_on, u.med_expires_on,
+              u.wwvp_qualification, u.wwvp_issued_on, u.wwvp_expires_on,
+              u.first_aid_qualification, u.first_aid_issued_on, u.first_aid_expires_on,
+              u.coxswain_qualification, u.coxswain_issued_on, u.coxswain_expires_on,
+              u.food_handling_qualification, u.food_handling_issued_on, u.food_handling_expires_on,
+              contact&.mobile, contact&.work_phone, contact&.address1, contact&.address2, contact&.city, contact&.state, contact&.postcode,
+              nok&.full_name, nok&.email_address, nok&.mobile, nok&.work_phone,
+              nok&.address1, nok&.address2, nok&.city, nok&.state, nok&.postcode,
+              u.created_at, u.updated_at
+            ]
           end
         end
         send_data csv_data, filename: "members-#{Date.today}.csv", type: "text/csv"
