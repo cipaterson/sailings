@@ -1,5 +1,5 @@
 namespace :dev do
-  desc "Seed test sailing records: past 30 days + next 60 days (PAST=n FUTURE=n to override counts)"
+  desc "Seed test sailing records: past 15 days + next 10 days (PAST=n FUTURE=n to override counts)"
   task seed_sailings: :environment do
     past_count   = (ENV["PAST"]   || 15).to_i
     future_count = (ENV["FUTURE"] || 10).to_i

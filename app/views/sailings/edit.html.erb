@@ -13,5 +13,6 @@
   <%= button_to "Delete", sailing_path(@sailing),
       method: :delete,
       class: "button",
-      data: { turbo_confirm: "Permanently delete #{@sailing.display_name}? This cannot be undone." } %>
+      data: { turbo_confirm: "Permanently delete #{@sailing.display_name}? This cannot be undone." },
+      style: "background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; cursor: pointer; text-decoration: none;" %>
 </div>
