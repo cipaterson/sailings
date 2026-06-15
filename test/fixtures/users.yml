@@ -3,10 +3,12 @@
 one:
   email_address: one@example.com
   password_digest: <%= password_digest %>
+  roles_mask: 1
 
 two:
   email_address: two@example.com
   password_digest: <%= password_digest %>
+  roles_mask: 1
 
 # roles_mask bits: member=1, office_staff=2, crewing_operator=4
 office_staff:

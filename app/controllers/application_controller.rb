@@ -26,6 +26,11 @@ class ApplicationController < ActionController::Base
       require_role!("office_staff")
     end
 
+    # Intentionally retained for future use (no current callers).
+    def require_crewing_operator!
+      require_role!("crewing_operator")
+    end
+
     def require_office_staff_or_crewing_operator!
       require_role!("office_staff", "crewing_operator")
     end

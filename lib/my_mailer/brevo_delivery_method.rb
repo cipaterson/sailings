@@ -2,7 +2,6 @@ require "net/http"
 
 module MyMailer
   class BrevoDeliveryMethod
-
     API_URL = "https://api.brevo.com/v3/smtp/email"
 
     def initialize(config)

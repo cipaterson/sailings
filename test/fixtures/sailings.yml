@@ -1,20 +1,24 @@
 voyage:
   purpose: Harbour cruise
-  sailing_type: Voyage
+  sailing_type: Sail
+  status: scheduled
   departs_at: 2026-06-01 09:00:00
   returns_at: 2026-06-01 17:00:00
 
 multiday:
   purpose: Coastal passage
-  sailing_type: Voyage
+  sailing_type: Sail
+  status: scheduled
   departs_at: 2026-07-10 08:00:00
   returns_at: 2026-07-12 16:00:00
 
 no_return:
   purpose: Day sail
-  sailing_type: Training
+  sailing_type: Sail
+  status: scheduled
   departs_at: 2026-08-01 10:00:00
 
 no_dates:
   purpose: Planning sailing
-  sailing_type: Voyage
+  sailing_type: Sail
+  status: scheduled

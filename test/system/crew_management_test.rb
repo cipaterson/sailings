@@ -17,7 +17,7 @@ class CrewManagementTest < ApplicationSystemTestCase
     sign_in_as users(:crewing_operator)
     visit sailing_sailing_participants_path(sailings(:voyage))
 
-    assert_selector "h1", text: /Crew for/i
+    assert_selector "h1", text: /Harbour cruise/i
     assert_selector "td", text: users(:one).email_address
     assert_selector "td", text: users(:two).email_address
   end
@@ -26,7 +26,10 @@ class CrewManagementTest < ApplicationSystemTestCase
     sign_in_as users(:crewing_operator)
     visit sailing_sailing_participants_path(sailings(:multiday))
 
-    select users(:member).email_address, from: "Member"
+    # The "Member" select is enhanced by TomSelect (searchable-select controller),
+    # which hides the native <select>, so drive the rendered widget directly.
+    find(".ts-control").click
+    find(".ts-dropdown .option", text: users(:member).email_address).click
     click_on "Add Crew Member"
 
     assert_current_path sailing_sailing_participants_path(sailings(:multiday))

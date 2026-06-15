@@ -48,10 +48,10 @@ class SailingsTest < ApplicationSystemTestCase
     click_on "New Voyage"
 
     fill_in "Voyage Purpose", with: "System test voyage"
-    select "Voyage", from: "Sailing Type"
-    click_on "Create Sailing"
+    select "Sail", from: "Sailing Type"
+    click_on "Create Voyage"
 
-    assert_selector "h1", text: "Voyage"
+    assert_selector "h1", text: "System test voyage"
     assert_selector "td", text: "System test voyage"
   end
 
@@ -70,7 +70,7 @@ class SailingsTest < ApplicationSystemTestCase
     visit edit_sailing_path(sailings(:voyage))
 
     fill_in "Voyage Purpose", with: "Updated harbour cruise"
-    click_on "Update Sailing"
+    click_on "Update Voyage"
 
     assert_current_path sailings_path
     assert_equal "Updated harbour cruise", sailings(:voyage).reload.purpose

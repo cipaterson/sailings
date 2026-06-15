@@ -36,7 +36,7 @@ class Sailing < ApplicationRecord
   attr_writer :departs_date, :departs_time, :returns_date, :returns_time
 
   def display_name
-    parts = [purpose]
+    parts = [ purpose ]
     parts << departs_at.strftime("%d %b %Y") if departs_at
     parts << "(#{charterer})" if charterer.present?
     parts.join(" – ")

@@ -13,9 +13,9 @@ class SailingsController < ApplicationController
     else
       @from_date = if params.key?(:from_date)
                      Date.parse(params[:from_date]) rescue nil
-                   else
+      else
                      Date.today
-                   end
+      end
       @to_date = Date.parse(params[:to_date]) rescue nil if params[:to_date].present?
 
       base = Sailing.all
@@ -92,9 +92,9 @@ class SailingsController < ApplicationController
   def financials
     @from_date = if params.key?(:from_date)
                    Date.parse(params[:from_date]) rescue nil
-                 else
+    else
                    Date.today
-                 end
+    end
     @to_date = Date.parse(params[:to_date]) rescue nil if params[:to_date].present?
 
     base = Sailing.where.not(charterer: [ nil, "" ])

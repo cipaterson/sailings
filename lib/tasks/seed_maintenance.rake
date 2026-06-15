@@ -2,7 +2,7 @@ namespace :dev do
   desc "Seed 40 maintenance task records (10 in progress, 30 closed)"
   task seed_maintenance: :environment do
     user_ids = User.pluck(:id).map(&:to_s)
-    user_ids = ["1"] if user_ids.empty?
+    user_ids = [ "1" ] if user_ids.empty?
 
     fixed_notes = [
       "Treated with epoxy and repainted",
@@ -19,7 +19,7 @@ namespace :dev do
 
     10.times do
       FactoryBot.create(:maintenance_task,
-        state: ["Reported", "Open"].sample,
+        state: [ "Reported", "Open" ].sample,
         who_reported: user_ids.sample)
     end
 
