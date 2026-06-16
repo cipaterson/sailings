@@ -19,6 +19,7 @@ class SailingManifestPdf
     sailing_details
     move_down 12
     participants_table
+    comments_section
   end
 
   def heading
@@ -92,6 +93,15 @@ class SailingManifestPdf
       draw_checkbox(col_cx, row_top - row_h / 2.0, p.attended.to_i == 1)
       row_top -= row_h
     end
+  end
+
+  def comments_section
+    return if @sailing.comments.blank?
+
+    move_down 12
+    text "Comments", size: 12, style: :bold, color: HEADER_COLOR
+    move_down 4
+    text @sailing.comments.to_s, size: 10
   end
 
   def draw_checkbox(cx, cy, checked)
