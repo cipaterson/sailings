@@ -5,6 +5,7 @@
 # `$XDG_CONFIG_HOME/git/ignore` or `~/.config/git/ignore`
 #
 .DS_Store
+mise.local.toml
 
 # Ignore bundler config.
 /.bundle
