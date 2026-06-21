@@ -4,8 +4,8 @@ A Rails web application for managing sailing voyages and club membership for **L
 
 ## Features
 
-- **Voyages** — Create and manage sailing events (Voyage, Training, Charter, Maintenance, Special). List and calendar views (month, week, day). Crew manifest PDF export. CSV export.
-- **Crew registration** — Members register interest (EOI) for voyages; office staff accept or manage crew. Bulk status updates from the crew management view.
+- **Voyages** — Create and manage sailing events. List and calendar views (month, week, day). Crew manifest PDF export. CSV export.
+- **Crew registration** — Members register interest (EOI) for voyages; office staff accept or manage crew. Bulk status updates from the crew management view.  Emails and SMSs can be sent to crew.
 - **Member directory** — Full member profiles with contact details, next-of-kin, membership info, qualifications (ESS, MED, WWVP, First Aid, Coxswain, Food Handling), training dates, and fees tracking. Role-based access control. CSV export.
 - **My Registrations** — Personal dashboard showing a member's voyage history and participation status.
 - **Maintenance tasks** — Log and track facility maintenance issues with priority and status.
@@ -29,7 +29,7 @@ Install Ruby 3.4.2 and Rails following the [official guide](https://guides.rubyo
 
 ### Getting started
 
->Important Note: There are secrets (API keys, etc) encoded by a master key which MUST NOT be committed to github.  The master key must be manually created at  `./app/config/master.key`.
+>Important Note: There are secrets (API keys, etc) encoded by a master key (which MUST NOT be committed to github).  The master key must be manually created at  `./app/config/master.key`.
 
 
 ```bash
@@ -41,15 +41,11 @@ bin/rails db:create db:migrate db:seed
 bin/rails server
 ```
 
-`db:seed` loads sample data with several users (all passwords: `Password123!`):
+`db:seed` loads sample data with this user (password: `Password123!`):
 
 | Email | Role |
 |---|---|
-| `office@example.com` | Office staff |
-| `crewing@ladynelson.org.au` | Crewing operator |
-| `admin@example.com` | Office staff + crewing operator |
-| `pleb@example.com` | Member |
-
+| `admin@example.com` | All roles |
 
 ## Common Commands
 
