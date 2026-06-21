@@ -3,8 +3,9 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  MissionControl::Jobs.http_basic_auth_user = "dev"
-  MissionControl::Jobs.http_basic_auth_password = "qqq"
+  # Uncomment to use Mission Control for job monitoring
+  # MissionControl::Jobs.http_basic_auth_user = "dev"
+  # MissionControl::Jobs.http_basic_auth_password = ""
 
   # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
   # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
