@@ -6,12 +6,40 @@ class UserTest < ActiveSupport::TestCase
     assert_equal("downcased@example.com", user.email_address)
   end
 
+  test "requires email_address" do
+    user = User.new(email_address: "")
+    assert_not user.valid?
+    assert_includes user.errors[:email_address], "can't be blank"
+  end
+
+  test "rejects a duplicate email_address" do
+    user = User.new(email_address: users(:one).email_address, password: "ValidPass1")
+    assert_not user.valid?
+    assert_includes user.errors[:email_address], "has already been taken"
+  end
+
+  test "rejects a duplicate email_address differing only in case" do
+    user = User.new(email_address: "ONE@EXAMPLE.COM", password: "ValidPass1")
+    assert_not user.valid?
+    assert_includes user.errors[:email_address], "has already been taken"
+  end
+
   # Roles bitmask tests
 
   test "new user has no roles by default" do
     user = User.new
     assert_equal [], user.roles
     assert_equal 0, user.roles_mask
+  end
+
+  test "defaults to member role on create when no roles set" do
+    user = User.create!(email_address: "fresh@example.com", password: "ValidPass1")
+    assert_equal [ "member" ], user.roles
+  end
+
+  test "keeps assigned roles on create instead of defaulting to member" do
+    user = User.create!(email_address: "staff@example.com", password: "ValidPass1", roles: [ "office_staff" ])
+    assert_equal [ "office_staff" ], user.roles
   end
 
   test "assigns a single role" do

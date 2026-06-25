@@ -45,7 +45,7 @@ class UsersController < ApplicationController
             "Membership Type", "Sailing Class", "Roles",
             "Date Joined", "Last Sailed", "Days Sailed",
             "Fees Paid", "Fees Due", "Receipt Number",
-            "SIT Date", "SIT2 Date", "Knots On", "Marine Safety Refresher On",
+            "SIT1 Date", "SIT2 Date", "Knots On", "Marine Safety Refresher On",
             "ESS Qualification", "ESS Issued On", "ESS Expires On",
             "Med Qualification", "Med Issued On", "Med Expires On",
             "WWVP Qualification", "WWVP Issued On", "WWVP Expires On",

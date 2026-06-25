@@ -140,6 +140,18 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
+  test "create with a duplicate email re-renders new instead of erroring" do
+    sign_in_as users(:office_staff)
+    assert_no_difference "User.count" do
+      post users_path, params: { user: {
+        email_address: users(:two).email_address,
+        password: "ValidPass1!",
+        password_confirmation: "ValidPass1!"
+      } }
+    end
+    assert_response :unprocessable_entity
+  end
+
   # --- update ---
 
   test "user can update their own profile" do

@@ -20,6 +20,7 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}".strip.presence || email_address
   end
 
+  validates :email_address, presence: true, uniqueness: true
   validates :membership_type, inclusion: { in: MEMBERSHIP_TYPES }, allow_blank: true
 
   PASSWORD_COMPLEXITY = {
@@ -30,6 +31,7 @@ class User < ApplicationRecord
 
   validate :password_complexity, if: -> { password.present? }
   before_save :sync_contact_fields
+  before_create :default_to_member_role
 
   # Bitmask role methods
   def roles
@@ -57,6 +59,10 @@ class User < ApplicationRecord
   }
 
   private
+
+  def default_to_member_role
+    self.roles = [ "member" ] if roles_mask.zero?
+  end
 
   def sync_contact_fields
     return unless contact
