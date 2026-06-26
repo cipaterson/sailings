@@ -1,15 +1,15 @@
-# This is kamal's deploy.yml configuration file for STAGING environment.
+# This is kamal's deploy.yml configuration file for the PRODUCTION environment.
 #
 # Name of your application. Used to uniquely configure containers.
-service: staging
+service: sailings
 
 # Name of the container image (use your-user/app-name on external registries).
-image: staging
+image: sailings
 
 # Deploy to these servers.
 servers:
   web:
-    - staging.firstsoftware.cc
+    - sailings.firstsoftware.cc
   # job:
   #   hosts:
   #     - 192.168.0.1
@@ -24,7 +24,7 @@ servers:
 #
 proxy:
   ssl: true
-  host: staging.firstsoftware.cc
+  host: sailings.firstsoftware.cc
 
 # Where you keep your container images.
 registry:
@@ -58,7 +58,7 @@ env:
     # DB_HOST: 192.168.0.2
 
     # Log everything from Rails
-    # RAILS_LOG_LEVEL: debug
+    RAILS_LOG_LEVEL: info
 
 # Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
 # "bin/kamal logs -r job" will tail logs from the first server in the job section.
@@ -81,8 +81,8 @@ asset_path: /rails/public/assets
 # Configure the image builder.
 builder:
   arch: amd64
-  # This sets the build context for the Docker image, default is HEAD of git repo.
-  #context: "."
+  # This CAN'T be overridden, default is HEAD of git repo, or whatever is set in deploy.yml
+  #context: "HEAD"
 
   # # Build image via remote server (useful for faster amd64 builds on arm64 computers)
   # remote: ssh://docker@docker-builder-server
