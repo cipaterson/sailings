@@ -2,10 +2,10 @@
 #
 servers:
   web:
-    - 170.64.223.188
+    - 34.129.63.249
 proxy:
   ssl: false
-  host: 170.64.223.188
+  host: 34.129.63.249
 
 builder:
   arch: amd64

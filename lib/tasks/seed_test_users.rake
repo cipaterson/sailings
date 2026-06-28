@@ -3,7 +3,7 @@ namespace :dev do
   task seed_test_users: :environment do
     common = {
       membership_type: "Individual",
-      fees_due: 2026,
+      fees_due: 2026
     }
 
     people = [
