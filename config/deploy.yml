@@ -60,6 +60,14 @@ env:
     # Log everything from Rails
     # RAILS_LOG_LEVEL: debug
 
+    # Litestream replica location (shared by all destinations so any of them can
+    # restore from the backup). Continuous replication is enabled separately by
+    # LITESTREAM_REPLICATE (set only for the prod destination). The Spaces keys
+    # come from Rails credentials (see config/initializers/litestream.rb).
+    LITESTREAM_REPLICA_BUCKET: sailings-backup
+    LITESTREAM_REPLICA_ENDPOINT: https://sfo3.digitaloceanspaces.com
+    LITESTREAM_REPLICA_REGION: sfo3
+
 # Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
 # "bin/kamal logs -r job" will tail logs from the first server in the job section.
 aliases:

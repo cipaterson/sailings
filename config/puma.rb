@@ -38,9 +38,9 @@ plugin :tmp_restart
 plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 
 # Continuously replicate the SQLite database to object storage via Litestream.
-# Guarded so it only runs where replication is configured (production); staging
-# and development leave the bucket env unset and never replicate.
-plugin :litestream if ENV["LITESTREAM_REPLICA_BUCKET"]
+# Only the production destination sets LITESTREAM_REPLICATE; other destinations
+# still carry the replica config (for restores) but do not replicate.
+plugin :litestream if ENV["LITESTREAM_REPLICATE"]
 
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.

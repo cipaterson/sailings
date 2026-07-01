@@ -13,9 +13,9 @@
 # The gem propagates these onto the ENV variables referenced in config/litestream.yml
 # (e.g. replica_key_id -> LITESTREAM_ACCESS_KEY_ID) when it runs the litestream binary.
 #
-# Litestream replication only runs where LITESTREAM_REPLICA_BUCKET is present
-# (see the `plugin :litestream` guard in config/puma.rb), so staging and
-# development never replicate.
+# Continuous replication only runs where LITESTREAM_REPLICATE is set (see the
+# `plugin :litestream` guard in config/puma.rb) — the production destination.
+# Other destinations still carry this replica config so they can restore.
 Rails.application.configure do
   config.litestream.replica_bucket = ENV["LITESTREAM_REPLICA_BUCKET"]
   config.litestream.replica_endpoint = ENV["LITESTREAM_REPLICA_ENDPOINT"]
