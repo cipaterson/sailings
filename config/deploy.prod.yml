@@ -60,6 +60,15 @@ env:
     # Log everything from Rails
     RAILS_LOG_LEVEL: info
 
+    # Litestream: continuously replicate /data/production.sqlite3 to the
+    # DigitalOcean Space "sailings-backup" (sfo3) via its S3-compatible API.
+    # The Spaces access key/secret come from Rails credentials (see
+    # config/initializers/litestream.rb); only non-secret settings live here.
+    # Presence of LITESTREAM_REPLICA_BUCKET also enables the Puma plugin.
+    LITESTREAM_REPLICA_BUCKET: sailings-backup
+    LITESTREAM_REPLICA_ENDPOINT: https://sfo3.digitaloceanspaces.com
+    LITESTREAM_REPLICA_REGION: sfo3
+
 # Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
 # "bin/kamal logs -r job" will tail logs from the first server in the job section.
 aliases:

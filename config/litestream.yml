@@ -1,0 +1,27 @@
+# This is the actual configuration file for litestream.
+#
+# You can either use the generated `config/initializers/litestream.rb`
+# file to configure the litestream-ruby gem, which will populate these
+# ENV variables when using the `rails litestream:replicate` command.
+#
+# Or, if you prefer, manually manage ENV variables and this configuration file.
+# In that case, simply ensure that the ENV variables are set before running the
+# `replicate` command.
+#
+# For more details, see: https://litestream.io/reference/config/
+#
+# Only the primary database is replicated. The cache/queue/cable databases are
+# Solid Cache/Queue/Cable working state — regenerable and intentionally excluded.
+#
+# Replicates to a DigitalOcean Spaces bucket via its S3-compatible API. All values
+# are injected as ENV variables by Kamal in production (see config/deploy.prod.yml).
+dbs:
+  - path: /data/production.sqlite3
+    replicas:
+      - type: s3
+        bucket: $LITESTREAM_REPLICA_BUCKET
+        path: production/primary
+        endpoint: $LITESTREAM_REPLICA_ENDPOINT
+        region: $LITESTREAM_REPLICA_REGION
+        access-key-id: $LITESTREAM_ACCESS_KEY_ID
+        secret-access-key: $LITESTREAM_SECRET_ACCESS_KEY
