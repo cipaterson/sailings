@@ -36,7 +36,7 @@ Install Ruby 3.4.2 and Rails following the [official guide](https://guides.rubyo
 git clone https://github.com/chrispa/sailings.git
 cd sailings
 bundle install
-echo "masterkey" > ./app/config/master.key
+echo "PASTE_THE_32_CHARACTER_KEY_HERE" > ./app/config/master.key
 bin/rails db:create db:migrate db:seed
 bin/rails server
 ```

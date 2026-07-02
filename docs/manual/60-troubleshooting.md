@@ -1,21 +1,21 @@
-# 6. Troubleshooting
+# 7. Troubleshooting
 
 This chapter is a symptom-first guide to the problems you are most likely to hit, in
 development and in production. It pulls together failure modes referenced across the other
 chapters and adds the diagnostic steps for each.
 
-Start with [§6.1](#61-first-steps-any-problem); most investigations begin the same way.
+Start with [§7.1](#71-first-steps-any-problem); most investigations begin the same way.
 
 ---
 
-## 6.1 First steps (any problem)
+## 7.1 First steps (any problem)
 
 Before diving in, gather the basics — they usually point straight at the cause:
 
 1. **Is it up?** `curl -i https://sailings.firstsoftware.cc/up` — 200 vs 500 vs timeout tells
-   you a lot (see [Monitoring §5.1](40-monitoring.md#51-the-health-check-endpoint-up)).
+   you a lot (see [Monitoring §6.1](50-monitoring.md#61-the-health-check-endpoint-up)).
 2. **What do the logs say?** `bin/kamal logs -d prod -n 200` — the exception and its request-id
-   tag are usually right there (see [Monitoring §5.2](40-monitoring.md#52-application-logs)).
+   tag are usually right there (see [Monitoring §6.2](50-monitoring.md#62-application-logs)).
 3. **Are the containers running?** `bin/kamal details -d prod`.
 4. **What changed?** A problem that started just after a deploy points at the new release —
    consider `bin/kamal rollback -d prod` first, then diagnose calmly.
@@ -24,7 +24,7 @@ Throughout this chapter, drop `-d prod` to target **staging** (the default desti
 
 ---
 
-## 6.2 Local development
+## 7.2 Local development
 
 | Symptom | Cause & fix |
 |---|---|
@@ -38,7 +38,7 @@ Throughout this chapter, drop `-d prod` to target **staging** (the default desti
 
 ---
 
-## 6.3 Deploys that fail
+## 7.3 Deploys that fail
 
 Work through the stage Kamal failed at (build → push → connect → boot):
 
@@ -47,29 +47,29 @@ Work through the stage Kamal failed at (build → push → connect → boot):
   to iterate faster. A gem/asset error here is the usual cause.
 - **Cannot push / pull the image (registry).** All destinations use a registry at
   `localhost:5555`; if it is unreachable the push fails. Ensure the local registry is running
-  and reachable — see [Deploying §3.2](20-deploying.md#32-prerequisites).
+  and reachable — see [Deploying §4.2](30-deploying.md#42-prerequisites).
 - **SSH / connection refused.** Kamal needs passwordless SSH as the destination's user
   (`root` for most, `sailings` for the Pi). Test `ssh <user>@<host>` directly; fix keys before
   retrying.
 - **Deploys but the new version is unhealthy** (cutover fails or `/up` returns 500 after
-  release). Roll back and diagnose the boot problem ([§6.4](#64-app-wont-boot--500-on-up)):
+  release). Roll back and diagnose the boot problem ([§7.4](#74-app-wont-boot--500-on-up)):
   ```bash
   bin/kamal rollback -d prod
   ```
 
 ---
 
-## 6.4 App won't boot / 500 on `/up`
+## 7.4 App won't boot / 500 on `/up`
 
 A container that starts but fails the health check almost always trips on one of these — check
 `bin/kamal logs -d prod` for the exception:
 
 - **Missing/incorrect master key on the server.** `RAILS_MASTER_KEY` is sourced from your local
-  `config/master.key` at deploy time ([Deploying §3.5](20-deploying.md#35-secrets-and-configuration)).
+  `config/master.key` at deploy time ([Deploying §4.5](30-deploying.md#45-secrets-and-configuration)).
   If it is absent or wrong, the app cannot decrypt credentials at boot and crashes. Confirm the
   key file is present locally and redeploy.
 - **Failed migration.** The entrypoint runs `db:prepare` on boot
-  ([Deploying §3.4](20-deploying.md#34-what-runs-on-the-server)); a bad migration aborts startup.
+  ([Deploying §4.4](30-deploying.md#44-what-runs-on-the-server)); a bad migration aborts startup.
   The log shows which one — fix it and redeploy.
 - **Volume permission errors.** The container runs as a non-root user (uid 1000). If the host
   volume `"/var/data/sailings/storage"` is owned such that uid 1000 cannot write, the app can't
@@ -78,7 +78,7 @@ A container that starts but fails the health check almost always trips on one of
 
 ---
 
-## 6.5 Database (SQLite) issues
+## 7.5 Database (SQLite) issues
 
 - **"database is locked" (`SQLite3::BusyException`).** SQLite allows one writer at a time; under
   brief contention a writer can time out. The connection timeout is set in
@@ -94,18 +94,18 @@ A container that starts but fails the health check almost always trips on one of
 - **Which database?** Only `production.sqlite3` holds real data; the `_cache`, `_queue`, and
   `_cable` files are regenerable. If one of the latter is corrupt you can usually delete it and
   let Rails recreate it on the next boot (do **not** do this to the primary — restore it
-  instead, see [Backup & Restore](30-backup-restore.md)).
+  instead, see [Backup & Restore](40-backup-restore.md)).
 
 ---
 
-## 6.6 Background jobs not running
+## 7.6 Background jobs not running
 
 Jobs (crew email and SMS) run on **Solid Queue inside Puma**, enabled by
 `SOLID_QUEUE_IN_PUMA=true`.
 
 - If jobs never run, confirm that variable is set for the destination (it is, in the deploy
   configs) and that the app booted cleanly.
-- Inspect the queue from the console ([Monitoring §5.4](40-monitoring.md#54-background-jobs-solid-queue)):
+- Inspect the queue from the console ([Monitoring §6.4](50-monitoring.md#64-background-jobs-solid-queue)):
   ```ruby
   SolidQueue::ReadyExecution.count          # a growing backlog = jobs stuck
   SolidQueue::FailedExecution.count
@@ -116,10 +116,10 @@ Jobs (crew email and SMS) run on **Solid Queue inside Puma**, enabled by
 
 ---
 
-## 6.7 Email or SMS not being sent
+## 7.7 Email or SMS not being sent
 
 Both go out through background jobs, so a failure usually surfaces as a `FailedExecution`
-([§6.6](#66-background-jobs-not-running)) and in the logs.
+([§7.6](#76-background-jobs-not-running)) and in the logs.
 
 - **Email** is delivered via **Brevo** (a custom delivery method,
   [`config/initializers/brevo_delivery.rb`](../../config/initializers/brevo_delivery.rb); mailers
@@ -131,28 +131,25 @@ Both go out through background jobs, so a failure usually surfaces as a `FailedE
   credentials (key `mobile_message`). If SMS stops, check that job's failures and confirm the
   SMS provider credentials and account balance.
 - **Nothing queued at all?** Confirm the action actually enqueued the job (the controller shows
-  a "queued for N …" notice) and that jobs are processing at all ([§6.6](#66-background-jobs-not-running)).
+  a "queued for N …" notice) and that jobs are processing at all ([§7.6](#76-background-jobs-not-running)).
 
 ---
 
-## 6.8 Backup and restore problems
+## 7.8 Backup and restore problems
 
 - **Replication not producing snapshots.** Continuous replication runs **only** where
   `LITESTREAM_REPLICATE=true` — production. Confirm you are checking production, then verify
   recent snapshots (`bin/rails litestream:snapshots -- --database=/data/production.sqlite3`).
   Missing snapshots usually mean bad/absent Spaces credentials (key `litestream` in Rails
   credentials) or the plugin not loading — check boot logs for Litestream errors. See
-  [Backup & Restore §4.4](30-backup-restore.md#44-checking-the-backup-is-healthy).
-- **Restore refuses to overwrite.** Litestream will not restore onto an existing database file.
-  Restore to a new path with `-o` and swap it in, as in
-  [Backup & Restore §4.5](30-backup-restore.md#45-restoring).
+  [Backup & Restore §5.4](40-backup-restore.md#54-checking-the-backup-is-healthy).
 - **Restore can't reach the replica.** The destination needs both the replica settings (present
   on all destinations) and the Spaces keys (decrypted via the master key). Run the restore from
   inside a container (`bin/kamal shell`) so the Rails environment supplies them.
 
 ---
 
-## 6.9 TLS / certificate issues
+## 7.9 TLS / certificate issues
 
 Staging and production terminate TLS at Kamal's proxy using Let's Encrypt for the configured
 host. If HTTPS fails (untrusted or missing certificate):
@@ -168,7 +165,7 @@ host. If HTTPS fails (untrusted or missing certificate):
 
 ---
 
-## 6.10 When you're stuck
+## 7.10 When you're stuck
 
 - Reproduce on **staging** if at all possible before touching production.
 - Get an interactive session to poke around: `bin/kamal console -d prod` (Rails) or
@@ -178,4 +175,4 @@ host. If HTTPS fails (untrusted or missing certificate):
 
 ---
 
-[← Monitoring](40-monitoring.md) · [Manual index](README.md)
+[← Monitoring](50-monitoring.md) · [Manual index](README.md)

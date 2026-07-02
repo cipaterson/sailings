@@ -8,4 +8,4 @@ builder:
   arch: arm64
 
 ssh:
-  user: sailings
+  user: root

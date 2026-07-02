@@ -15,10 +15,11 @@ The manual is organised into sections, each in its own file in `docs/manual/`:
 |---|---|---|
 | Introduction | [`00-introduction.md`](00-introduction.md) | This document — what the app is and how the manual is arranged |
 | Developing | [`10-developing.md`](10-developing.md) | Local setup, running the app and tests, code layout, conventions |
-| Deploying | [`20-deploying.md`](20-deploying.md) | Kamal, the staging and production destinations, releases |
-| Backup & Restore | [`30-backup-restore.md`](30-backup-restore.md) | Litestream replication to object storage and how to restore |
-| Monitoring | [`40-monitoring.md`](40-monitoring.md) | Health checks, logs, and how to tell the app is healthy |
-| Troubleshooting | [`50-troubleshooting.md`](50-troubleshooting.md) | Common failures and how to diagnose them |
+| External Setup | [`20-external-setup.md`](20-external-setup.md) | External services and infrastructure the app depends on |
+| Deploying | [`30-deploying.md`](30-deploying.md) | Kamal, the staging and production destinations, releases |
+| Backup & Restore | [`40-backup-restore.md`](40-backup-restore.md) | Litestream replication to object storage and how to restore |
+| Monitoring | [`50-monitoring.md`](50-monitoring.md) | Health checks, logs, and how to tell the app is healthy |
+| Troubleshooting | [`60-troubleshooting.md`](60-troubleshooting.md) | Common failures and how to diagnose them |
 
 If you are brand new, read this introduction, then **Developing**, and keep the others
 handy for when you deploy or when something breaks.
@@ -104,14 +105,16 @@ keeps the number of moving parts small:
 - **Local development** uses `bin/rails server` to run the app and `bin/rails test` /
   `bin/rails test:system` to run the test suites (Minitest, with Capybara + headless
   Chrome for system tests). Full instructions are in [**Developing**](10-developing.md).
+- **External services** — the app relies on infrastructure and accounts outside the codebase
+  (servers, object storage, DNS, email and SMS providers). See [**External Setup**](20-external-setup.md).
 - **Deployment** uses **Kamal**, which builds a Docker image and ships it to a server.
   There are two main destinations: **staging** at `staging.firstsoftware.cc` (the default)
-  and **production** at `sailings.firstsoftware.cc`. See [**Deploying**](20-deploying.md).
+  and **production** at `sailings.firstsoftware.cc`. See [**Deploying**](30-deploying.md).
 - **Backups** are continuous: **Litestream** streams the production database to
   **DigitalOcean Spaces** (S3-compatible object storage) so it can be restored after a
-  server loss. See [**Backup & Restore**](30-backup-restore.md).
+  server loss. See [**Backup & Restore**](40-backup-restore.md).
 - **Monitoring** starts with the `GET /up` health-check endpoint and the application's
-  logs. See [**Monitoring**](40-monitoring.md), and [**Troubleshooting**](50-troubleshooting.md)
+  logs. See [**Monitoring**](50-monitoring.md), and [**Troubleshooting**](60-troubleshooting.md)
   for common problems.
 
 ### 1.6 Related documents

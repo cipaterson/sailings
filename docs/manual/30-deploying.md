@@ -1,15 +1,15 @@
-# 3. Deploying
+# 4. Deploying
 
 This chapter explains how a version of Lady Nelson Sailings gets from your machine onto a
 live server. Deployment uses **[Kamal](https://kamal-deploy.org/)**, which packages the app
 as a **Docker** image and runs it on a plain Linux server over SSH.
 
-If you have not deployed before, read [§3.1](#31-how-deployment-works) and
-[§3.2](#32-prerequisites) first, then follow [§3.6](#36-deploying).
+If you have not deployed before, read [§4.1](#41-how-deployment-works) and
+[§4.2](#42-prerequisites) first, then follow [§4.6](#46-deploying).
 
 ---
 
-## 3.1 How deployment works
+## 4.1 How deployment works
 
 Kamal does four things each time you deploy:
 
@@ -31,20 +31,19 @@ Kamal always reads [`config/deploy.yml`](../../config/deploy.yml) as the **base*
 configuration. Passing a **destination** with `-d <name>` merges `config/deploy.<name>.yml`
 on top of the base. So `bin/kamal deploy` deploys the base config, while
 `bin/kamal deploy -d prod` deploys the base **plus** the production overrides. The
-destinations are described in [§3.3](#33-deployment-destinations).
+destinations are described in [§4.3](#43-deployment-destinations).
 
 ---
 
-## 3.2 Prerequisites
+## 4.2 Prerequisites
 
 You run Kamal from your own machine (inside WSL, if you are on Windows — see
 [Developing §2.1](10-developing.md#21-windows-setup-with-wsl)). Before your first deploy you need:
 
 - **Docker installed locally** — Kamal builds the image on your machine.
-- **`config/master.key` present** — it is read at deploy time (see [§3.5](#35-secrets-and-configuration)).
+- **`config/master.key` present** — it is read at deploy time (see [§4.5](#45-secrets-and-configuration)).
 - **SSH access to the server** — passwordless (key-based) login for the SSH user configured
-  for the destination (`root` for most, `sailings` for the Raspberry Pi). Test it with
-  `ssh <user>@<host>` before deploying.
+  for the destination (`root`). Test it with `ssh root@<host>` before deploying. (see [§4.10](#410-connecting-to-your-server))
 - **A reachable Docker registry.** All destinations are configured to use a registry at
   `localhost:5555` (see the `registry:` block in `config/deploy.yml`), so a Docker registry
   must be available at that address when you deploy — for example a local `registry:2`
@@ -54,7 +53,7 @@ You run Kamal from your own machine (inside WSL, if you are on Windows — see
 
 ---
 
-## 3.3 Deployment destinations
+## 4.3 Deployment destinations
 
 Four destinations are defined. **Staging is the default** (no `-d` flag). Only **production**
 runs continuous database backups.
@@ -75,27 +74,25 @@ Notes:
 - **Continuous backup is deliberately production-only.** The Litestream replica location is
   shared by all destinations (in the base config) so any of them can *restore* from the
   backup, but only production sets `LITESTREAM_REPLICATE=true` to *write* to it. See
-  [Backup & Restore](30-backup-restore.md).
+  [Backup & Restore](40-backup-restore.md).
 
 ---
 
-## 3.4 What runs on the server
+## 4.4 What runs on the server
 
 - **Persistent storage.** The four SQLite databases (primary, cache, queue, cable) and any
-  Active Storage uploads live on a host volume mounted into the container:
+  Active Storage uploads (none so far) live on a host volume mounted into the container:
   `"/var/data/sailings/storage:/data"`. The container is disposable; this directory is the
-  data that must survive redeploys and must itself be backed up off the server.
+  data that must survive redeploys and is itself backed up off the server.
 - **Database prepare on boot.** The container's entrypoint
   ([`bin/docker-entrypoint`](../../bin/docker-entrypoint)) runs `bin/rails db:prepare` when it
   starts the server, so migrations are applied automatically on each deploy.
 - **TLS.** For staging and production, Kamal's proxy obtains and renews a Let's Encrypt
   certificate for the configured host. The `IP` destination runs plain HTTP (`ssl: false`).
-- **Assets across versions.** `asset_path: /rails/public/assets` lets in-flight requests keep
-  hitting old fingerprinted assets during a cutover, avoiding 404s.
 
 ---
 
-## 3.5 Secrets and configuration
+## 4.5 Secrets and configuration
 
 Environment variables reach the container in two ways (see the `env:` block in
 `config/deploy.yml`):
@@ -120,7 +117,7 @@ bin/rails credentials:edit
 
 ---
 
-## 3.6 Deploying
+## 4.6 Deploying
 
 ### First time onto a new server (`setup`)
 
@@ -150,9 +147,9 @@ first. A typical release is: merge to `main` → `bin/kamal deploy` to staging �
 
 ---
 
-## 3.7 Operating a running deployment
+## 4.7 Operating a running deployment
 
-The base config defines aliases (the `aliases:` block) so you don't have to remember the long
+The base deploy.yml config defines aliases (the `aliases:` block) so you don't have to remember the long
 forms. Add `-d prod` to target production:
 
 ```bash
@@ -173,20 +170,20 @@ bin/kamal details -d prod         # show running containers
 
 If a deploy fails partway, `bin/kamal rollback` returns to the previous known-good version;
 then diagnose the failed build or boot locally before trying again. See
-[Troubleshooting](50-troubleshooting.md).
+[Troubleshooting](60-troubleshooting.md).
 
 ---
 
-## 3.8 Pre-deploy checklist
+## 4.8 Pre-deploy checklist
 
-- [ ] Changes committed to git (Kamal builds from `HEAD`).
+- [ ] Changes committed to git (Kamal builds from `HEAD` in the git repo, NOT from the working directory).
 - [ ] CI green on the branch (tests, RuboCop, Brakeman — see [Developing §2.7](10-developing.md#27-linting-and-security-checks)).
 - [ ] `config/master.key` present locally.
 - [ ] Docker running and the `localhost:5555` registry reachable.
 - [ ] SSH to the target host works without a password.
 - [ ] Deployed and verified on **staging** first, then `-d prod`.
-- [ ] After a production deploy, confirmed the app answers on `https://sailings.firstsoftware.cc/up` (see [Monitoring](40-monitoring.md)).
+- [ ] After a production deploy, confirmed the app answers on `https://sailings.firstsoftware.cc/up` (see [Monitoring](50-monitoring.md)).
 
 ---
 
-[← Developing](10-developing.md) · [Manual index](README.md) · [Backup & Restore →](30-backup-restore.md)
+[← External Setup](20-external-setup.md) · [Manual index](README.md) · [Backup & Restore →](40-backup-restore.md)

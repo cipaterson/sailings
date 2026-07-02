@@ -30,6 +30,7 @@ mise.local.toml
 /tmp/storage/*
 !/tmp/storage/
 !/tmp/storage/.keep
+/*.sqlite3*
 
 /public/assets
 

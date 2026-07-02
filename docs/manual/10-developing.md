@@ -34,8 +34,8 @@ need to be a Linux expert — you only need a handful of commands.
    ```
    This installs WSL and Ubuntu (the default Linux distribution). Reboot if prompted.
 3. After the reboot, launch **Ubuntu** from the Start menu. The first time, it asks you to
-   create a Linux username and password. This is separate from your Windows login — remember
-   it, as you will use it for `sudo` (run-as-administrator) commands.
+   create a Linux username and password. This is separate from your Windows login — **remember
+   it**, as you will use it for `sudo` (run-as-administrator) commands.
 
 From here on, run every command in this chapter **inside the Ubuntu terminal**, not in
 PowerShell or Command Prompt.
@@ -129,13 +129,10 @@ so if `config/master.key` is missing or wrong you will get a decryption error su
    printf '%s' 'PASTE_THE_32_CHARACTER_KEY_HERE' > config/master.key
    ```
 
-> **Note on the README.** The repository `README.md` suggests `echo "masterkey" > ...` as a
-> quick start. That only works if you also *regenerate* the credentials file, which would
-> make it no longer match the committed `config/credentials.yml.enc`. To run against the
-> existing code and its backup settings, use the **real** master key as described above. (If
-> you ever genuinely need fresh credentials — e.g. a throwaway fork — you can instead run
+> **Note.**
+> If you ever genuinely need fresh credentials — e.g. a throwaway fork — you can run
 > `bin/rails credentials:edit`, which generates a new `master.key` and a new encrypted file
-> together.)
+> together.
 
 ---
 
@@ -219,7 +216,7 @@ The tests run headless (no visible window).
 ## 2.7 Linting and security checks
 
 These are the same checks that run in CI (see [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)),
-so run them before pushing to avoid a red build:
+so run them before pushing to github to avoid a red build:
 
 ```bash
 bin/rubocop                      # style/lint (rubocop-rails-omakase house style)
@@ -279,4 +276,4 @@ bin/rails db:seed          # (re)load the sample admin account
 
 ---
 
-[← Back to Introduction](00-introduction.md) · [Manual index](README.md) · [Deploying →](20-deploying.md)
+[← Back to Introduction](00-introduction.md) · [Manual index](README.md) · [External Setup →](20-external-setup.md)
