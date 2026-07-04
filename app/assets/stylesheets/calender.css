@@ -66,16 +66,16 @@
     z-index: 1;
 }
 .charter-tbc {
-    background: #e0e0e0;
+    background: var(--charter-tbc, #e0e0e0);
 }
 .charter-confirmed {
-    background: #fff176;
+    background: var(--charter-confirmed, #fff176);
 }
 .charter-outstanding {
-    background: #ef9a9a;
+    background: var(--charter-outstanding, #ef9a9a);
 }
 .charter-paid {
-    background: #a5d6a7;
+    background: var(--charter-paid, #a5d6a7);
 }
 .calendar-sailing.continues-right {
     margin-right: -5px;

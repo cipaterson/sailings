@@ -12,4 +12,10 @@ class AppConfigTest < ActiveSupport::TestCase
   ensure
     ENV["OFFICE_EMAIL"] = original
   end
+
+  test "charter_colors covers every charter state with a hex color" do
+    colors = AppConfig.charter_colors
+    assert_equal %w[tbc confirmed outstanding paid].sort, colors.keys.sort
+    assert colors.values.all? { |c| c.match?(/\A#[0-9a-fA-F]{3,8}\z/) }
+  end
 end

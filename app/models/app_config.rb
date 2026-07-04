@@ -12,4 +12,18 @@ class AppConfig
   def self.office_email
     ENV.fetch("OFFICE_EMAIL", DEFAULT_OFFICE_EMAIL)
   end
+
+  # Charter voyage calendar colors, keyed by charter-state suffix
+  # (see ApplicationHelper#charter_calendar_class). Edit here now; a future
+  # admin settings UI can back this method without touching call sites.
+  CHARTER_COLORS = {
+    "tbc"         => "#e0e0e0",
+    "confirmed"   => "#fff176",
+    "outstanding" => "#ef9a9a",
+    "paid"        => "#a5d6a7"
+  }.freeze
+
+  def self.charter_colors
+    CHARTER_COLORS
+  end
 end
