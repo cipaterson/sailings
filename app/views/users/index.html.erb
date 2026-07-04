@@ -2,16 +2,19 @@
 
 <%= link_to "New Member", new_user_path, class: "button" if can?("office_staff") %>
 <% if can?("office_staff") %>
-  <% if @disabled_filter %>
+  <% if @pending_filter || @disabled_filter %>
     <%= link_to "All Members", users_path, class: "button" %>
   <% else %>
     <%= link_to "Disabled Members", users_path(disabled: 1), class: "button" %>
+  <% end %>
+  <% unless @pending_filter %>
+    <%= link_to "Pending Approvals", users_path(pending: 1), class: "button" %>
   <% end %>
 <% end %>
 
 <%= form_with url: users_path, method: :get do |f| %>
   <div style="display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; margin-bottom: 0.5rem;">
-    <% unless @disabled_filter %>
+    <% unless @disabled_filter || @pending_filter %>
     <div class="role-filter">
       <% User::ROLES.each do |role| %>
         <label>
@@ -39,6 +42,7 @@
       <th>Fees Paid</th>
       <th>Fees Due</th>
       <th>Roles</th>
+      <% if @pending_filter %><th>Approve</th><% end %>
     </tr>
   </thead>
   <tbody>
@@ -51,6 +55,15 @@
         <td><%= user.fees_paid %></td>
         <td><%= user.fees_due %></td>
         <td><%= user.roles.join(", ") %></td>
+        <% if @pending_filter %>
+          <td>
+            <% if user.fees_paid.present? && user.membership_type.present? %>
+              <%= button_to "Approve", user_approval_path(user), method: :post %>
+            <% else %>
+              <%= link_to "Confirm payment", edit_user_path(user, tab: "membership", return_to: request.fullpath) %>
+            <% end %>
+          </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>

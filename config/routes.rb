@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resource :session
+  resource :registration, only: %i[ new create ]
   resources :passwords, param: :token
   resources :sailings do
     collection do
@@ -21,6 +22,7 @@ Rails.application.routes.draw do
   resources :sailing_participants, only: [ :destroy, :edit, :update ]
   resource :my_registrations, only: [ :show ]
   resources :users do
+    resource :approval, only: :create, module: :users
     member do
       get  :confirm_delete
       patch :disable

@@ -16,6 +16,13 @@ class User < ApplicationRecord
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
+  scope :pending,  -> { where(approved_at: nil) }
+  scope :approved, -> { where.not(approved_at: nil) }
+
+  def approved?
+    approved_at.present?
+  end
+
   def full_name
     "#{first_name} #{last_name}".strip.presence || email_address
   end

@@ -6,12 +6,17 @@ class UsersController < ApplicationController
   PER_PAGE = 15
 
   def index
+    @pending_filter  = params[:pending].present?
     @disabled_filter = params[:disabled].present?
 
-    if @disabled_filter
+    if @pending_filter
+      base = User.pending.order(:created_at)
+    elsif @disabled_filter
       base = User.where(roles_mask: 0)
     else
-      base = User.where("roles_mask > 0")
+      # Approved active members only — pending applicants carry the member role but
+      # are surfaced separately via the pending queue.
+      base = User.approved.where("roles_mask > 0")
       @selected_roles = Array(params[:roles]).select { |r| User::ROLES.include?(r) }
       @search = params[:search].presence
 
@@ -151,26 +156,45 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:email_address, :password, :password_confirmation,
-                                 :first_name, :last_name, :birth_date, :occupation,
-                                 :membership_type, :sailing_class,
-                                 :fees_due, :days_sailed, :date_joined, :last_sailed,
-                                 :fees_paid, :rcpt_number, :sit2_date, :sit_date,
-                                 :knots_on, :marine_safety_refresher_on,
-                                 :ess_qualification, :ess_issued_on, :ess_expires_on,
-                                 :med_qualification, :med_issued_on, :med_expires_on,
-                                 :wwvp_qualification, :wwvp_issued_on, :wwvp_expires_on,
-                                 :first_aid_qualification, :first_aid_issued_on, :first_aid_expires_on,
-                                 :coxswain_qualification, :coxswain_issued_on, :coxswain_expires_on,
-                                 :food_handling_qualification, :food_handling_issued_on, :food_handling_expires_on,
-                                 roles: [],
-                                 contact_attributes: [
-                                   :id, :full_name, :email_address, :work_phone, :mobile,
-                                   :address1, :address2, :city, :state, :postcode
-                                 ],
-                                 next_of_kin_attributes: [
-                                   :id, :full_name, :email_address, :work_phone, :mobile,
-                                   :address1, :address2, :city, :state, :postcode
-                                 ])
+    params.require(:user).permit(*permitted_user_attributes)
+  end
+
+  # Fields anyone may edit on their own profile — the Personal, Contact, and
+  # Next-of-Kin tabs shown to non-staff in the form.
+  SELF_EDITABLE_ATTRIBUTES = [
+    :email_address, :password, :password_confirmation,
+    :first_name, :last_name, :birth_date, :occupation,
+    { contact_attributes: [
+        :id, :full_name, :email_address, :work_phone, :mobile,
+        :address1, :address2, :city, :state, :postcode
+      ],
+      next_of_kin_attributes: [
+        :id, :full_name, :email_address, :work_phone, :mobile,
+        :address1, :address2, :city, :state, :postcode
+      ] }
+  ].freeze
+
+  # Membership, Training, Qualifications, and Roles tabs — only office staff may
+  # edit these, matching the tab gating in the form.
+  STAFF_ONLY_ATTRIBUTES = [
+    :membership_type, :sailing_class,
+    :fees_due, :days_sailed, :date_joined, :last_sailed,
+    :fees_paid, :rcpt_number, :sit2_date, :sit_date,
+    :knots_on, :marine_safety_refresher_on,
+    :ess_qualification, :ess_issued_on, :ess_expires_on,
+    :med_qualification, :med_issued_on, :med_expires_on,
+    :wwvp_qualification, :wwvp_issued_on, :wwvp_expires_on,
+    :first_aid_qualification, :first_aid_issued_on, :first_aid_expires_on,
+    :coxswain_qualification, :coxswain_issued_on, :coxswain_expires_on,
+    :food_handling_qualification, :food_handling_issued_on, :food_handling_expires_on,
+    { roles: [] }
+  ].freeze
+
+  def permitted_user_attributes
+    if Current.user&.has_role?("office_staff")
+      SELF_EDITABLE_ATTRIBUTES + STAFF_ONLY_ATTRIBUTES
+    else
+      SELF_EDITABLE_ATTRIBUTES
+    end
   end
 end

@@ -161,6 +161,26 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Updated", users(:member).reload.first_name
   end
 
+  test "self-editing user cannot escalate their roles" do
+    sign_in_as users(:member)
+    patch user_path(users(:member)), params: { user: { roles: [ "office_staff" ] } }
+    assert_equal [ "member" ], users(:member).reload.roles
+  end
+
+  test "self-editing user cannot set privileged fields" do
+    sign_in_as users(:member)
+    patch user_path(users(:member)), params: { user: { fees_paid: "2020-01-01", fees_due: 2099 } }
+    users(:member).reload
+    assert_nil users(:member).fees_paid
+    assert_nil users(:member).fees_due
+  end
+
+  test "office_staff can assign roles" do
+    sign_in_as users(:office_staff)
+    patch user_path(users(:member)), params: { user: { roles: [ "member", "maintenance" ] } }
+    assert_includes users(:member).reload.roles, "maintenance"
+  end
+
   test "update with blank password does not change password_digest" do
     sign_in_as users(:office_staff)
     original_digest = users(:member).password_digest

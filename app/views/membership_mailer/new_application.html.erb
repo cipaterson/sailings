@@ -1,0 +1,35 @@
+<p>A new membership application has been submitted.</p>
+
+<h3>Personal</h3>
+<table>
+  <tr><th>Name</th><td><%= @user.full_name %></td></tr>
+  <tr><th>Email</th><td><%= @user.email_address %></td></tr>
+  <tr><th>Birth date</th><td><%= @user.birth_date %></td></tr>
+  <tr><th>Occupation</th><td><%= @user.occupation %></td></tr>
+</table>
+
+<% if @contact %>
+  <h3>Contact</h3>
+  <table>
+    <tr><th>Address</th><td><%= [ @contact.address1, @contact.address2 ].compact_blank.join(", ") %></td></tr>
+    <tr><th>City/Suburb</th><td><%= @contact.city %></td></tr>
+    <tr><th>State</th><td><%= @contact.state %></td></tr>
+    <tr><th>Postcode</th><td><%= @contact.postcode %></td></tr>
+    <tr><th>Work phone</th><td><%= @contact.work_phone %></td></tr>
+    <tr><th>Mobile</th><td><%= @contact.mobile %></td></tr>
+  </table>
+<% end %>
+
+<% if @next_of_kin %>
+  <h3>Next of Kin</h3>
+  <table>
+    <tr><th>Name</th><td><%= @next_of_kin.full_name %></td></tr>
+    <tr><th>Email</th><td><%= @next_of_kin.email_address %></td></tr>
+    <tr><th>Work phone</th><td><%= @next_of_kin.work_phone %></td></tr>
+    <tr><th>Mobile</th><td><%= @next_of_kin.mobile %></td></tr>
+    <tr><th>Address</th><td><%= [ @next_of_kin.address1, @next_of_kin.address2, @next_of_kin.city, @next_of_kin.state, @next_of_kin.postcode ].compact_blank.join(", ") %></td></tr>
+  </table>
+<% end %>
+
+<p>This applicant is pending approval. Confirm payment, then approve them:</p>
+<p><%= link_to "Review pending applications", users_url(pending: 1) %></p>

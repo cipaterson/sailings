@@ -7,7 +7,10 @@ class SessionsController < ApplicationController
 
   def create
     if user = User.authenticate_by(params.permit(:email_address, :password))
-      if user.roles.empty?
+      if !user.approved?
+        redirect_to new_session_path(email_address: params[:email_address]),
+                    alert: "Your membership application is still pending approval. We'll be in touch once it's confirmed."
+      elsif user.roles.empty?
         redirect_to new_session_path(email_address: params[:email_address]),
                     alert: "Your account has been disabled. Please contact the club office."
       else

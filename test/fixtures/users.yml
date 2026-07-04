@@ -1,27 +1,39 @@
 <% password_digest = BCrypt::Password.create("password") %>
+<% approved = Time.current.to_fs(:db) %>
 
 one:
   email_address: one@example.com
   password_digest: <%= password_digest %>
   roles_mask: 1
+  approved_at: <%= approved %>
 
 two:
   email_address: two@example.com
   password_digest: <%= password_digest %>
   roles_mask: 1
+  approved_at: <%= approved %>
 
 # roles_mask bits: member=1, office_staff=2, crewing_operator=4
 office_staff:
   email_address: office@example.com
   password_digest: <%= password_digest %>
   roles_mask: 2
+  approved_at: <%= approved %>
 
 crewing_operator:
   email_address: crew@example.com
   password_digest: <%= password_digest %>
   roles_mask: 4
+  approved_at: <%= approved %>
 
 member:
   email_address: member@example.com
+  password_digest: <%= password_digest %>
+  roles_mask: 1
+  approved_at: <%= approved %>
+
+# A self-registered applicant awaiting office-staff approval (approved_at is nil).
+pending:
+  email_address: pending@example.com
   password_digest: <%= password_digest %>
   roles_mask: 1

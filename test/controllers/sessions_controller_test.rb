@@ -1,7 +1,7 @@
 require "test_helper"
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
-  setup { @user = User.take }
+  setup { @user = users(:one) }
 
   test "new" do
     get new_session_path
@@ -19,6 +19,14 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     post session_path, params: { email_address: @user.email_address, password: "wrong" }
 
     assert_redirected_to new_session_path(email_address: @user.email_address)
+    assert_nil cookies[:session_id]
+  end
+
+  test "pending user cannot sign in" do
+    pending = users(:pending)
+    post session_path, params: { email_address: pending.email_address, password: "password" }
+
+    assert_redirected_to new_session_path(email_address: pending.email_address)
     assert_nil cookies[:session_id]
   end
 

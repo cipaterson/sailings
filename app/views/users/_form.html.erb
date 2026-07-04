@@ -25,7 +25,7 @@
   }
 </style>
 
-<%= form_with model: user,
+<%= form_with model: user, url: local_assigns[:url],
       data: (show_password ? { controller: "password-strength", "password-strength-optional-value": true } : {}) do |f| %>
   <%= hidden_field_tag :return_to, params[:return_to] %>
   <% if user.errors.any? %>
@@ -38,22 +38,27 @@
     </div>
   <% end %>
 
-  <input type="radio" name="tab" id="tab-personal" class="tab-radio" checked>
-  <input type="radio" name="tab" id="tab-contact" class="tab-radio">
+  <%
+    available_tabs = %w[personal contact kin]
+    available_tabs += %w[membership training qualifications roles] if can?("office_staff")
+    active_tab = available_tabs.include?(local_assigns[:active_tab].to_s) ? local_assigns[:active_tab].to_s : "personal"
+  %>
+  <input type="radio" name="tab" id="tab-personal" class="tab-radio" <%= "checked" if active_tab == "personal" %>>
+  <input type="radio" name="tab" id="tab-contact" class="tab-radio" <%= "checked" if active_tab == "contact" %>>
+  <input type="radio" name="tab" id="tab-kin" class="tab-radio" <%= "checked" if active_tab == "kin" %>>
   <% if can?("office_staff") %>
-    <input type="radio" name="tab" id="tab-membership" class="tab-radio">
-    <input type="radio" name="tab" id="tab-kin" class="tab-radio">
-    <input type="radio" name="tab" id="tab-training" class="tab-radio">
-    <input type="radio" name="tab" id="tab-qualifications" class="tab-radio">
-    <input type="radio" name="tab" id="tab-roles" class="tab-radio">
+    <input type="radio" name="tab" id="tab-membership" class="tab-radio" <%= "checked" if active_tab == "membership" %>>
+    <input type="radio" name="tab" id="tab-training" class="tab-radio" <%= "checked" if active_tab == "training" %>>
+    <input type="radio" name="tab" id="tab-qualifications" class="tab-radio" <%= "checked" if active_tab == "qualifications" %>>
+    <input type="radio" name="tab" id="tab-roles" class="tab-radio" <%= "checked" if active_tab == "roles" %>>
   <% end %>
 
   <div class="tab-labels">
     <label for="tab-personal">Personal</label>
     <label for="tab-contact">Contact</label>
+    <label for="tab-kin">Next of Kin</label>
     <% if can?("office_staff") %>
       <label for="tab-membership">Membership</label>
-      <label for="tab-kin">Next of Kin</label>
       <label for="tab-training">Training</label>
       <label for="tab-qualifications">Qualifications</label>
       <label for="tab-roles">Roles</label>
@@ -110,6 +115,12 @@
       <% end %>
     </div>
 
+    <div id="panel-kin" class="tab-panel">
+      <%= f.fields_for :next_of_kin do |nf| %>
+        <%= render 'shared/contact_fields', f: nf %>
+      <% end %>
+    </div>
+
     <% if can?("office_staff") %>
       <div id="panel-membership" class="tab-panel">
         <div>
@@ -152,12 +163,6 @@
           <%= f.label :sit_date, "SIT1 Date" %>
           <%= f.date_field :sit_date %>
         </div>
-      </div>
-
-      <div id="panel-kin" class="tab-panel">
-        <%= f.fields_for :next_of_kin do |nf| %>
-          <%= render 'shared/contact_fields', f: nf %>
-        <% end %>
       </div>
 
       <div id="panel-training" class="tab-panel">
@@ -241,6 +246,6 @@
   </div>
 
   <div>
-    <%= f.submit data: (show_password ? { password_strength_target: "submit" } : {}) %>
+    <%= f.submit local_assigns[:submit_label], data: (show_password ? { password_strength_target: "submit" } : {}) %>
   </div>
 <% end %>

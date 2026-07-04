@@ -24,6 +24,20 @@ class UserTest < ActiveSupport::TestCase
     assert_includes user.errors[:email_address], "has already been taken"
   end
 
+  # Approval tests
+
+  test "approved? reflects approved_at presence" do
+    assert users(:one).approved?
+    assert_not users(:pending).approved?
+  end
+
+  test "pending and approved scopes partition users" do
+    assert_includes User.pending, users(:pending)
+    assert_not_includes User.pending, users(:one)
+    assert_includes User.approved, users(:one)
+    assert_not_includes User.approved, users(:pending)
+  end
+
   # Roles bitmask tests
 
   test "new user has no roles by default" do

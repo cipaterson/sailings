@@ -1,0 +1,11 @@
+<h1>Apply for membership</h1>
+
+<p>Create your account below. Once you've applied, the club office will confirm your
+payment and approve your membership — you'll be able to sign in after that.</p>
+
+<%= render "users/form", user: @user, show_password: true,
+      url: registration_path, submit_label: "Apply" %>
+
+<div style="margin-top: 1rem;">
+  <%= link_to "Back to sign in", new_session_path %>
+</div>

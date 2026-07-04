@@ -1,6 +1,6 @@
-<h1>Edit Member</h1>
+<h1>Edit <%= @user.full_name %></h1>
 
-<%= render "form", user: @user, show_password: true %>
+<%= render "form", user: @user, show_password: true, active_tab: params[:tab] %>
 
 <div style="margin-top: 1rem; display: flex; gap: 1rem; align-items: center;">
   <%= link_to "Back", :back %>
