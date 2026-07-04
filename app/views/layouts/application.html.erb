@@ -51,6 +51,7 @@
     <nav>
       <%= link_to "Members", users_path if can?("office_staff") %>
       <%= link_to "Voyage Financials", financials_sailings_path if can?("office_staff") %>
+      <%= link_to "Settings", edit_settings_path if can?("office_staff") %>
     </nav>
     <% end %>
     </header>

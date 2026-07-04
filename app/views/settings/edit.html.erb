@@ -1,0 +1,27 @@
+<h1>Settings</h1>
+
+<% if flash[:alert] %>
+  <div style="color: red;"><%= flash[:alert] %></div>
+<% end %>
+
+<%= form_with url: settings_path, method: :patch do |f| %>
+  <div>
+    <%= label_tag :office_email, "Office email" %>
+    <%= email_field_tag :office_email, @office_email %>
+    <p style="font-size: 0.8rem; color: #666;">Where membership applications and other office notifications are sent.</p>
+  </div>
+
+  <fieldset>
+    <legend>Charter calendar colors</legend>
+    <% @charter_colors.each do |name, color| %>
+      <div>
+        <%= label_tag "charter_colors_#{name}", name.humanize %>
+        <%= color_field_tag "charter_colors[#{name}]", color, id: "charter_colors_#{name}" %>
+      </div>
+    <% end %>
+  </fieldset>
+
+  <div style="margin-top: 1rem;">
+    <%= f.submit "Save settings" %>
+  </div>
+<% end %>
