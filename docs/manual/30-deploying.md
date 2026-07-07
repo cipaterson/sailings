@@ -45,9 +45,7 @@ You run Kamal from your own machine (inside WSL, if you are on Windows — see
 - **SSH access to the server** — passwordless (key-based) login for the SSH user configured
   for the destination (`root`). Test it with `ssh root@<host>` before deploying. (see [§4.10](#410-connecting-to-your-server))
 - **A reachable Docker registry.** All destinations are configured to use a registry at
-  `localhost:5555` (see the `registry:` block in `config/deploy.yml`), so a Docker registry
-  must be available at that address when you deploy — for example a local `registry:2`
-  container. If you move to a hosted registry (Docker Hub, GHCR, DigitalOcean), update that
+  `localhost:5555` (see the `registry:` block in `config/deploy.yml`), this is standard in kamal 2.8 or later. If you move to a hosted registry (Docker Hub, GHCR, DigitalOcean), update that
   block and add the registry password to [`.kamal/secrets-common`](../../.kamal/secrets-common).
 - **The `kamal` gem**, which is bundled with the project — invoke it as `bin/kamal`.
 
@@ -138,9 +136,20 @@ bin/kamal deploy           # staging (default)
 bin/kamal deploy -d prod   # production
 ```
 
-By default Kamal builds from the current git `HEAD`, so commit (and usually push) your changes
+By default Kamal builds from the current git `HEAD`, so commit your changes
 first. A typical release is: merge to `main` → `bin/kamal deploy` to staging → verify → then
 `bin/kamal deploy -d prod`.
+
+You can build from your working directory if you change context in the `deploy.yml` config to:
+
+```yaml
+# Configure the image builder.
+builder:
+  arch: amd64
+  # This sets the build context for the Docker image, default is HEAD of git repo.
+  context: "."
+```
+**Remember** to comment it out again (or `git restore config/deploy.yml`) before you commit.
 
 > **Reminder:** the `-d prod` destination is the only one that carries the production host and
 > turns on continuous backups. Omitting `-d prod` deploys to **staging**, not production.
@@ -176,7 +185,7 @@ then diagnose the failed build or boot locally before trying again. See
 
 ## 4.8 Pre-deploy checklist
 
-- [ ] Changes committed to git (Kamal builds from `HEAD` in the git repo, NOT from the working directory).
+- [ ] Changes committed to git (by default Kamal builds from `HEAD` in the git repo, NOT from the working directory). If you deploy and nothing changes, perhaps you have forgotten to commit your changes.
 - [ ] CI green on the branch (tests, RuboCop, Brakeman — see [Developing §2.7](10-developing.md#27-linting-and-security-checks)).
 - [ ] `config/master.key` present locally.
 - [ ] Docker running and the `localhost:5555` registry reachable.
@@ -185,5 +194,28 @@ then diagnose the failed build or boot locally before trying again. See
 - [ ] After a production deploy, confirmed the app answers on `https://sailings.firstsoftware.cc/up` (see [Monitoring](50-monitoring.md)).
 
 ---
+
+## 4.9 Rollback
+
+This is a key step in troubleshooting: if a deploy fails, roll back to the previous version and diagnose the issue locally (and/or in staging) before retrying production.
+
+Kamal rollback command **requires a image version** to roll back to.  Find the previous version with:
+```bash
+$ bin/kamal app containers -q
+CONTAINER ID   IMAGE                                                             CREATED        STATUS
+98bd25e46f79   localhost:5555/staging:8d98cb7ec1bdc3b2174ffe2f4e254618b4655c9c   3 hours ago    Up 3 hours
+428ec8628b68   localhost:5555/staging:763a123ee82523ca12d32eb06ca35fa7c97e7677   3 hours ago    Exited (143) 3 hours ago
+6c9e4961e53e   6b6175ba4331
+```
+
+Usually it will be the second container listed.  Rollback with:
+```bash
+$ bin/kamal rollback 763a123ee82523ca12d32eb06ca35fa7c97e7677
+```
+
+REMEMBER - these commands are working on the staging deployment destination (the default).  To rollback the production server, use **-d prod**:
+```bash
+$ bin/kamal rollback 763a123ee82523ca12d32eb06ca35fa7c97e7677 -d prod
+```
 
 [← External Setup](20-external-setup.md) · [Manual index](README.md) · [Backup & Restore →](40-backup-restore.md)

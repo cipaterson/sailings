@@ -55,7 +55,7 @@ The replica is a **DigitalOcean Spaces** bucket, accessed through its S3-compati
 | Path within bucket | `production/primary` | `config/litestream.yml` |
 | Endpoint | `https://sfo3.digitaloceanspaces.com` | `LITESTREAM_REPLICA_ENDPOINT` (clear env) |
 | Region | `sfo3` | `LITESTREAM_REPLICA_REGION` (clear env) |
-| Access key / secret | *(encrypted)* | Rails credentials under `litestream:` |
+| Access key / secret | *(encrypted)* | Rails credentials.yml under `litestream:` |
 
 The non-secret settings are injected by Kamal as clear environment variables. The **Spaces
 access key and secret are kept in the encrypted Rails credentials**, not in the environment,
@@ -90,7 +90,7 @@ bin/rails litestream:snapshots -- --database=/data/production.sqlite3   # list s
 
 `snapshots` confirms that backups are actually accumulating in Spaces; You can instead login to the DigitalOcean control panel to see the backups accumulating.
 
-It's a good idea to restore to a temporary copy and check it. Run these occasionally — a backup you have never verified is not yet a backup you can rely on.  Back in your dev environment, you can restore with:
+It's a good idea to restore to a temporary copy and check it. Run these occasionally — a backup you have never verified is not yet a backup you can rely on.  You can do this in the container but can also do it back in your dev environment (by setting the environment variables needed).  You can restore with:
 
 ```bash
 LITESTREAM_REPLICA_BUCKET=sailings-backup \
@@ -98,7 +98,7 @@ LITESTREAM_REPLICA_ENDPOINT=https://sfo3.digitaloceanspaces.com \
 LITESTREAM_REPLICA_REGION=sfo3 \
   bin/rails litestream:restore -- --database=/data/production.sqlite3 -o=./restored.sqlite3
 ```
-And then run sqlite3 to verify the restore:
+And then run the sqlite3 client to run some SQL queries to verify the restore:
 ```bash
 sqlite3 ./restored.sqlite3
 ```
@@ -108,7 +108,7 @@ sqlite3 ./restored.sqlite3
 
 The scenario is: the server (or its data volume) is lost or corrupted, and you need to bring the database
 back from Spaces. Restores can be run from **any** Kamal destination, because they all carry
-the replica configuration.  The below is showing how to restore to the `prod` destination, but you could also restore to staging or any other destination.
+the replica configuration.  The below is showing how to restore to the `prod` destination, but you could also restore to staging or any other destination.  REMEMBER to practice in staging first, if you need to.
 
 ### Step by step
 
@@ -118,13 +118,13 @@ the replica configuration.  The below is showing how to restore to the `prod` de
 
 2. **Move the existing database files out of the way.** From your workstation:
    ```bash
-   # stop the app (which exits the container)
+   # stop the app (which also exits the container)
    bin/kamal app stop -d prod
    # ssh into a new instance of the container (rails is not running)
    bin/kamal app exec -d prod bash -i
-   # push the empty/old one to the side (keep it just in case)
+   # push the empty/old one to the side (keep it just in case):
    (cd /data; for f in production.sqlite3 production.sqlite3-wal production.sqlite3-shm; do
-       test -e $f  && mv $f $f.bak
+       test -e $f  && mv -v $f $f.bak
    done)
 
 3. **Restore from the replica.** Litestream refuses to overwrite an existing
@@ -165,7 +165,7 @@ the replica configuration.  The below is showing how to restore to the `prod` de
 
 Litestream protects the *primary database's contents*. The host volume
 `"/var/data/sailings/storage:/data"` also holds any **Active Storage** uploads (e.g. photos),
-which Litestream does **not** replicate. These uploads don't matter - there is no function to upload files yet. See the volume note in [Deploying §4.4](30-deploying.md#44-what-runs-on-the-server).
+which Litestream does **not** replicate. These uploads don't matter - we have no function to upload files yet. See the volume note in [Deploying §4.4](30-deploying.md#44-what-runs-on-the-server).
 
 ---
 

@@ -2,12 +2,13 @@
 
 This chapter will cover the external services and infrastructure the application depends on —
 everything that must be provisioned *outside* the codebase before it can run in production:
-- **Servers** — the DigitalOcean droplet(s) the app is deployed to (provisioned with `doctl`),
+- **Servers** — the DigitalOcean droplet(s) the app is deployed to,
   and the SSH keys Kamal uses to reach them.
 - **Object storage** — the DigitalOcean Spaces bucket (`sailings-backup`) that holds the
   Litestream backups, and its access keys.
 - **Email** — the Brevo account and API key used to send mail.
 - **SMS** — the MobileMessage account used to send crew text messages.
+- **Monitoring** — we use [UptimeRobot](https://uptimerobot.com/) to monitor the server every 5 minutes.
 
 Each service maps to a key in the encrypted Rails credentials (`bin/rails credentials:edit`):
 - `litestream`, `brevo`, `mobile_message`. This chapter will document how to obtain and
@@ -33,11 +34,11 @@ Select these options:
 | Droplet Plan   | Basic                                             |
 | CPU Options    | Regular                                           |
 | Select a Plan  | 1 vCPU / 2 GB RAM / 50 GB Disk - 1000 GB Transfer |
-| Backups        | Enable                                            |
+| Backups        | Enable if required, otherwise leave disabled      |
 | Authentication | Select an existing SSH key, or **add a new one**      |
 | Networking     | Enable IPv6                                       |
 | Monitoring     | Enable                                            |
-| Startup Script | TODO:                                     |
+| Startup Script | Paste contents of bin/do-docker-map-volume        |
 | Droplet Name   | Choose a better name                              |
 | Project        | Choose what project to place it in                |
 
@@ -60,7 +61,9 @@ doctl compute droplet create sailings-clone \
   --wait
 ```
 
-Where sailings-clone is the name of the droplet, the ssh-keys value is the md5 hash of your public key (it's "fingerprint"), and the other options are self-explanatory.
+Where sailings-clone is the name of the droplet, the ssh-keys value is the md5 hash of your public key (it's "fingerprint"), --enable-backups is optional (the sqlite3 database is separately backed up, see: [Backup & Restore](40-backup-restore.md)), --user-data-file is usefull to automatically configure the Docker map volume.  The other options are self-explanatory.
+
+NOTE: It can take 2 minutes for the user-data-file to be applied.
 
 You can fingerprint a public key with:
 ```bash
@@ -68,7 +71,7 @@ $ ssh-keygen -E md5 -l -f ~/.ssh/id*.pub
 256 MD5:96:02:5f:5c:d6:44:78:ab:1e:72:3d:ed:0e:1e:63:c8 chris@MacBookPro.lan (ED25519)
 ```
 
-NOTE: If you don't use DigitalOcean, you may need to ensure root can login via SSH. This may require you to add your public key to the root user's `~/.ssh/authorized_keys` file and to configure the SSH daemon to allow root login.
+NOTE: If you don't use DigitalOcean, you may need to ensure root can login via SSH. This may require you to add your public key to the root user's `~/.ssh/authorized_keys` file and to configure the SSH daemon to allow root login.  Root login is sometimes disabled by default.
 
 ## 3.2 Connecting to your server
 
@@ -98,8 +101,22 @@ https://docs.digitalocean.com/products/droplets/how-to/add-ssh-keys/to-existing-
 
 ## 3.3 Object storage
 
-The Litestream continuously backs up your database to a cloud storage bucket.  On the DO dashboard, you can see the bucket and its contents.  Click on Storage in the sidebar, then Spaces Object Storage.  The accesss keys can be found in the rails credentials.yml file.
+The Litestream continuously backs up your database to a cloud storage bucket.  On the DO dashboard, you can see the bucket and its contents.  Click on Storage in the sidebar, then Spaces Object Storage.  You will find the access keys in the rails credentials.yml file.
 
-TODO: finish this section.
+The backup bucket is named `sailings-backup` and is in a different region than the main database, currently in the `sfo` region.
+
+## 3.4 Email
+
+We use Brevo to accept emails and send on behalf of the Sailings app.  We use the Brevo API to send emails because DigitalOcean blocks SMTP (port 25, etc) access from droplets.  The Brevo API key is stored in the rails credentials.yml file.
+
+The way to diagnose complaints about email delivery is to login to Brevo and check the Transactional -> Email -> Logs section.
+
+## 3.5 SMS
+
+The sailings rails app uses the [mobilemessanger.com.au API](https://mobilemessage.com.au/docs/api/) to send SMS messages.  The API key is stored in the rails credentials.yml file.
+
+## 3.6 Monitoring
+
+We use [UptimeRobot](https://uptimerobot.com/) to monitor the server every 5 minutes and send an email to report when the server is down.
 
 [← Developing](10-developing.md) · [Manual index](README.md) · [Deploying →](30-deploying.md)

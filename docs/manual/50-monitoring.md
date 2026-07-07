@@ -3,9 +3,7 @@
 This chapter covers how to tell whether Lady Nelson Sailings is healthy, where to look when
 you suspect it isn't.
 
-The app is intentionally lightweight: there is no external error-tracking or metrics service
-wired in. Monitoring therefore rests on three things you already have — the **health-check
-endpoint**, the **application logs**, and a handful of **checks you run on demand**.
+Monitoring can be done by an external uptime monitor (e.g. **UptimeRobot**, see [§3.6](#36 Monitoring)) or by running a handful of **checks you run on demand**.
 
 ---
 
@@ -47,8 +45,8 @@ Read the logs with Kamal (the `logs` alias tails and follows):
 
 ```bash
 bin/kamal logs -d prod            # follow production logs
-bin/kamal logs -d prod -n 200     # last 200 lines
-bin/kamal logs                    # staging (default destination)
+bin/kamal logs -d prod -n 200     # last 200 lines, then exit
+bin kamal logs                    # follow the logs in staging (default destination)
 ```
 
 Each line carries the request id tag, so you can trace all the log lines belonging to a single
@@ -130,6 +128,7 @@ Be aware of what is **not** monitored today, so no one assumes coverage that doe
   bin/kamal shell -d prod
   df -h /data && du -sh /data/*
   ```
+In the DigitalOcean control panel, the Insights tab for the app provides a high-level view of the app's health, including disk space usage and resource metrics.
 
 For a small volunteer-run site, an **external uptime monitor on `/up`** plus **occasional log
 and disk checks** is a reasonable baseline; error tracking is the natural next step if incidents

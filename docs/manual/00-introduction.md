@@ -81,7 +81,7 @@ framework.
 This is a modern **Rails 8.1** application running on **Ruby 3.4.2**, and it deliberately
 keeps the number of moving parts small:
 
-- **Database — SQLite everywhere.** Unusually, the app uses SQLite in every environment,
+- **Database — SQLite everywhere.** The app uses SQLite in every environment,
   including production. Production actually uses *four* SQLite databases stored under
   `storage/`: the main application database plus three that back Rails' own subsystems —
   cache, background-job queue, and WebSockets (see below). Using SQLite keeps operation

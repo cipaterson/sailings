@@ -49,8 +49,8 @@ Work through the stage Kamal failed at (build → push → connect → boot):
   `localhost:5555`; if it is unreachable the push fails. Ensure the local registry is running
   and reachable — see [Deploying §4.2](30-deploying.md#42-prerequisites).
 - **SSH / connection refused.** Kamal needs passwordless SSH as the destination's user
-  (`root` for most, `sailings` for the Pi). Test `ssh <user>@<host>` directly; fix keys before
-  retrying.
+  (`root` for most). Test `ssh <user>@<host>` directly; fix keys before
+  retrying, see [Deploying §3.2](30-deploying.md#32-connecting-to-your-server).
 - **Deploys but the new version is unhealthy** (cutover fails or `/up` returns 500 after
   release). Roll back and diagnose the boot problem ([§7.4](#74-app-wont-boot--500-on-up)):
   ```bash
