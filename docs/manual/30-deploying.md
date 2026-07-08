@@ -218,4 +218,15 @@ REMEMBER - these commands are working on the staging deployment destination (the
 $ bin/kamal rollback 763a123ee82523ca12d32eb06ca35fa7c97e7677 -d prod
 ```
 
+This number is the same as the git commit SHA hash which the deploy was based on, you can see these hashes using:
+```
+$ git log
+commit 8d98cb7ec1bdc3b2174ffe2f4e254618b4655c9c (HEAD -> main)
+Author: Chris Paterson <cipaterson@proton.me>
+Date:   Sat Jul 4 21:49:05 2026 +1000
+
+    Backed app_config with a KV store
+```
+
+
 [← External Setup](20-external-setup.md) · [Manual index](README.md) · [Backup & Restore →](40-backup-restore.md)
