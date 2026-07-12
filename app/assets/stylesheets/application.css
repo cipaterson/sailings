@@ -29,6 +29,22 @@
     overflow-x: auto;
 }
 
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.form-row > div {
+    flex: 1 1 200px;
+}
+
+.form-row input {
+    width: 100%;
+}
+
 .skills-options {
     display: flex;
     flex-wrap: wrap;
