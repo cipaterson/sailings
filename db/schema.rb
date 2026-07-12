@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_04_113519) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_12_072417) do
   create_table "contacts", force: :cascade do |t|
     t.string "address1"
     t.string "address2"
@@ -133,6 +133,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_04_113519) do
     t.date "med_issued_on"
     t.string "med_qualification"
     t.string "membership_type"
+    t.string "next_of_kin_relationship"
     t.string "occupation"
     t.string "password_digest", null: false
     t.string "rcpt_number"
@@ -140,6 +141,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_04_113519) do
     t.string "sailing_class"
     t.date "sit2_date"
     t.date "sit_date"
+    t.integer "skills_mask", default: 0, null: false
+    t.text "special_skills"
     t.datetime "updated_at", null: false
     t.date "wwvp_expires_on"
     t.date "wwvp_issued_on"

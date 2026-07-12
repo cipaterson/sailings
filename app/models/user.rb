@@ -14,6 +14,13 @@ class User < ApplicationRecord
   MEMBERSHIP_TYPES = %w[Life Family Individual Junior].freeze
   ROLES = %w[member office_staff crewing_operator maintenance].freeze
 
+  SKILL_GROUPS = {
+    "Crewing"     => %w[deck cook purser],
+    "Maintenance" => %w[general mechanical electrical],
+    "Office"      => %w[administration information_technology fund_raising historical]
+  }.freeze
+  SKILLS = SKILL_GROUPS.values.flatten.freeze
+
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
   scope :pending,  -> { where(approved_at: nil) }
@@ -59,6 +66,19 @@ class User < ApplicationRecord
 
   def admin?
     office_staff? || crewing_operator?
+  end
+
+  # Bitmask skill methods (self-declared, unlike roles)
+  def skills
+    SKILLS.select { |s| skills_mask & 2**SKILLS.index(s) != 0 }
+  end
+
+  def skills=(selected)
+    self.skills_mask = (Array(selected).map(&:to_s) & SKILLS).sum { |s| 2**SKILLS.index(s) }
+  end
+
+  def has_skill?(skill)
+    skills.include?(skill.to_s)
   end
 
   scope :with_role, ->(role) {

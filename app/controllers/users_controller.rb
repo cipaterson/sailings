@@ -164,7 +164,9 @@ class UsersController < ApplicationController
   SELF_EDITABLE_ATTRIBUTES = [
     :email_address, :password, :password_confirmation,
     :first_name, :last_name, :birth_date, :occupation,
-    { contact_attributes: [
+    :next_of_kin_relationship, :special_skills,
+    { skills: [],
+      contact_attributes: [
         :id, :full_name, :email_address, :work_phone, :mobile,
         :address1, :address2, :city, :state, :postcode
       ],

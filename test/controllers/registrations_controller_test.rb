@@ -76,6 +76,20 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Kin Person", user.next_of_kin.full_name
   end
 
+  test "sign-up persists submitted skills and special skills" do
+    post registration_path, params: { user: {
+      email_address: "skilled@example.com",
+      password: "ValidPass1!",
+      password_confirmation: "ValidPass1!",
+      skills: [ "deck", "administration" ],
+      special_skills: "Celestial navigation"
+    } }
+
+    user = User.find_by(email_address: "skilled@example.com")
+    assert_equal [ "deck", "administration" ], user.skills
+    assert_equal "Celestial navigation", user.special_skills
+  end
+
   test "invalid sign-up re-renders the form" do
     assert_no_difference "User.count" do
       post registration_path, params: { user: {

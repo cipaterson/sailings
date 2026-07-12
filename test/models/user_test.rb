@@ -124,6 +124,58 @@ class UserTest < ActiveSupport::TestCase
     assert_not_includes User.with_role("office_staff"), user
   end
 
+  # Skills bitmask tests
+
+  test "new user has no skills by default" do
+    user = User.new
+    assert_equal [], user.skills
+    assert_equal 0, user.skills_mask
+  end
+
+  test "assigns a single skill" do
+    user = User.new(skills: [ "deck" ])
+    assert_equal [ "deck" ], user.skills
+  end
+
+  test "assigns skills across groups" do
+    user = User.new(skills: [ "deck", "electrical", "historical" ])
+    assert_includes user.skills, "deck"
+    assert_includes user.skills, "electrical"
+    assert_includes user.skills, "historical"
+    assert_not_includes user.skills, "cook"
+  end
+
+  test "has_skill? returns true for assigned skill" do
+    user = User.new(skills: [ "purser" ])
+    assert user.has_skill?("purser")
+    assert_not user.has_skill?("mechanical")
+  end
+
+  test "ignores unknown skills" do
+    user = User.new
+    user.skills = [ "deck", "flying" ]
+    assert_equal [ "deck" ], user.skills
+  end
+
+  test "skills= accepts empty array" do
+    user = User.new(skills: [ "deck", "cook" ])
+    user.skills = []
+    assert_equal [], user.skills
+    assert_equal 0, user.skills_mask
+  end
+
+  test "each skill has a unique bitmask bit" do
+    masks = User::SKILLS.map { |s| User.new(skills: [ s ]).skills_mask }
+    assert_equal masks.uniq, masks
+  end
+
+  test "special_skills persists" do
+    user = User.create!(email_address: "skilled@example.com", password: "ValidPass1",
+                        skills: [ "deck" ], special_skills: "Diesel engine overhaul")
+    assert_equal "Diesel engine overhaul", user.reload.special_skills
+    assert_equal [ "deck" ], user.skills
+  end
+
   # full_name
 
   test "full_name returns first and last name" do

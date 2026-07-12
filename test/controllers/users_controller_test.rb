@@ -167,6 +167,14 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ "member" ], users(:member).reload.roles
   end
 
+  test "self-editing user can set their own skills and special skills" do
+    sign_in_as users(:member)
+    patch user_path(users(:member)), params: { user: { skills: [ "deck", "electrical" ], special_skills: "Rigging" } }
+    users(:member).reload
+    assert_equal [ "deck", "electrical" ], users(:member).skills
+    assert_equal "Rigging", users(:member).special_skills
+  end
+
   test "self-editing user cannot set privileged fields" do
     sign_in_as users(:member)
     patch user_path(users(:member)), params: { user: { fees_paid: "2020-01-01", fees_due: 2099 } }
