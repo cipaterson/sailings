@@ -115,7 +115,36 @@ the replica configuration. The below is showing how to restore to the `prod` des
 
 WARNING: Don't just copy and paste these commands verbatim! Replace the destination ('prod') with your actual destination!  Think before you paste!
 
-### Step by step
+### The single-command way
+
+For the common case, use the wrapper — one command, run entirely from your
+workstation, that stops the app, restores the primary database inside a one-off
+container, and boots the app again:
+
+```bash
+bin/kamal-restore <destination>      # e.g. staging | prod | raspi | IP
+```
+
+Because it is destructive, it first asks you to confirm by re-typing the
+destination, then runs the manual steps below for you. There is no switching
+between workstation and container: the workstation drives Kamal, while the
+in-container restore is done by [`bin/restore-primary-db`](../../bin/restore-primary-db),
+which ships inside the image and already carries the credentials it needs. If the
+restore step fails, the wrapper leaves the app stopped and preserves the old
+database as `*.bak-<timestamp>` so you can investigate before booting.
+
+**Restoring onto a new server?** Deploy first so the image and environment exist,
+then restore:
+
+```bash
+bin/kamal deploy -d <destination>    # first boot creates an empty database
+bin/kamal-restore <destination>      # replace it with the backup
+```
+
+### What it does, step by step (or how to restore by hand)
+
+`bin/kamal-restore` automates exactly the steps below; follow them by hand only
+if you need to intervene partway through the sequence.
 
 1. **Provision and deploy the app to the target server** as normal (see
    [Deploying §4.6](30-deploying.md#46-deploying)). On first boot the entrypoint runs

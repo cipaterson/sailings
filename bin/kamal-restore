@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+#
+# Restore the primary database on a deployed server from the Litestream backup,
+# end to end, with a single command run from your workstation:
+#
+#     bin/kamal-restore <destination>        # staging | prod | raspi | IP
+#
+# It orchestrates the whole sequence so you never switch between your
+# workstation and the container by hand:
+#
+#   1. stop the app     — Puma (and Litestream, which runs inside it) go down,
+#                         so the database is no longer open or being replicated
+#   2. restore          — inside a one-off container (which carries the API keys
+#                         and replica config), run bin/restore-primary-db
+#   3. boot the app     — Rails, and Litestream replication, start again
+#
+# PREREQUISITE: the target server must already have the app deployed, so its
+# image and environment exist. For a brand-new server, deploy first:
+#     bin/kamal deploy -d <destination>
+# then run this. See docs/manual/40-backup-restore.md (§5.5).
+
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+DEST="${1:-}"
+if [ -z "$DEST" ]; then
+  echo "Usage: bin/kamal-restore <destination>   (staging | prod | raspi | IP)" >&2
+  exit 1
+fi
+
+# The base config (config/deploy.yml) IS staging, so it takes no -d flag; every
+# other destination is selected with -d <name> (config/deploy.<name>.yml).
+#
+# DFLAG is a plain string (not an array) on purpose: under `set -u`, macOS's
+# bash 3.2 errors on an *empty* array expansion ("${arr[@]}"), which is exactly
+# the staging (no-flag) case. A string is empty-safe, and the destination is a
+# single bare word, so the intended word-splitting of unquoted $DFLAG is fine.
+if [ "$DEST" = "staging" ]; then
+  DFLAG=""
+else
+  DFLAG="-d $DEST"
+fi
+
+cat >&2 <<WARN
+────────────────────────────────────────────────────────────────────────────
+  DESTRUCTIVE RESTORE — destination: '$DEST'
+
+  This REPLACES the primary database on '$DEST' with the latest Litestream
+  backup. The app will be STOPPED during the restore (downtime), and the
+  current database is moved aside to *.bak-<timestamp> (not deleted).
+────────────────────────────────────────────────────────────────────────────
+WARN
+read -r -p "Type the destination name ('$DEST') to proceed: " confirm
+if [ "$confirm" != "$DEST" ]; then
+  echo "Aborted." >&2
+  exit 1
+fi
+
+on_error() {
+  cat >&2 <<MSG
+
+!! Restore did NOT complete — the app on '$DEST' is left STOPPED.
+   The previous database, if any, is preserved as /data/production.sqlite3.bak-*
+   Investigate, then either retry, or boot the old data back up manually:
+       bin/kamal app boot $DFLAG
+MSG
+}
+trap on_error ERR
+
+echo "==> [1/3] Stopping the app on '$DEST'"
+bin/kamal app stop $DFLAG
+
+echo "==> [2/3] Restoring the primary database (one-off container)"
+bin/kamal app exec $DFLAG bin/restore-primary-db
+
+echo "==> [3/3] Booting the app on '$DEST'"
+bin/kamal app boot $DFLAG
+
+trap - ERR
+echo
+echo "==> Restore complete on '$DEST'."
+echo "    Verify: sign in and confirm the /up health check is green."

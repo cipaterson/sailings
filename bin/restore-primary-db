@@ -1,0 +1,37 @@
+#!/bin/bash -e
+#
+# Restore the primary SQLite database from the Litestream replica.
+#
+# This runs INSIDE the app container, where the Litestream credentials (the
+# encrypted Rails credentials, decrypted with RAILS_MASTER_KEY) and the replica
+# settings (LITESTREAM_* env) are available. It is normally invoked for you by
+# `bin/kamal-restore` from a workstation — you shouldn't need to run it by hand.
+#
+# It assumes the app (Puma) is STOPPED, so nothing is holding the database open
+# or replicating while the file is swapped. `bin/kamal-restore` guarantees that.
+
+DB=/data/production.sqlite3
+stamp="$(date +%Y%m%d-%H%M%S)"
+
+# 1. Move any existing primary database files aside. Litestream refuses to
+#    overwrite an existing database, so the file (and its -wal/-shm sidecars)
+#    must be out of the way first. They are kept as .bak-<timestamp>, not
+#    deleted, so a mistaken restore is recoverable.
+echo "==> Moving any existing primary database files aside (suffix .bak-$stamp)"
+for f in "$DB" "$DB-wal" "$DB-shm"; do
+  if [ -e "$f" ]; then
+    mv -v "$f" "$f.bak-$stamp"
+  fi
+done
+
+# 2. Restore from the replica. --database is the *configured* path from
+#    config/litestream.yml; it is how Litestream locates the replica.
+echo "==> Restoring $DB from the Litestream replica"
+bin/rails litestream:restore -- --database="$DB"
+
+# 3. Sanity-check the restored file before it is trusted.
+echo "==> Sanity check (row counts)"
+sqlite3 "$DB" "select 'users    = ' || count(*) from users;
+               select 'sailings = ' || count(*) from sailings;"
+
+echo "==> Primary database restored."
