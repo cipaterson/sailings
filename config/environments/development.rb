@@ -46,9 +46,11 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.raise_delivery_errors = true
 
-  # NOTE! A new mail delivery method is configured in config/initializers/brevo_delivery.rb
-  # It uses the Brevo API to send emails.
-  #
+  # Do not send real emails in development. The Brevo API delivery method (see
+  # config/initializers/brevo_delivery.rb) is only used in production; here mail is
+  # captured in ActionMailer::Base.deliveries instead of being sent.
+  config.action_mailer.delivery_method = :test
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
