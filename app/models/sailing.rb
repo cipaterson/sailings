@@ -24,6 +24,7 @@ class Sailing < ApplicationRecord
 
   validates :purpose, presence: true
   validates :sailing_type, presence: true, inclusion: { in: SAILING_TYPES }
+  validate :validate_voyage_dates
   enum :sailing_type, SAILING_TYPES.index_by { |t| t }, scopes: false
   enum :status,   SAILING_STATUSES.index_by { |s| s }, scopes: false
   enum :training,       TRAINING_TYPES.index_by { |t| t },  scopes: false
@@ -62,6 +63,16 @@ class Sailing < ApplicationRecord
   before_validation :auto_set_status
 
   private
+
+  def validate_voyage_dates
+    return if departs_at.blank?
+
+    if returns_at.blank?
+      errors.add(:base, "A return date and time is required when there is a departure")
+    elsif returns_at <= departs_at
+      errors.add(:base, "Return date and time must be after the departure date and time")
+    end
+  end
 
   def auto_set_status
     if persisted? && status == "draft"

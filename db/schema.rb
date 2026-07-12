@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_12_072417) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_12_083718) do
   create_table "contacts", force: :cascade do |t|
     t.string "address1"
     t.string "address2"
@@ -106,6 +106,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_12_072417) do
   create_table "users", force: :cascade do |t|
     t.datetime "approved_at"
     t.date "birth_date"
+    t.text "comments"
     t.date "coxswain_expires_on"
     t.date "coxswain_issued_on"
     t.string "coxswain_qualification"

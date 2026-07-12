@@ -63,6 +63,21 @@ class SailingsTest < ApplicationSystemTestCase
     assert_selector "li", text: /purpose/i
   end
 
+  test "selecting a departure date fills a blank return date" do
+    sign_in_as users(:office_staff)
+    visit new_sailing_path
+
+    # Set the date value directly and fire change — typing into a native date
+    # input via Selenium is locale-dependent and unreliable.
+    departs = find_field("Departure Date")
+    page.execute_script(
+      "arguments[0].value = '2026-06-01'; arguments[0].dispatchEvent(new Event('change'))",
+      departs
+    )
+
+    assert_equal "2026-06-01", find_field("Return Date").value
+  end
+
   # --- Editing a sailing ---
 
   test "office_staff can edit a sailing" do

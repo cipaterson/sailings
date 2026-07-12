@@ -179,7 +179,7 @@ class UsersController < ApplicationController
   # Membership, Training, Qualifications, and Roles tabs — only office staff may
   # edit these, matching the tab gating in the form.
   STAFF_ONLY_ATTRIBUTES = [
-    :membership_type, :sailing_class,
+    :membership_type, :sailing_class, :comments,
     :fees_due, :days_sailed, :date_joined, :last_sailed,
     :fees_paid, :rcpt_number, :sit2_date, :sit_date,
     :knots_on, :marine_safety_refresher_on,

@@ -64,6 +64,49 @@ class SailingTest < ActiveSupport::TestCase
     assert_not_nil sailing.departs_at
   end
 
+  # Voyage date validations
+
+  test "invalid when a departure has no return" do
+    sailing = Sailing.new(purpose: "Test", sailing_type: "Sail",
+                          departs_at: Time.zone.parse("2026-06-01 09:00"))
+    assert_not sailing.valid?
+    assert_includes sailing.errors[:base], "A return date and time is required when there is a departure"
+  end
+
+  test "invalid when the return is before the departure" do
+    sailing = Sailing.new(purpose: "Test", sailing_type: "Sail")
+    sailing.departs_date = "2026-06-02"
+    sailing.departs_time = "09:00"
+    sailing.returns_date = "2026-06-01"
+    sailing.returns_time = "09:00"
+    assert_not sailing.valid?
+    assert_includes sailing.errors[:base], "Return date and time must be after the departure date and time"
+  end
+
+  test "invalid when the return equals the departure" do
+    sailing = Sailing.new(purpose: "Test", sailing_type: "Sail")
+    sailing.departs_date = "2026-06-01"
+    sailing.departs_time = "09:00"
+    sailing.returns_date = "2026-06-01"
+    sailing.returns_time = "09:00"
+    assert_not sailing.valid?
+    assert_includes sailing.errors[:base], "Return date and time must be after the departure date and time"
+  end
+
+  test "valid when the return is after the departure" do
+    sailing = Sailing.new(purpose: "Test", sailing_type: "Sail")
+    sailing.departs_date = "2026-06-01"
+    sailing.departs_time = "09:00"
+    sailing.returns_date = "2026-06-01"
+    sailing.returns_time = "17:00"
+    assert sailing.valid?
+  end
+
+  test "valid when neither departure nor return is set" do
+    sailing = Sailing.new(purpose: "Test", sailing_type: "Sail")
+    assert sailing.valid?
+  end
+
   # auto_set_status callback
 
   def create_scheduled_sailing

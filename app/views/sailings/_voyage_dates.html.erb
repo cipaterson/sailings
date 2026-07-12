@@ -1,13 +1,14 @@
-<fieldset class="voyage-dates">
+<fieldset class="voyage-dates" data-controller="voyage-dates">
   <legend>Voyage Dates</legend>
   <div class="voyage-dates-grid">
     <%= f.label :departs_date, "Departure Date" %>
-    <%= f.date_field :departs_date %>
+    <%= f.date_field :departs_date,
+          data: { voyage_dates_target: "departsDate", action: "change->voyage-dates#fillReturn" } %>
     <%= f.label :departs_time, "Time" %>
     <%= f.time_field :departs_time %>
 
     <%= f.label :returns_date, "Return Date" %>
-    <%= f.date_field :returns_date %>
+    <%= f.date_field :returns_date, data: { voyage_dates_target: "returnsDate" } %>
     <%= f.label :returns_time, "Time" %>
     <%= f.time_field :returns_time %>
   </div>
