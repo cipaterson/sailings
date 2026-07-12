@@ -103,11 +103,11 @@ https://docs.digitalocean.com/products/droplets/how-to/add-ssh-keys/to-existing-
 
 The Litestream continuously backs up your database to a cloud storage bucket.  On the DO dashboard, you can see the bucket and its contents.  Click on Storage in the sidebar, then Spaces Object Storage.  You will find the access keys in the rails credentials.yml file.
 
-The backup bucket is named `sailings-backup` and is in a different region than the main database, currently in the `sfo` region.
+The backup bucket is named `sailings-backup` and is in a different region than the main database, currently in the `sfo` (San Francisco) region.
 
 ## 3.4 Email
 
-We use Brevo to accept emails and send on behalf of the Sailings app.  We use the Brevo API to send emails because DigitalOcean blocks SMTP (port 25, etc) access from droplets.  The Brevo API key is stored in the rails credentials.yml file.
+We use Brevo to accept emails and send on behalf of the Sailings app.  We use the Brevo API to send emails because DigitalOcean blocks SMTP (port 25, etc.) access from droplets.  The Brevo API key is stored in the rails credentials.yml file.
 
 The way to diagnose complaints about email delivery is to login to Brevo and check the Transactional -> Email -> Logs section.
 

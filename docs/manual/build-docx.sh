@@ -64,11 +64,51 @@ for ch in "${CHAPTERS[@]}"; do
   printf '\n\n' >> "$COMBINED"
 done
 
-pandoc "$COMBINED" \
+# Resolve a mermaid pandoc filter so ```mermaid blocks render as images in the
+# .docx. GitHub renders mermaid natively in the Markdown source, but pandoc does
+# not, so without this filter the diagrams would appear as raw code listings.
+if command -v mermaid-filter >/dev/null 2>&1; then
+  MERMAID_FILTER="mermaid-filter"
+elif command -v npx >/dev/null 2>&1; then
+  # Wrap npx so pandoc can invoke the on-demand mermaid-filter as an executable.
+  MERMAID_FILTER="$TMP/mermaid-filter"
+  cat > "$MERMAID_FILTER" <<'EOF'
+#!/usr/bin/env bash
+exec npx --yes mermaid-filter "$@"
+EOF
+  chmod +x "$MERMAID_FILTER"
+else
+  echo "Error: mermaid-filter not found and npx is unavailable." >&2
+  echo "Install it with:  npm install -g mermaid-filter" >&2
+  exit 1
+fi
+
+# PNG embeds reliably across Word and LibreOffice (broader than inline SVG).
+export MERMAID_FILTER_FORMAT="${MERMAID_FILTER_FORMAT:-png}"
+
+# mermaid-filter renders via headless Chrome (puppeteer). Point it at an existing
+# Chromium and disable the sandbox so it launches reliably; mermaid-filter reads
+# .puppeteer.json from its working directory ($TMP, where pandoc runs below).
+# Auto-discover the browser so we don't pin a specific Chromium version.
+CHROME_BIN="$(find "$HOME/.cache/puppeteer" -type f -path '*Chromium.app/Contents/MacOS/Chromium' 2>/dev/null | sort | tail -1)"
+if [ -z "$CHROME_BIN" ] && [ -x "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" ]; then
+  CHROME_BIN="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+fi
+if [ -n "$CHROME_BIN" ]; then
+  printf '{"executablePath": "%s", "args": ["--no-sandbox"]}\n' "$CHROME_BIN" > "$TMP/.puppeteer.json"
+else
+  printf '{"args": ["--no-sandbox"]}\n' > "$TMP/.puppeteer.json"
+fi
+
+# Run from $TMP so mermaid-filter's .puppeteer.json is picked up and its stray
+# mermaid-filter.err log doesn't land in the repo; all paths passed to pandoc
+# are absolute.
+( cd "$TMP" && pandoc "$COMBINED" \
   --from=markdown+gfm_auto_identifiers \
   --to=docx \
+  --filter="$MERMAID_FILTER" \
   --resource-path="$MANUAL_DIR" \
   --toc --toc-depth=2 \
-  --output="$OUT"
+  --output="$OUT" )
 
 echo "Wrote $OUT"

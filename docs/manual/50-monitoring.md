@@ -54,7 +54,7 @@ request. Because health checks are silenced, the log is mostly real traffic and 
 
 ### Turning up the detail temporarily
 
-To debug a production issue you can raise the log level to `debug`. Set
+To debug a production issue, you can raise the log level to `debug`. Set
 `RAILS_LOG_LEVEL: debug` in the `env.clear` block of `config/deploy.prod.yml` and redeploy (or
 `bin/kamal env push -d prod`), then **revert it** — `debug` logs can include
 personally-identifiable information and is noisy.

@@ -42,7 +42,7 @@ You run Kamal from your own machine (inside WSL, if you are on Windows — see
 
 - **Docker installed locally** — Kamal builds the image on your machine.
 - **`config/master.key` present** — it is read at deploy time (see [§4.5](#45-secrets-and-configuration)).
-- **SSH access to the server** — passwordless (key-based) login for the SSH user configured
+- **SSH access to the server** — password-less (key-based) login for the SSH user configured
   for the destination (`root`). Test it with `ssh root@<host>` before deploying. (see [§4.10](#410-connecting-to-your-server))
 - **A reachable Docker registry.** All destinations are configured to use a registry at
   `localhost:5555` (see the `registry:` block in `config/deploy.yml`), this is standard in kamal 2.8 or later. If you move to a hosted registry (Docker Hub, GHCR, DigitalOcean), update that
@@ -149,7 +149,7 @@ builder:
   # This sets the build context for the Docker image, default is HEAD of git repo.
   context: "."
 ```
-**Remember** to comment it out again (or `git restore config/deploy.yml`) before you commit.
+**Remember** to comment it out again (or throw away the changes with `git restore config/deploy.yml`) before you commit.
 
 > **Reminder:** the `-d prod` destination is the only one that carries the production host and
 > turns on continuous backups. Omitting `-d prod` deploys to **staging**, not production.
@@ -167,6 +167,13 @@ bin/kamal console -d prod         # Rails console inside a container
 bin/kamal shell -d prod           # a bash shell inside a container
 bin/kamal dbc -d prod             # rails dbconsole (SQLite prompt)
 ```
+
+NOTE: kamal shell (and console and dbc) let you work *inside* the docker container.  This command:
+
+```
+ssh root@<host>
+```
+Drops you in a shell on the cloud server that the deployed docker container is running on. kamal shell/console/dbc also use the same ssh connection plus an extra command to provide access.  See the "aliases" section of deploy.yml.
 
 Other useful Kamal commands:
 
@@ -199,7 +206,7 @@ then diagnose the failed build or boot locally before trying again. See
 
 This is a key step in troubleshooting: if a deploy fails, roll back to the previous version and diagnose the issue locally (and/or in staging) before retrying production.
 
-Kamal rollback command **requires a image version** to roll back to.  Find the previous version with:
+Kamal rollback command **requires an image version** to roll back to.  Find the previous version with:
 ```bash
 $ bin/kamal app containers -q
 CONTAINER ID   IMAGE                                                             CREATED        STATUS

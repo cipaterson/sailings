@@ -12,12 +12,12 @@ what is backed up, how to confirm the backup is healthy, and how to restore afte
 
 Only the **primary** application database is replicated:
 
-| Database | File | Backed up? | Why |
-|---|---|---|---|
-| Primary | `/data/production.sqlite3` | **Yes** | The real application data (members, sailings, crew, maintenance) |
-| Cache | `/data/production_cache.sqlite3` | No | Solid Cache — regenerable working state |
-| Queue | `/data/production_queue.sqlite3` | No | Solid Queue — regenerable job state |
-| Cable | `/data/production_cable.sqlite3` | No | Solid Cable — regenerable WebSocket state |
+| Database | File                             | Backed up? | Why                                                              |
+| -------- | -------------------------------- | ---------- | ---------------------------------------------------------------- |
+| Primary  | `/data/production.sqlite3`       | **Yes**    | The real application data (members, sailings, crew, maintenance) |
+| Cache    | `/data/production_cache.sqlite3` | No         | Solid Cache — regenerable working state                          |
+| Queue    | `/data/production_queue.sqlite3` | No         | Solid Queue — regenerable job state                              |
+| Cable    | `/data/production_cable.sqlite3` | No         | Solid Cable — regenerable WebSocket state                        |
 
 The cache, queue, and cable databases are deliberately excluded: they hold transient state
 that Rails rebuilds on its own, so there is no value in replicating them. This is set in
@@ -38,10 +38,10 @@ point is therefore typically only **seconds** of data behind live.
 - **Only production replicates.** `LITESTREAM_REPLICATE=true` is set solely in
   [`config/deploy.prod.yml`](../../config/deploy.prod.yml). On staging and the other
   destinations the plugin stays off, so they never write to the backup.
-- **Every destination can still restore.** The *replica location* (bucket, endpoint, region)
+- **Every destination can still restore.** The _replica location_ (bucket, endpoint, region)
   is defined in the base [`config/deploy.yml`](../../config/deploy.yml), so it is present on
-  all destinations. Only the ability to *write* new backups is production-only; the ability to
-  *read and restore* is available everywhere.
+  all destinations. Only the ability to _write_ new backups is production-only; the ability to
+  _read and restore_ is available everywhere.
 
 ---
 
@@ -49,13 +49,13 @@ point is therefore typically only **seconds** of data behind live.
 
 The replica is a **DigitalOcean Spaces** bucket, accessed through its S3-compatible API:
 
-| Setting | Value | Source |
-|---|---|---|
-| Bucket | `sailings-backup` | `LITESTREAM_REPLICA_BUCKET` (clear env) |
-| Path within bucket | `production/primary` | `config/litestream.yml` |
-| Endpoint | `https://sfo3.digitaloceanspaces.com` | `LITESTREAM_REPLICA_ENDPOINT` (clear env) |
-| Region | `sfo3` | `LITESTREAM_REPLICA_REGION` (clear env) |
-| Access key / secret | *(encrypted)* | Rails credentials.yml under `litestream:` |
+| Setting             | Value                                 | Source                                    |
+| ------------------- | ------------------------------------- | ----------------------------------------- |
+| Bucket              | `sailings-backup`                     | `LITESTREAM_REPLICA_BUCKET` (clear env)   |
+| Path within bucket  | `production/primary`                  | `config/litestream.yml`                   |
+| Endpoint            | `https://sfo3.digitaloceanspaces.com` | `LITESTREAM_REPLICA_ENDPOINT` (clear env) |
+| Region              | `sfo3`                                | `LITESTREAM_REPLICA_REGION` (clear env)   |
+| Access key / secret | _(encrypted)_                         | Rails credentials.yml under `litestream:` |
 
 The non-secret settings are injected by Kamal as clear environment variables. The **Spaces
 access key and secret are kept in the encrypted Rails credentials**, not in the environment,
@@ -90,7 +90,7 @@ bin/rails litestream:snapshots -- --database=/data/production.sqlite3   # list s
 
 `snapshots` confirms that backups are actually accumulating in Spaces; You can instead login to the DigitalOcean control panel to see the backups accumulating.
 
-It's a good idea to restore to a temporary copy and check it. Run these occasionally — a backup you have never verified is not yet a backup you can rely on.  You can do this in the container but can also do it back in your dev environment (by setting the environment variables needed).  You can restore with:
+It's a good idea to restore to a temporary copy and check it. Run these occasionally — a backup you have never verified is not yet a backup you can rely on. You can do this in the container but can also do it back in your dev environment (by setting the environment variables needed). You can restore with:
 
 ```bash
 LITESTREAM_REPLICA_BUCKET=sailings-backup \
@@ -98,17 +98,22 @@ LITESTREAM_REPLICA_ENDPOINT=https://sfo3.digitaloceanspaces.com \
 LITESTREAM_REPLICA_REGION=sfo3 \
   bin/rails litestream:restore -- --database=/data/production.sqlite3 -o=./restored.sqlite3
 ```
+
 And then run the sqlite3 client to run some SQL queries to verify the restore:
+
 ```bash
 sqlite3 ./restored.sqlite3
 ```
+
 ---
 
 ## 5.5 Restoring
 
 The scenario is: the server (or its data volume) is lost or corrupted, and you need to bring the database
 back from Spaces. Restores can be run from **any** Kamal destination, because they all carry
-the replica configuration.  The below is showing how to restore to the `prod` destination, but you could also restore to staging or any other destination.  REMEMBER to practice in staging first, if you need to.
+the replica configuration. The below is showing how to restore to the `prod` destination, but you could also restore to staging or any other destination. REMEMBER to practice in staging first.
+
+WARNING: Don't just copy and paste these commands verbatim! Replace the destination ('prod') with your actual destination!  Think before you paste!
 
 ### Step by step
 
@@ -116,39 +121,50 @@ the replica configuration.  The below is showing how to restore to the `prod` de
    [Deploying §4.6](30-deploying.md#46-deploying)). On first boot the entrypoint runs
    `db:prepare`, which creates an **empty** `/data/production.sqlite3`. You will replace it.
 
-2. **Move the existing database files out of the way.** From your workstation:
+2. **From your development workstation** stop the app, and then ssh into the deployed container as the restore environment (API keys, etc) is defined there:
+
    ```bash
-   # stop the app (which also exits the container)
    bin/kamal app stop -d prod
-   # ssh into a new instance of the container (rails is not running)
    bin/kamal app exec -d prod bash -i
-   # push the empty/old one to the side (keep it just in case):
+   ```
+
+3. **Move the existing database files out of the way.**
+
+```bash
    (cd /data; for f in production.sqlite3 production.sqlite3-wal production.sqlite3-shm; do
        test -e $f  && mv -v $f $f.bak
    done)
+```
 
-3. **Restore from the replica.** Litestream refuses to overwrite an existing
-    database, that's why we moved the old one out of the way first:
-    ```bash
-    bin/rails litestream:restore -- --database=/data/production.sqlite3
-    ```
-    The `--database` value is the *configured* path from `config/litestream.yml` (it is how
-    Litestream looks up the replica).
+4. **Restore from the replica.** Litestream refuses to overwrite an existing
+   database, that's why we moved the old one out of the way first:
 
-4. **Sanity-check the restored file** before trusting it, e.g.:
-    ```bash
+   ```bash
+   bin/rails litestream:restore -- --database=/data/production.sqlite3
+   ```
+
+   The `--database` value is the _configured_ path from `config/litestream.yml` (it is how
+   Litestream finds the location of the replica).
+
+5. **Sanity-check the restored file** before trusting it, e.g.:
+
+```bash
     sqlite3 /data/production.sqlite3 "select count(*) from users; select count(*) from sailings;"
-    ```
-5. **Exit back to your development shell**
-   ```bash
-   exit
-   ```
-6. **Restart the production app**
-   ```bash
-   bin/kamal app boot -d prod
-   ```
+```
 
-7. **Verify the running site** — sign in and check recent data, and confirm
+6. **Exit back to your development shell**
+
+```bash
+   exit
+```
+
+7. **Restart the production app**
+
+```bash
+   bin/kamal app boot -d prod
+```
+
+8. **Verify the running site** — sign in and check recent data, and confirm
    `https://sailings.firstsoftware.cc/up` returns healthy (see [Monitoring](50-monitoring.md)).
 
 ### After a restore
@@ -163,7 +179,7 @@ the replica configuration.  The below is showing how to restore to the `prod` de
 
 ## 5.6 A note on the data volume
 
-Litestream protects the *primary database's contents*. The host volume
+Litestream protects the _primary database's contents_. The host volume
 `"/var/data/sailings/storage:/data"` also holds any **Active Storage** uploads (e.g. photos),
 which Litestream does **not** replicate. These uploads don't matter - we have no function to upload files yet. See the volume note in [Deploying §4.4](30-deploying.md#44-what-runs-on-the-server).
 

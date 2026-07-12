@@ -48,7 +48,7 @@ Work through the stage Kamal failed at (build → push → connect → boot):
 - **Cannot push / pull the image (registry).** All destinations use a registry at
   `localhost:5555`; if it is unreachable the push fails. Ensure the local registry is running
   and reachable — see [Deploying §4.2](30-deploying.md#42-prerequisites).
-- **SSH / connection refused.** Kamal needs passwordless SSH as the destination's user
+- **SSH / connection refused.** Kamal needs password-less SSH as the destination's user
   (`root` for most). Test `ssh <user>@<host>` directly; fix keys before
   retrying, see [Deploying §3.2](30-deploying.md#32-connecting-to-your-server).
 - **Deploys but the new version is unhealthy** (cutover fails or `/up` returns 500 after
@@ -130,7 +130,7 @@ Both go out through background jobs, so a failure usually surfaces as a `FailedE
 - **SMS** is sent by `SendSmsBatchJob` via `MobileMessageService`, configured from Rails
   credentials (key `mobile_message`). If SMS stops, check that job's failures and confirm the
   SMS provider credentials and account balance.
-- **Nothing queued at all?** Confirm the action actually enqueued the job (the controller shows
+- **Nothing queued at all?** Confirm the action did actually enqueue the job (the controller shows
   a "queued for N …" notice) and that jobs are processing at all ([§7.6](#76-background-jobs-not-running)).
 
 ---

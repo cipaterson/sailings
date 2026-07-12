@@ -132,7 +132,7 @@ so if `config/master.key` is missing or wrong you will get a decryption error su
 > **Note.**
 > If you ever genuinely need fresh credentials — e.g. a throwaway fork — you can run
 > `bin/rails credentials:edit`, which generates a new `master.key` and a new encrypted file
-> together.
+> together.  BUT, this overwrites credentials.yml and you will need to find the secrets defined within if you want to, form example, use the email (Brevo API), etc.
 
 ---
 
@@ -151,8 +151,7 @@ bin/setup
    and
 3. starts the development server.
 
-To load some sample data, run the seed task (either before starting the server, or in a
-second terminal):
+db:prepare also runs the seed task (if the DB was initialized, i.e. wasn't there already):
 
 ```bash
 bin/rails db:seed
@@ -226,12 +225,12 @@ bundle exec bundler-audit        # checks gems for known vulnerabilities
 bin/importmap audit              # checks pinned JavaScript for known vulnerabilities
 ```
 
-Style is governed by [`.rubocop.yml`](../../.rubocop.yml), which inherits Rails' opinionated
+Style is governed by [`.rubocop.yml`](../../.rubocop.yml), which inherits the Rails opinionated
 "omakase" ruleset. Match the surrounding code rather than adding new configuration.
 
 ---
 
-## 2.8 How the code is organised
+## 2.8 How the code is organized
 
 The layout follows standard Rails conventions (see [Introduction §1.3](00-introduction.md#13-ruby-on-rails-in-brief)).
 The directories you will touch most:
@@ -259,7 +258,7 @@ in `app/controllers/`, and follow it to the model and view.
 bin/rails console          # interactive Ruby session with the app loaded
 bin/rails db:migrate       # apply new migrations after pulling changes
 bin/rails routes           # list every route
-bin/rails db:seed          # (re)load the sample admin account
+bin/rails db:seed          # create the initial admin account (unless it already exists)
 ```
 
 ---

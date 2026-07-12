@@ -9,7 +9,7 @@ Nelson Sailings** web application. It is written for a developer who is comforta
 programming but may be new to Ruby on Rails and to this codebase, so it explains both
 the framework in general terms and the specifics of this site.
 
-The manual is organised into sections, each in its own file in `docs/manual/`:
+The manual is organized into sections, each in its own file in `docs/manual/`:
 
 | Section | File | Covers |
 |---|---|---|
@@ -27,7 +27,7 @@ handy for when you deploy or when something breaks.
 ### 1.2 What the site is for
 
 Lady Nelson Sailings is the membership and voyage-management system for **Lady Nelson
-Tasmania**, the volunteer organisation that operates the heritage tall ship *Lady Nelson*
+Tasmania**, the volunteer organization that operates the heritage tall ship *Lady Nelson*
 out of Hobart. It replaces spreadsheets and email threads with a single place where the
 office and crew can:
 
@@ -82,7 +82,7 @@ This is a modern **Rails 8.1** application running on **Ruby 3.4.2**, and it del
 keeps the number of moving parts small:
 
 - **Database — SQLite everywhere.** The app uses SQLite in every environment,
-  including production. Production actually uses *four* SQLite databases stored under
+  including production. Production uses *four* SQLite databases stored under
   `storage/`: the main application database plus three that back Rails' own subsystems —
   cache, background-job queue, and WebSockets (see below). Using SQLite keeps operation
   simple: there is no separate database server to run.
@@ -100,7 +100,7 @@ keeps the number of moving parts small:
 - **A few key gems** round it out: `bcrypt` (password hashing), `prawn` (PDF manifests),
   `money-rails` (charter pricing), `litestream` (database backup), and `kamal` (deployment).
 
-### 1.5 Running and operating it, at a glance
+### 1.5 Running and operating it, briefly
 
 - **Local development** uses `bin/rails server` to run the app and `bin/rails test` /
   `bin/rails test:system` to run the test suites (Minitest, with Capybara + headless
@@ -117,7 +117,167 @@ keeps the number of moving parts small:
   logs. See [**Monitoring**](50-monitoring.md), and [**Troubleshooting**](60-troubleshooting.md)
   for common problems.
 
-### 1.6 Related documents
+### 1.6 Data model
+
+The application data lives in the primary SQLite database. The core of it is the
+relationship between **users** (members) and **sailings** (voyages): a member registers
+for a voyage through the **sailing_participants** join table, which carries their
+registration status and attendance. **Contacts** (personal, next-of-kin, and charter
+contacts) are attached polymorphically to either a user or a sailing. **Sessions** back
+login, while **maintenance_tasks** and **settings** (the key/value app-config store)
+stand on their own.
+
+The diagram below is generated from `db/schema.rb` and the model associations in
+`app/models/`.
+
+```mermaid
+erDiagram
+    users ||--o{ sailing_participants : "has_many"
+    sailing_participants }o--|| sailings : "belongs_to"
+    users ||--o{ sessions : "has_many"
+    users ||--o{ contacts : "contact + next_of_kin (polymorphic)"
+    sailings ||--o| contacts : "charter_contact (polymorphic)"
+
+    users {
+        integer id PK
+        string email_address UK "null: false"
+        string password_digest "null: false"
+        integer roles_mask "default 0, null: false"
+        string first_name
+        string last_name
+        date birth_date
+        string occupation
+        string membership_type
+        string sailing_class
+        datetime approved_at
+        date date_joined
+        integer days_sailed
+        date last_sailed
+        integer fees_due
+        date fees_paid
+        string rcpt_number
+        string coxswain_qualification
+        date coxswain_issued_on
+        date coxswain_expires_on
+        string ess_qualification
+        date ess_issued_on
+        date ess_expires_on
+        string first_aid_qualification
+        date first_aid_issued_on
+        date first_aid_expires_on
+        string food_handling_qualification
+        date food_handling_issued_on
+        date food_handling_expires_on
+        string med_qualification
+        date med_issued_on
+        date med_expires_on
+        string wwvp_qualification
+        date wwvp_issued_on
+        date wwvp_expires_on
+        date knots_on
+        date marine_safety_refresher_on
+        date sit_date
+        date sit2_date
+        datetime created_at "null: false"
+        datetime updated_at "null: false"
+    }
+
+    sailing_participants {
+        integer id PK
+        integer sailing_id FK "null: false"
+        integer user_id FK "null: false"
+        string status
+        integer attended
+        integer climbing "default 0"
+        text comment
+        datetime created_at "null: false"
+        datetime updated_at "null: false"
+    }
+
+    sailings {
+        integer id PK
+        string status "default draft"
+        string sailing_type
+        string charter_state "default TBC"
+        string charterer
+        string purpose
+        string training
+        datetime departs_at
+        datetime returns_at
+        integer passenger_count
+        string master
+        string engineer
+        string ln_contact
+        integer quoted_cost_cents
+        integer deposit_cents
+        integer final_amount_cents
+        string deposit_invoice
+        date deposit_invoice_date
+        string deposit_receipt_no
+        string final_invoice
+        string invoice_date
+        date date_paid
+        string receipt_no
+        text additional_details
+        text comments
+        datetime created_at "null: false"
+        datetime updated_at "null: false"
+    }
+
+    sessions {
+        integer id PK
+        integer user_id FK "null: false"
+        string ip_address
+        string user_agent
+        datetime created_at "null: false"
+        datetime updated_at "null: false"
+    }
+
+    contacts {
+        integer id PK
+        integer contactable_id FK "null: false, polymorphic"
+        string contactable_type "null: false, polymorphic"
+        string contact_type "contact | next_of_kin | charter_contact"
+        string full_name
+        string email_address
+        string mobile
+        string work_phone
+        string address1
+        string address2
+        string city
+        string state
+        string postcode
+        datetime created_at "null: false"
+        datetime updated_at "null: false"
+    }
+
+    maintenance_tasks {
+        integer id PK
+        string problem_description "null: false"
+        string priority
+        string state
+        datetime date_reported "null: false"
+        string who_reported "null: false"
+        datetime date_fixed
+        string who_fixed
+        text fixed_note
+        text comments
+        datetime created_at "null: false"
+        datetime updated_at "null: false"
+    }
+
+    settings {
+        integer id PK
+        string key UK "null: false"
+        json value
+        datetime created_at "null: false"
+        datetime updated_at "null: false"
+    }
+```
+
+`maintenance_tasks` and `settings` have no foreign keys, so they appear unconnected.
+
+### 1.7 Related documents
 
 - `README.md` — a quick-start summary and command reference at the repo root.
 - `CLAUDE.md` — conventions and architecture notes used when working in this codebase.
