@@ -39,6 +39,20 @@ class SailingParticipantsControllerTest < ActionDispatch::IntegrationTest
     assert_equal users(:member).id, participant.user_id
   end
 
+  test "registration redirects back to the return_to view" do
+    sign_in_as users(:member)
+    post sailing_sailing_participants_path(sailings(:multiday)),
+         params: { sailing_participant: { status: "EOI" }, return_to: "/sailings/calendar?view=week" }
+    assert_redirected_to "/sailings/calendar?view=week"
+  end
+
+  test "registration ignores an unsafe return_to and falls back to sailings" do
+    sign_in_as users(:member)
+    post sailing_sailing_participants_path(sailings(:multiday)),
+         params: { sailing_participant: { status: "EOI" }, return_to: "https://evil.example.com" }
+    assert_redirected_to sailings_path
+  end
+
   test "member can register with a comment" do
     sign_in_as users(:member)
     assert_difference "SailingParticipant.count", 1 do

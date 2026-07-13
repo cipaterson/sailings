@@ -124,6 +124,24 @@ class SailingsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "calendar links voyages to registration for non-office-staff" do
+    voyage = sailings(:multiday)
+    sign_in_as users(:member)
+    get calendar_sailings_path, params: { year: voyage.departs_at.year, month: voyage.departs_at.month }
+    assert_response :success
+    assert_select "a[href=?]", new_sailing_sailing_participant_path(voyage, return_to: request.fullpath)
+    assert_select "a[href=?]", edit_sailing_path(voyage), false
+  end
+
+  test "calendar links voyages to edit for office staff" do
+    voyage = sailings(:multiday)
+    sign_in_as users(:office_staff)
+    get calendar_sailings_path, params: { year: voyage.departs_at.year, month: voyage.departs_at.month }
+    assert_response :success
+    assert_select "a[href=?]", edit_sailing_path(voyage, return_to: request.fullpath)
+    assert_select "a[href=?]", new_sailing_sailing_participant_path(voyage), false
+  end
+
   # --- create ---
 
   test "create with valid params redirects to sailing" do

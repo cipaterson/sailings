@@ -25,12 +25,12 @@
           </span>
         <% end %>
       <% else %>
-        <div class="<%= bar_classes.join(" ") %>">
+        <%= link_to new_sailing_sailing_participant_path(sailing, return_to: request.fullpath), class: bar_classes.join(" ") do %>
           <strong><%= sailing.purpose.presence || sailing.charterer %></strong>
           <span class="cal-sailing-time">
             <%= sailing.departs_at.strftime("%-d %b %H:%M") %> – <%= sailing.returns_at.strftime("%-d %b %H:%M") %>
           </span>
-        </div>
+        <% end %>
       <% end %>
     <% end %>
   </div>
@@ -67,13 +67,14 @@
               </span>
             <% end %>
           <% else %>
-            <div class="<%= block_classes.join(" ") %>"
-                 style="top: <%= top_px %>px; height: <%= height_px %>px;">
+            <%= link_to new_sailing_sailing_participant_path(sailing, return_to: request.fullpath),
+                        class: block_classes.join(" "),
+                        style: "top: #{top_px}px; height: #{height_px}px;" do %>
               <strong><%= sailing.purpose.presence || sailing.charterer %></strong>
               <span class="cal-sailing-time">
                 <%= sailing.departs_at.strftime("%H:%M") %><% if sailing.returns_at %> – <%= sailing.returns_at.strftime("%-d %b %H:%M") %><% end %>
               </span>
-            </div>
+            <% end %>
           <% end %>
         <% end %>
       </div>

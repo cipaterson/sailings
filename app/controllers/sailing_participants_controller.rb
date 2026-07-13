@@ -45,7 +45,7 @@ class SailingParticipantsController < ApplicationController
     @sailing_participant = @sailing.sailing_participants.build(resolved_params)
     if @sailing_participant.save
       if resolved_params[:user_id].to_s == Current.user.id.to_s
-        redirect_to sailings_path, notice: "You have been registered for this voyage."
+        redirect_to safe_return_to(sailings_path), notice: "You have been registered for this voyage."
       else
         SailingParticipantMailer.status_changed(@sailing_participant, nil).deliver_later
         redirect_to sailing_sailing_participants_path(@sailing), notice: "Crew member was successfully added."

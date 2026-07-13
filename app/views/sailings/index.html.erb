@@ -78,7 +78,7 @@
             <% if my_participant %>
               <%= link_to "Registered", edit_sailing_participant_path(my_participant, return_to: request.fullpath) %>
             <% elsif sailing.status == "scheduled" %>
-              <%= link_to "Register", new_sailing_sailing_participant_path(sailing), class: "button" %>
+              <%= link_to "Register", new_sailing_sailing_participant_path(sailing, return_to: request.fullpath), class: "button" %>
             <% end %>
           </td>
         <% end %>
