@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_12_083718) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_13_043427) do
   create_table "contacts", force: :cascade do |t|
     t.string "address1"
     t.string "address2"
@@ -137,6 +137,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_12_083718) do
     t.string "next_of_kin_relationship"
     t.string "occupation"
     t.string "password_digest", null: false
+    t.string "preferred_home"
     t.string "rcpt_number"
     t.integer "roles_mask", default: 0, null: false
     t.string "sailing_class"

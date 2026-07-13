@@ -14,6 +14,16 @@ class User < ApplicationRecord
   MEMBERSHIP_TYPES = %w[Life Family Individual Junior].freeze
   ROLES = %w[member office_staff crewing_operator maintenance].freeze
 
+  # Member-accessible pages a user may choose as their home. The key is a stable
+  # route key stored on the record; the label is shown in the dropdown. Mapped to
+  # actual paths by ApplicationController#home_path_for.
+  HOME_PAGES = {
+    "voyages"           => "Voyages",
+    "calendar"          => "Calendar",
+    "my_registrations"  => "My Registrations",
+    "maintenance_tasks" => "Maintenance Tasks"
+  }.freeze
+
   SKILL_GROUPS = {
     "Crewing"     => %w[deck cook purser],
     "Maintenance" => %w[general mechanical electrical],
@@ -36,6 +46,7 @@ class User < ApplicationRecord
 
   validates :email_address, presence: true, uniqueness: true
   validates :membership_type, inclusion: { in: MEMBERSHIP_TYPES }, allow_blank: true
+  validates :preferred_home, inclusion: { in: HOME_PAGES.keys }, allow_blank: true
 
   PASSWORD_COMPLEXITY = {
     /[A-Z]/ => "one uppercase letter",

@@ -119,7 +119,7 @@ class SailingsController < ApplicationController
   def create
     @sailing = Sailing.new(sailing_params)
     if @sailing.save
-      redirect_to @sailing, notice: "Sailing was successfully created."
+      redirect_to @sailing, notice: "Voyage was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -140,7 +140,7 @@ class SailingsController < ApplicationController
 
   def update
     if @sailing.update(sailing_params)
-      redirect_to safe_return_to(sailings_path), notice: "Sailing was successfully updated."
+      redirect_to safe_return_to(sailings_path), notice: "Voyage was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -162,7 +162,7 @@ class SailingsController < ApplicationController
 
   def destroy
     @sailing.destroy
-    redirect_to sailings_path, notice: "Sailing was successfully deleted."
+    redirect_to sailings_path, notice: "Voyage was successfully deleted."
   end
 
   private

@@ -35,7 +35,8 @@
     <% if authenticated? %>
     <nav>
         <span>
-      <%= link_to "Home", root_path %>
+      <%= link_to "Home", home_path_for(Current.user) %>
+      <%= link_to "Voyages", root_path %>
       <%= link_to "Calendar", calendar_sailings_path %>
       <%= link_to "My Registrations", my_registrations_path %>
       <%= link_to "Maintenance Tasks", in_progress_maintenance_tasks_path %>

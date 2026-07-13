@@ -24,6 +24,27 @@ class UserTest < ActiveSupport::TestCase
     assert_includes user.errors[:email_address], "has already been taken"
   end
 
+  # Preferred home tests
+
+  test "accepts a valid preferred_home key" do
+    user = users(:one)
+    user.preferred_home = "calendar"
+    assert user.valid?
+  end
+
+  test "allows a blank preferred_home" do
+    user = users(:one)
+    user.preferred_home = ""
+    assert user.valid?
+  end
+
+  test "rejects an unknown preferred_home key" do
+    user = users(:one)
+    user.preferred_home = "members"
+    assert_not user.valid?
+    assert_includes user.errors[:preferred_home], "is not included in the list"
+  end
+
   # Approval tests
 
   test "approved? reflects approved_at presence" do

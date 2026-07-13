@@ -91,6 +91,12 @@
         <%= f.label :occupation %>
         <%= f.text_field :occupation %>
       </div>
+      <div>
+        <%= f.label :preferred_home, "Home Page" %>
+        <%= f.select :preferred_home,
+              User::HOME_PAGES.map { |key, label| [label, key] },
+              { include_blank: "Default (Voyages)" } %>
+      </div>
       <% if show_password %>
         <div>
           <%= f.label :password %>

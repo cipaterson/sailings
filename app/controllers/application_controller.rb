@@ -6,6 +6,20 @@ class ApplicationController < ActionController::Base
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
 
+  helper_method :home_path_for
+
+  # Maps a user's chosen home page (User::HOME_PAGES key) to a path. Used for the
+  # Home nav link and the post-login redirect. Falls back to root for blank or
+  # "voyages".
+  def home_path_for(user)
+    case user&.preferred_home
+    when "calendar"          then calendar_sailings_path
+    when "my_registrations"  then my_registrations_path
+    when "maintenance_tasks" then in_progress_maintenance_tasks_path
+    else root_path
+    end
+  end
+
   private
 
     # Returns params[:return_to] when it is a safe internal path (single leading

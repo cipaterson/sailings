@@ -15,6 +15,13 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert cookies[:session_id]
   end
 
+  test "create redirects to the user's preferred home page" do
+    @user.update!(preferred_home: "calendar")
+    post session_path, params: { email_address: @user.email_address, password: "password" }
+
+    assert_redirected_to calendar_sailings_path
+  end
+
   test "create with invalid credentials" do
     post session_path, params: { email_address: @user.email_address, password: "wrong" }
 
