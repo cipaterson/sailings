@@ -2,6 +2,14 @@
 #
 # Restore the primary SQLite database from the Litestream replica.
 #
+# Usage: bin/restore-primary-db [TIMESTAMP]
+#
+#   TIMESTAMP  Optional RFC3339 point-in-time to restore *to*, e.g.
+#              2026-07-12T14:30:00Z. When omitted, the latest available backup
+#              is used. The timestamp must fall within the replica's retention
+#              window (see `retention` in config/litestream.yml) and within an
+#              available generation, or the restore fails.
+#
 # This runs INSIDE the app container, where the Litestream credentials (the
 # encrypted Rails credentials, decrypted with RAILS_MASTER_KEY) and the replica
 # settings (LITESTREAM_* env) are available. It is normally invoked for you by
@@ -11,6 +19,7 @@
 # or replicating while the file is swapped. `bin/kamal-restore` guarantees that.
 
 DB=/data/production.sqlite3
+TIMESTAMP="${1:-}"
 stamp="$(date +%Y%m%d-%H%M%S)"
 
 # 1. Move any existing primary database files aside. Litestream refuses to
@@ -25,9 +34,16 @@ for f in "$DB" "$DB-wal" "$DB-shm"; do
 done
 
 # 2. Restore from the replica. --database is the *configured* path from
-#    config/litestream.yml; it is how Litestream locates the replica.
-echo "==> Restoring $DB from the Litestream replica"
-bin/rails litestream:restore -- --database="$DB"
+#    config/litestream.yml; it is how Litestream locates the replica. A
+#    TIMESTAMP, if given, asks Litestream for a point-in-time restore instead
+#    of the latest backup.
+if [ -n "$TIMESTAMP" ]; then
+  echo "==> Restoring $DB from the Litestream replica (point-in-time: $TIMESTAMP)"
+  bin/rails litestream:restore -- --database="$DB" -timestamp="$TIMESTAMP"
+else
+  echo "==> Restoring $DB from the Litestream replica (latest backup)"
+  bin/rails litestream:restore -- --database="$DB"
+fi
 
 # 3. Sanity-check the restored file before it is trusted.
 echo "==> Sanity check (row counts)"

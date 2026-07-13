@@ -25,3 +25,13 @@ dbs:
         region: $LITESTREAM_REPLICA_REGION
         access-key-id: $LITESTREAM_ACCESS_KEY_ID
         secret-access-key: $LITESTREAM_SECRET_ACCESS_KEY
+        # How far back point-in-time restores can reach. Litestream keeps
+        # snapshots + WAL within this window; anything older is compacted away.
+        # Default is 24h — bumped to 30 days so `bin/kamal-restore <dest> <ts>`
+        # can rewind to any moment in the last month. The DB is small, so the
+        # extra object storage is negligible. Must be >= snapshot-interval.
+        retention: 720h
+        # Take a fresh full snapshot daily. Restores replay WAL from the most
+        # recent snapshot *before* the target timestamp, so this bounds how much
+        # WAL a restore has to apply.
+        snapshot-interval: 24h

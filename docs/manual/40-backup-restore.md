@@ -126,7 +126,28 @@ bin/kamal-restore <destination>      # e.g. staging | prod | raspi | IP
 ```
 
 Because it is destructive, it first asks you to confirm by re-typing the
-destination, then runs the manual steps below for you. There is no switching
+destination, then runs the manual steps below for you.
+
+#### Restoring to a point in time
+
+By default the restore uses the **latest** backup. To rewind to an earlier
+moment instead (for example, just before a bad bulk edit), pass an RFC3339
+timestamp as a second argument:
+
+```bash
+bin/kamal-restore <destination> 2026-07-12T14:30:00Z
+```
+
+The timestamp must fall within the replica's **retention** window
+(`config/litestream.yml`, currently `720h` = 30 days) and within an available
+generation, or the restore fails. Litestream restores the most recent snapshot
+taken *before* the timestamp and replays the WAL up to that point. You can see
+what is available to restore to with:
+
+```bash
+bin/kamal app exec -d <destination> "bin/rails litestream:snapshots -- --database=/data/production.sqlite3"
+bin/kamal app exec -d <destination> "bin/rails litestream:generations -- --database=/data/production.sqlite3"
+``` There is no switching
 between workstation and container: the workstation drives Kamal, while the
 in-container restore is done by [`bin/restore-primary-db`](../../bin/restore-primary-db),
 which ships inside the image and already carries the credentials it needs. If the
@@ -174,6 +195,13 @@ if you need to intervene partway through the sequence.
 
    The `--database` value is the _configured_ path from `config/litestream.yml` (it is how
    Litestream finds the location of the replica).
+
+   To restore to a **point in time** rather than the latest backup, append an
+   RFC3339 `-timestamp` (within the retention window):
+
+   ```bash
+   bin/rails litestream:restore -- --database=/data/production.sqlite3 -timestamp=2026-07-12T14:30:00Z
+   ```
 
 5. **Sanity-check the restored file** before trusting it, e.g.:
 
