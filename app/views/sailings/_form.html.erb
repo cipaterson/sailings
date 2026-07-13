@@ -29,6 +29,19 @@
     </div>
   <% end %>
 
+  <% clashes = sailing.overlapping_sailings.to_a %>
+  <% if clashes.any? %>
+    <div class="overlap-warning">
+      <p><strong>Warning:</strong> these dates overlap existing voyage(s):</p>
+      <ul>
+        <% clashes.each do |c| %>
+          <li><%= c.display_name %> — <%= c.voyage_dates %></li>
+        <% end %>
+      </ul>
+      <label><%= f.check_box :confirm_overlap %> Save anyway</label>
+    </div>
+  <% end %>
+
   <input type="radio" name="sailing_tab" id="sailing-tab-info" class="tab-radio"
          <%= "checked" if params[:tab].blank? || params[:tab] == "info" %>>
   <% if sailing.charterer.present? %>

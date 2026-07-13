@@ -95,9 +95,9 @@ class SailingTest < ActiveSupport::TestCase
 
   test "valid when the return is after the departure" do
     sailing = Sailing.new(purpose: "Test", sailing_type: "Sail")
-    sailing.departs_date = "2026-06-01"
+    sailing.departs_date = "2026-09-02" # a free date, so the overlap check doesn't fire
     sailing.departs_time = "09:00"
-    sailing.returns_date = "2026-06-01"
+    sailing.returns_date = "2026-09-02"
     sailing.returns_time = "17:00"
     assert sailing.valid?
   end
@@ -107,13 +107,68 @@ class SailingTest < ActiveSupport::TestCase
     assert sailing.valid?
   end
 
+  # Overlapping voyages
+
+  def overlapping_new_sailing
+    Sailing.new(purpose: "Clash", sailing_type: "Sail",
+                departs_at: Time.zone.parse("2026-06-01 12:00"),
+                returns_at: Time.zone.parse("2026-06-01 18:00"))
+  end
+
+  test "overlapping_sailings finds a voyage whose window intersects" do
+    assert_includes overlapping_new_sailing.overlapping_sailings, sailings(:voyage)
+  end
+
+  test "overlapping_sailings ignores back-to-back voyages" do
+    sailing = Sailing.new(purpose: "After", sailing_type: "Sail",
+                          departs_at: Time.zone.parse("2026-06-01 17:00"),
+                          returns_at: Time.zone.parse("2026-06-01 20:00"))
+    assert_empty sailing.overlapping_sailings
+  end
+
+  test "overlapping_sailings ignores voyages on other days" do
+    sailing = Sailing.new(purpose: "Elsewhere", sailing_type: "Sail",
+                          departs_at: Time.zone.parse("2026-06-05 09:00"),
+                          returns_at: Time.zone.parse("2026-06-05 17:00"))
+    assert_empty sailing.overlapping_sailings
+  end
+
+  test "overlapping_sailings excludes the voyage itself" do
+    assert_empty sailings(:voyage).overlapping_sailings
+  end
+
+  test "overlapping_sailings is empty without both datetimes" do
+    sailing = Sailing.new(purpose: "Partial", sailing_type: "Sail",
+                          departs_at: Time.zone.parse("2026-06-01 09:00"))
+    assert_empty sailing.overlapping_sailings
+  end
+
+  test "an unconfirmed overlap is invalid" do
+    sailing = overlapping_new_sailing
+    assert_not sailing.valid?
+    assert sailing.errors[:base].any? { |m| m.include?("overlap") }
+  end
+
+  test "a confirmed overlap is valid" do
+    sailing = overlapping_new_sailing
+    sailing.confirm_overlap = "1"
+    assert sailing.valid?
+  end
+
+  test "a non-overlapping voyage is valid without confirmation" do
+    sailing = Sailing.new(purpose: "Clear", sailing_type: "Sail",
+                          departs_at: Time.zone.parse("2026-06-05 09:00"),
+                          returns_at: Time.zone.parse("2026-06-05 17:00"))
+    assert sailing.valid?
+  end
+
   # auto_set_status callback
 
   def create_scheduled_sailing
     sailing = Sailing.new(purpose: "Test", sailing_type: "Sail", status: "draft")
-    sailing.departs_date = "2026-06-01"
+    sailing.departs_date = "2026-09-01" # a date no fixture occupies, to avoid overlap
     sailing.departs_time = "09:00"
-    sailing.returns_date = "2026-06-01"
+    sailing.returns_date = "2026-09-01"
     sailing.returns_time = "17:00"
     sailing.save!
     sailing

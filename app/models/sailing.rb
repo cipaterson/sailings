@@ -25,6 +25,7 @@ class Sailing < ApplicationRecord
   validates :purpose, presence: true
   validates :sailing_type, presence: true, inclusion: { in: SAILING_TYPES }
   validate :validate_voyage_dates
+  validate :no_unconfirmed_overlap
   enum :sailing_type, SAILING_TYPES.index_by { |t| t }, scopes: false
   enum :status,   SAILING_STATUSES.index_by { |s| s }, scopes: false
   enum :training,       TRAINING_TYPES.index_by { |t| t },  scopes: false
@@ -35,6 +36,20 @@ class Sailing < ApplicationRecord
   monetize :final_amount_cents,  allow_nil: true
 
   attr_writer :departs_date, :departs_time, :returns_date, :returns_time
+
+  # Virtual flag, set by the "Save anyway" checkbox, to override the overlap warning.
+  attr_accessor :confirm_overlap
+
+  # Other voyages whose date/time window intersects this one's. Back-to-back voyages
+  # (one returning exactly when another departs) do not count as overlapping, and a
+  # voyage missing either datetime (e.g. a draft) overlaps nothing.
+  def overlapping_sailings
+    return Sailing.none if departs_at.blank? || returns_at.blank?
+
+    Sailing.where.not(id: id)
+           .where("departs_at < ? AND returns_at > ?", returns_at, departs_at)
+           .order(:departs_at)
+  end
 
   def display_name
     parts = [ purpose ]
@@ -63,6 +78,17 @@ class Sailing < ApplicationRecord
   before_validation :auto_set_status
 
   private
+
+  def no_unconfirmed_overlap
+    return if ActiveModel::Type::Boolean.new.cast(confirm_overlap)
+
+    clashes = overlapping_sailings
+    return if clashes.none?
+
+    errors.add(:base,
+      "These dates overlap an existing voyage (#{clashes.map(&:display_name).join("; ")}). " \
+      "Tick “Save anyway” to confirm.")
+  end
 
   def validate_voyage_dates
     return if departs_at.blank?

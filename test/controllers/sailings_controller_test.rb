@@ -142,6 +142,32 @@ class SailingsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
+  test "create with overlapping dates is blocked pending confirmation" do
+    sign_in_as users(:office_staff)
+    assert_no_difference "Sailing.count" do
+      post sailings_path, params: { sailing: {
+        purpose: "Clash", sailing_type: "Sail",
+        departs_date: "2026-06-01", departs_time: "12:00",
+        returns_date: "2026-06-01", returns_time: "18:00"
+      } }
+    end
+    assert_response :unprocessable_entity
+    assert_match(/overlap/i, response.body)
+  end
+
+  test "create with overlapping dates succeeds when confirmed" do
+    sign_in_as users(:office_staff)
+    assert_difference "Sailing.count", 1 do
+      post sailings_path, params: { sailing: {
+        purpose: "Clash", sailing_type: "Sail",
+        departs_date: "2026-06-01", departs_time: "12:00",
+        returns_date: "2026-06-01", returns_time: "18:00",
+        confirm_overlap: "1"
+      } }
+    end
+    assert_redirected_to sailing_path(Sailing.last)
+  end
+
   # --- update ---
 
   test "update with valid params redirects to sailings list" do
