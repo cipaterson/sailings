@@ -120,6 +120,34 @@ class SailingParticipantsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "my comment", sp.reload.comment
   end
 
+  test "crewing_operator can edit another member's registration" do
+    sp = sailing_participants(:two_on_voyage)
+    sign_in_as users(:crewing_operator)
+    get edit_sailing_participant_path(sp)
+    assert_response :success
+    patch sailing_participant_path(sp),
+          params: { sailing_participant: { status: sp.status, comment: "set by crewing" } }
+    assert_redirected_to sailings_path
+    assert_equal "set by crewing", sp.reload.comment
+  end
+
+  test "office_staff can edit another member's registration" do
+    sp = sailing_participants(:two_on_voyage)
+    sign_in_as users(:office_staff)
+    patch sailing_participant_path(sp),
+          params: { sailing_participant: { status: sp.status, comment: "set by office" } }
+    assert_redirected_to sailings_path
+    assert_equal "set by office", sp.reload.comment
+  end
+
+  test "member cannot edit another member's registration" do
+    sp = sailing_participants(:two_on_voyage)
+    sign_in_as users(:one)
+    patch sailing_participant_path(sp),
+          params: { sailing_participant: { status: sp.status, comment: "hijack" } }
+    assert_not_equal "hijack", sp.reload.comment
+  end
+
   # --- destroy ---
 
   test "user can cancel their own registration" do

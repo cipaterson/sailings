@@ -60,6 +60,24 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "office_staff can view any user's registrations" do
+    sign_in_as users(:office_staff)
+    get registrations_user_path(users(:member))
+    assert_response :success
+  end
+
+  test "user can view their own registrations" do
+    sign_in_as users(:member)
+    get registrations_user_path(users(:member))
+    assert_response :success
+  end
+
+  test "user cannot view another user's registrations" do
+    sign_in_as users(:member)
+    get registrations_user_path(users(:two))
+    assert_redirected_to root_path
+  end
+
   test "show page renders all attribute sections" do
     sign_in_as users(:office_staff)
     get user_path(users(:member))

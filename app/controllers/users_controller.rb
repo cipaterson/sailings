@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[show edit update destroy confirm_delete disable]
+  before_action :set_user, only: %i[show edit update destroy confirm_delete disable registrations]
   before_action :require_office_staff!, only: %i[index new create destroy confirm_delete disable]
-  before_action :require_self_or_office_staff!, only: %i[show edit update]
+  before_action :require_self_or_office_staff!, only: %i[show edit update registrations]
 
   PER_PAGE = 15
 
@@ -90,6 +90,10 @@ class UsersController < ApplicationController
   end
 
   def show
+  end
+
+  def registrations
+    @sailing_participants = @user.sailing_participants.includes(:sailing)
   end
 
   def new

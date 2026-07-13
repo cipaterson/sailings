@@ -43,6 +43,7 @@
       <th>Fees Due</th>
       <th>Roles</th>
       <% if @pending_filter %><th>Approve</th><% end %>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -54,7 +55,7 @@
         <td><%= user.membership_type %></td>
         <td><%= user.fees_paid %></td>
         <td><%= user.fees_due %></td>
-        <td><%= user.roles.join(", ") %></td>
+        <td><%= user.roles.map { |role| role.first.upcase }.join %></td>
         <% if @pending_filter %>
           <td>
             <% if user.fees_paid.present? && user.membership_type.present? %>
@@ -64,6 +65,7 @@
             <% end %>
           </td>
         <% end %>
+        <td><%= link_to "Registrations", registrations_user_path(user), class: "button" %></td>
       </tr>
     <% end %>
   </tbody>

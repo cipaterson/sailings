@@ -1,3 +1,5 @@
-<h1>My Registrations</h1>
+<h1>Registrations — <%= @user.full_name %></h1>
 
 <%= render "sailing_participants/registrations_table", participants: @sailing_participants %>
+
+<%= link_to "Back", users_path %>

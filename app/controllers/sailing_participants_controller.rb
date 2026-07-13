@@ -131,7 +131,8 @@ class SailingParticipantsController < ApplicationController
   end
 
   def set_sailing_participant
-    @sailing_participant = Current.user.sailing_participants.find(params[:id])
+    scope = Current.user&.admin? ? SailingParticipant : Current.user.sailing_participants
+    @sailing_participant = scope.find(params[:id])
   end
 
   def sailing_participant_params

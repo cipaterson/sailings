@@ -27,6 +27,7 @@ Rails.application.routes.draw do
     member do
       get  :confirm_delete
       patch :disable
+      get :registrations
     end
   end
   resources :maintenance_tasks do

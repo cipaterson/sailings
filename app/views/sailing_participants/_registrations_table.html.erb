@@ -1,0 +1,35 @@
+<% editable = local_assigns.fetch(:editable, true) %>
+<% if participants.any? %>
+  <div class="wide-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Voyage</th>
+        <th>Voyage Dates</th>
+        <th>Created</th>
+        <th>Registration</th>
+        <th>Comment</th>
+        <th>Climbing</th>
+        <% if editable %><th></th><% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% participants.each do |participant| %>
+        <tr>
+          <td><%= participant.sailing.display_name %></td>
+          <td><%= participant.sailing.voyage_dates %></td>
+          <td><%= participant.created_at.in_time_zone.strftime("%d %b %Y - %H:%M") %></td>
+          <td><%= participant.status %></td>
+          <td><%= participant.comment %></td>
+          <td><%= { 1 => "Yes", 2 => "No" }[participant.climbing] %></td>
+          <% if editable %>
+            <td><%= link_to "Edit", edit_sailing_participant_path(participant, return_to: request.fullpath), class: "button" %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  </div>
+<% else %>
+  <p>No registrations.</p>
+<% end %>
