@@ -53,7 +53,7 @@
     margin-bottom: 2px;
 }
 .calendar-sailing {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
     background: #d0e8ff;
     border-radius: 3px;
     padding: 1px 3px;
@@ -90,7 +90,7 @@
 }
 .calendar-sailing-time {
     display: block;
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     color: #555;
     font-weight: normal;
 }
@@ -185,7 +185,7 @@
 }
 .cal-sailing-time {
     display: block;
-    font-size: 0.65rem;
+    font-size: 0.8rem;
     color: #444;
 }
 .cal-allday-row {

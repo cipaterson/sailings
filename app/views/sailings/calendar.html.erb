@@ -11,6 +11,8 @@
 %>
 <h1><%= title %></h1>
 
+<%= link_to "New Voyage", new_sailing_path, class: "button" if can?("office_staff") %>
+
 <%
   case @view
   when "week"
