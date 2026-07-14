@@ -164,7 +164,7 @@ bin/kamal-restore <destination>      # replace it with the backup
 
 ### What it does, step by step (or how to restore by hand)
 
-`bin/kamal-restore` automates exactly the steps below; follow them by hand only
+`bin/kamal-restore` automates exactly the steps below; follow them by hand **only**
 if you need to intervene partway through the sequence.
 
 1. **Provision and deploy the app to the target server** as normal (see
