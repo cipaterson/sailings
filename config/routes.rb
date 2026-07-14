@@ -1,4 +1,17 @@
 Rails.application.routes.draw do
+  # JSON API for the iOS app. Bearer-token auth (see ApiAuthentication); the
+  # browser-facing routes below stay on cookie sessions.
+  namespace :api do
+    namespace :v1 do
+      resource  :session,  only: %i[ create destroy ]
+      resource  :profile,  only: :show
+      resources :sailings, only: %i[ index show ] do
+        resources :registrations, only: :create
+      end
+      resources :registrations, only: %i[ index destroy ]
+    end
+  end
+
   resource :session
   resource :registration, only: %i[ new create ]
   resource :settings, only: %i[ edit update ]
