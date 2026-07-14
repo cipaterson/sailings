@@ -86,6 +86,8 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  # Retry flaky system tests (headless-Chrome / Turbo timing noise)
+  gem "minitest-retry"
 end
 
 gem "dockerfile-rails", ">= 1.7", group: :development

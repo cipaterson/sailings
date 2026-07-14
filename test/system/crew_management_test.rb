@@ -30,6 +30,10 @@ class CrewManagementTest < ApplicationSystemTestCase
     # which hides the native <select>, so drive the rendered widget directly.
     find(".ts-control").click
     find(".ts-dropdown .option", text: users(:member).email_address).click
+    # Wait for TomSelect to commit the selection (the item chip appears in the
+    # control and the dropdown closes); otherwise the open dropdown can overlay
+    # and intercept the submit click.
+    assert_selector ".ts-control .item", text: users(:member).email_address
     click_on "Add Crew Member"
 
     assert_current_path sailing_sailing_participants_path(sailings(:multiday))

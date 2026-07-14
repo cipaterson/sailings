@@ -7,7 +7,7 @@ class AuthenticationTest < ApplicationSystemTestCase
   end
 
   test "sign in with wrong password shows error" do
-    sign_in_as users(:member), password: "wrongpassword"
+    sign_in_as users(:member), password: "wrongpassword", expect_success: false
     assert_current_path new_session_path, ignore_query: true
   end
 

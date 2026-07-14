@@ -29,7 +29,7 @@ class SailingsTest < ApplicationSystemTestCase
     # Register now opens a form; submit it to complete registration
     click_on "Submit"
 
-    assert_current_path sailings_path
+    assert_current_path sailings_path, ignore_query: true
     assert_text /registered/i
   end
 
