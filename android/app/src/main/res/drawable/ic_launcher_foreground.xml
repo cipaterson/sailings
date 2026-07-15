@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Two white sails, centred within the adaptive-icon safe zone. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,30 L54,64 L38,64 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M58,36 L58,64 L74,64 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,68 L74,68 L68,78 L40,78 Z" />
+</vector>

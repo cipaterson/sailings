@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      A bare Material 3 base theme so the Activity has something to inflate before
+      Compose takes over. All real colour/typography lives in SailingsTheme (see
+      ui/theme/Theme.kt); this only needs to be a valid Material3 parent.
+    -->
+    <style name="Theme.Sailings" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
