@@ -45,7 +45,7 @@ You run Kamal from your own machine (inside WSL, if you are on Windows — see
 - **SSH access to the server** — password-less (key-based) login for the SSH user configured
   for the destination (`root`). Test it with `ssh root@<host>` before deploying. (see [§4.10](#410-connecting-to-your-server))
 - **A reachable Docker registry.** All destinations are configured to use a registry at
-  `localhost:5555` (see the `registry:` block in `config/deploy.yml`), this is standard in kamal 2.8 or later. If you move to a hosted registry (Docker Hub, GHCR, DigitalOcean), update that
+  `localhost:5005` (see the `registry:` block in `config/deploy.yml`), this is standard in kamal 2.8 or later. If you move to a hosted registry (Docker Hub, GHCR, DigitalOcean), update that
   block and add the registry password to [`.kamal/secrets-common`](../../.kamal/secrets-common).
 - **The `kamal` gem**, which is bundled with the project — invoke it as `bin/kamal`.
 
@@ -195,7 +195,7 @@ then diagnose the failed build or boot locally before trying again. See
 - [ ] Changes committed to git (by default Kamal builds from `HEAD` in the git repo, NOT from the working directory). If you deploy and nothing changes, perhaps you have forgotten to commit your changes.
 - [ ] CI green on the branch (tests, RuboCop, Brakeman — see [Developing §2.7](10-developing.md#27-linting-and-security-checks)).
 - [ ] `config/master.key` present locally.
-- [ ] Docker running and the `localhost:5555` registry reachable.
+- [ ] Docker running and the `localhost:5005` registry reachable.
 - [ ] SSH to the target host works without a password.
 - [ ] Deployed and verified on **staging** first, then `-d prod`.
 - [ ] After a production deploy, confirmed the app answers on `https://sailings.firstsoftware.cc/up` (see [Monitoring](50-monitoring.md)).
@@ -210,8 +210,8 @@ Kamal rollback command **requires an image version** to roll back to.  Find the 
 ```bash
 $ bin/kamal app containers -q
 CONTAINER ID   IMAGE                                                             CREATED        STATUS
-98bd25e46f79   localhost:5555/staging:8d98cb7ec1bdc3b2174ffe2f4e254618b4655c9c   3 hours ago    Up 3 hours
-428ec8628b68   localhost:5555/staging:763a123ee82523ca12d32eb06ca35fa7c97e7677   3 hours ago    Exited (143) 3 hours ago
+98bd25e46f79   localhost:5005/staging:8d98cb7ec1bdc3b2174ffe2f4e254618b4655c9c   3 hours ago    Up 3 hours
+428ec8628b68   localhost:5005/staging:763a123ee82523ca12d32eb06ca35fa7c97e7677   3 hours ago    Exited (143) 3 hours ago
 6c9e4961e53e   6b6175ba4331
 ```
 

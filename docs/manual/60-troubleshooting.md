@@ -46,7 +46,7 @@ Work through the stage Kamal failed at (build → push → connect → boot):
   [`Dockerfile`](../../Dockerfile); reproduce locally with `docker build -t sailings-test .`
   to iterate faster. A gem/asset error here is the usual cause.
 - **Cannot push / pull the image (registry).** All destinations use a registry at
-  `localhost:5555`; if it is unreachable the push fails. Ensure the local registry is running
+  `localhost:5005`; if it is unreachable the push fails. Ensure the local registry is running
   and reachable — see [Deploying §4.2](30-deploying.md#42-prerequisites).
 - **SSH / connection refused.** Kamal needs password-less SSH as the destination's user
   (`root` for most). Test `ssh <user>@<host>` directly; fix keys before
