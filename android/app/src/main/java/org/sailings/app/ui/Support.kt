@@ -89,5 +89,5 @@ fun LocalDate.asDay(): String {
         Month.OCTOBER -> "Oct"; Month.NOVEMBER -> "Nov"; Month.DECEMBER -> "Dec"
         else -> ""
     }
-    return "$day $month $year"
+    return "$dayOfMonth $month $year"
 }

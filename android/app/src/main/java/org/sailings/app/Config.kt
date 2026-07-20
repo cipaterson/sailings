@@ -14,7 +14,7 @@ object Config {
      *   plain HTTP otherwise.
      * - Production: the HTTPS host, which needs no exception at all.
      */
-    const val BASE_URL = "http://10.0.2.2:3000"
+    const val BASE_URL = "https://staging.firstsoftware.cc"
 
     const val API_ROOT = "$BASE_URL/api/v1"
 }

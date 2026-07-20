@@ -1,12 +1,12 @@
 [versions]
-agp = "8.7.3"
+agp = "8.11.1"
 kotlin = "2.0.21"
 coreKtx = "1.13.1"
 activityCompose = "1.9.3"
 composeBom = "2024.10.01"
 lifecycle = "2.8.7"
 securityCrypto = "1.1.0-alpha06"
-ktor = "3.2.0"
+ktor = "3.2.3"
 serialization = "1.7.3"
 datetime = "0.6.1"
 coroutines = "1.9.0"
@@ -26,7 +26,7 @@ compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
-ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }

@@ -33,7 +33,7 @@ fun RootScreen(auth: AuthViewModel) {
     // of showing a stale list when the user switches to them. Mirrors the iOS
     // `registrationsChanged` binding.
     var registrationsChanged by remember { mutableIntStateOf(0) }
-    val onRegistrationsChanged = { registrationsChanged++ }
+    val onRegistrationsChanged: () -> Unit = { registrationsChanged++ }
 
     Scaffold(
         bottomBar = {

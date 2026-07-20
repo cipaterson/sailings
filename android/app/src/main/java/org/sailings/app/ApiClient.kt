@@ -1,7 +1,7 @@
 package org.sailings.app
 
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
@@ -53,7 +53,7 @@ class ApiClient(private val baseUrl: String = Config.API_ROOT) {
         explicitNulls = false
     }
 
-    private val http = HttpClient(CIO) {
+    private val http = HttpClient(OkHttp) {
         expectSuccess = false
     }
 
@@ -128,6 +128,7 @@ class ApiClient(private val baseUrl: String = Config.API_ROOT) {
                 }
             }
         } catch (e: Exception) {
+            android.util.Log.e("ApiClient", "transport failure: $method ${baseUrl + path}", e)
             throw ApiException.Transport(e)
         }
 
