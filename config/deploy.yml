@@ -24,8 +24,11 @@ servers:
 #
 proxy:
   ssl: true
-  host: staging.firstsoftware.cc
-
+  hosts:
+    - staging.firstsoftware.cc
+    - sailings.firstsoftware.cc
+# Temp set sailings here to allow staging to use it (and request a certificate) as well.
+#
 # Where you keep your container images.
 registry:
   # Alternatives: hub.docker.com / registry.digitalocean.com / ghcr.io / ...
