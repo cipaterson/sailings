@@ -10,7 +10,7 @@ and start at [section 2.2](#22-install-ruby-342).
 
 > **The short version, once your machine is ready:**
 > ```bash
-> git clone https://github.com/cipaterson/sailings.git
+> git clone https://github.com/USER/sailings.git
 > cd sailings
 > # obtain the real config/master.key from a maintainer (see 2.4)
 > bin/setup            # installs gems, prepares the database, starts the server
@@ -93,6 +93,8 @@ again.
 ---
 
 ## 2.3 Get the code
+
+Get the code from GitHub. If you are a maintainer, you can replace `cipaterson` with your own username.  If you are not, then you should fork the repository first into your own GitHub account, then clone your fork.
 
 ```bash
 mkdir -p ~/sources && cd ~/sources
