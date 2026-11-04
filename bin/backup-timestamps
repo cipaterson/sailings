@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#
+# Show the timestamps available in the Litestream backup, so you can pick one
+# for a point-in-time restore:
+#
+#     bin/backup-timestamps <destination>     # staging | prod | raspi | IP
+#     bin/kamal-restore <destination> <timestamp>
+#
+# Snapshots give full-snapshot `created` times; WAL files give the finer-grained
+# moments you can rewind to. Any RFC3339 timestamp within the retention window
+# (config/litestream.yml, currently 30 days) works, not just exact snapshots.
+
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+DEST="${1:-}"
+if [ -z "$DEST" ]; then
+  echo "Usage: bin/backup-timestamps <destination>   (staging | prod | raspi | IP)" >&2
+  exit 1
+fi
+
+# The base config (config/deploy.yml) IS staging, so it takes no -d flag.
+if [ "$DEST" = "staging" ]; then
+  DFLAG=""
+else
+  DFLAG="-d $DEST"
+fi
+
+DB=/data/production.sqlite3
+
+echo "==> Snapshots on '$DEST' (use a 'created' value)"
+bin/kamal app exec $DFLAG "bin/rails litestream:snapshots -- --database=$DB"
+
+echo
+echo "==> WAL files on '$DEST' (finer-grained timestamps)"
+bin/kamal app exec $DFLAG "bin/rails litestream:wal -- --database=$DB"
+
+echo
+echo "Restore with:"
+echo "    bin/kamal-restore $DEST <timestamp>"

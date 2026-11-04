@@ -57,7 +57,7 @@ doctl compute droplet create sailings-clone \
   --enable-backups \
   --enable-monitoring \
   --enable-ipv6 \
-  --user-data-file bin/docker-map-volume \
+  --user-data-file bin/do-docker-map-volume \
   --wait
 ```
 
